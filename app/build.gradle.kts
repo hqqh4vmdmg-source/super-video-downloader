@@ -138,11 +138,13 @@ android {
             enableAndroidTestCoverage = false
         }
         release {
+            isMinifyEnabled = true
+            isShrinkResources = true
             enableUnitTestCoverage = false
             enableAndroidTestCoverage = false
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
-                getDefaultProguardFile("proguard-android.txt"),
+                getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }

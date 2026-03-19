@@ -15,6 +15,7 @@ import java.util.zip.Inflater
 
 abstract class GenericDownloader {
     companion object {
+        @Volatile
         private var instance: GenericDownloader? = null
 
         fun isWorkScheduled(context: Context, uniqueWorkName: String): Boolean {
@@ -36,8 +37,8 @@ abstract class GenericDownloader {
         }
 
         fun getInstance(): GenericDownloader {
-            if (instance == null) {
-                instance = object : GenericDownloader() {
+            return instance ?: synchronized(this) {
+                instance ?: object : GenericDownloader() {
                     override fun getDownloadDataFromVideoInfo(videoInfo: VideoInfo): Data.Builder {
                         throw UnsupportedOperationException("getDownloadDataFromVideoInfo not implemented")
                     }
@@ -45,10 +46,8 @@ abstract class GenericDownloader {
                     override fun getWorkRequest(id: String): OneTimeWorkRequest.Builder {
                         throw UnsupportedOperationException("getWorkRequest not implemented")
                     }
-                }
+                }.also { instance = it }
             }
-
-            return instance!!
         }
     }
 

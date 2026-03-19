@@ -31,13 +31,14 @@ import kotlin.coroutines.resume
 class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParameters) :
     GenericDownloadWorkerWrapper(appContext, workerParams) {
     companion object {
-        var isCanceled = false
-
         const val IS_FINISHED_DOWNLOAD_ACTION_ERROR_KEY = "IS_FINISHED_DOWNLOAD_ACTION_ERROR_KEY"
         const val DOWNLOAD_FILENAME_KEY = "download_filename"
         const val IS_FINISHED_DOWNLOAD_ACTION_KEY = "action"
         private const val UPDATE_INTERVAL = 1000
     }
+
+    @Volatile
+    private var isCanceled = false
 
     private lateinit var tmpFile: File
     private var isLiveCounter: Int = 0

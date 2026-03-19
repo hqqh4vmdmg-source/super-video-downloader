@@ -416,7 +416,7 @@ class WebTabFragment : BaseWebTabFragment() {
         webView?.isScrollbarFadingEnabled = true
 
         webSettings?.apply {
-            mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
             setSupportZoom(true)
             setSupportMultipleWindows(true)
             setGeolocationEnabled(false)
@@ -431,7 +431,7 @@ class WebTabFragment : BaseWebTabFragment() {
             domStorageEnabled = true
             javaScriptEnabled = true
             cacheMode = WebSettings.LOAD_NO_CACHE
-            javaScriptCanOpenWindowsAutomatically = true
+            javaScriptCanOpenWindowsAutomatically = false
             mediaPlaybackRequiresUserGesture = false
             if (mainActivity.settingsViewModel.isDesktopMode.get()) {
                 userAgentString = BrowserFragment.DESKTOP_USER_AGENT

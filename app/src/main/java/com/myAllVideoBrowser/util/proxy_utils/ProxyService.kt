@@ -217,6 +217,7 @@ class ProxyService : Service() {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Proxy Service")
             .setContentText("Local proxy is running...")
+            .setSmallIcon(R.drawable.wifi_proxy_icon24)
             .build()
     }
 }

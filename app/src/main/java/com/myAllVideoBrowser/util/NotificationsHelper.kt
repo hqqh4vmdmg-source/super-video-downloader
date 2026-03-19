@@ -128,7 +128,7 @@ class NotificationsHelper(private val context: Context) {
 
         val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.getActivity(
-                context, if (isFinished) 0 else 2, intent, PendingIntent.FLAG_MUTABLE
+                context, if (isFinished) 0 else 2, intent, PendingIntent.FLAG_IMMUTABLE
             )
         } else {
             PendingIntent.getActivity(
@@ -160,7 +160,7 @@ class NotificationsHelper(private val context: Context) {
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.getActivity(
-                context, 777, intent, PendingIntent.FLAG_MUTABLE
+                context, 777, intent, PendingIntent.FLAG_IMMUTABLE
             )
         } else {
             PendingIntent.getActivity(
@@ -208,7 +208,7 @@ class NotificationsHelper(private val context: Context) {
     private fun createActionIntent(actionIntent: Intent, requestCode: Int): PendingIntent? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.getBroadcast(
-                context, requestCode, actionIntent, PendingIntent.FLAG_MUTABLE
+                context, requestCode, actionIntent, PendingIntent.FLAG_IMMUTABLE
             )
         } else {
             PendingIntent.getBroadcast(

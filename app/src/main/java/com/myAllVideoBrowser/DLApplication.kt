@@ -27,6 +27,7 @@ import javax.inject.Inject
 open class DLApplication : DaggerApplication() {
     companion object {
         const val DEBUG_TAG: String = "YOUTUBE_DL_DEBUG_TAG"
+        @Volatile
         var isProxyServiceStarted = false
     }
 

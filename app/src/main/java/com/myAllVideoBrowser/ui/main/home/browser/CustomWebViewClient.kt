@@ -101,6 +101,7 @@ class CustomWebViewClient(
 
             if (creds.first.isNotEmpty() || creds.second.isNotEmpty()) {
                 handler?.proceed(creds.first, creds.second)
+                return
             }
         }
         super.onReceivedHttpAuthRequest(view, handler, host, realm)
