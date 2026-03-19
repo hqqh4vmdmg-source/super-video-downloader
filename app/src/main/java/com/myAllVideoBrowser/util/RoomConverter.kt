@@ -1,5 +1,4 @@
 package com.myAllVideoBrowser.util
-
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.myAllVideoBrowser.data.local.room.entity.VideoInfo

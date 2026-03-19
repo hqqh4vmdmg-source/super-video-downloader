@@ -1,5 +1,4 @@
 package com.myAllVideoBrowser.util
-
 import android.content.Context
 import android.webkit.CookieManager
 import android.widget.Toast

@@ -61,7 +61,7 @@ class FfmpegProcessor private constructor() {
             resultUri =
                 executeProcessing(inputFile, outputFile, isFlv, isAudioOnly, 0.0, onProgress)
         } catch (e: Exception) {
-            AppLogger.e("$TAG: Exception during executeProcessing call. ${e.message} ${e.printStackTrace()}")
+            AppLogger.e("$TAG: Exception during executeProcessing call. ${e.message} ${AppLogger.e("Caught exception", e)}")
             resultUri = null
         } finally {
             AppLogger.d("$TAG: Processing finished, returning final URI: $resultUri")

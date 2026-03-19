@@ -572,7 +572,7 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
             try {
                 getContinuation().resume(Result.success())
             } catch (e: Throwable) {
-                e.printStackTrace()
+                AppLogger.e("Caught exception", e)
             }
             return
         }
@@ -600,7 +600,7 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
             try {
                 getContinuation().resume(Result.failure())
             } catch (e: Throwable) {
-                e.printStackTrace()
+                AppLogger.e("Caught exception", e)
             }
 
             return
@@ -618,7 +618,7 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
                 getContinuation().resume(Result.success())
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            AppLogger.e("Caught exception", e)
         }
     }
 

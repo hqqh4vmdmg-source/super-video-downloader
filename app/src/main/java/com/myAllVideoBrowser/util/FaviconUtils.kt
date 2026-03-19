@@ -1,5 +1,4 @@
 package com.myAllVideoBrowser.util
-
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri

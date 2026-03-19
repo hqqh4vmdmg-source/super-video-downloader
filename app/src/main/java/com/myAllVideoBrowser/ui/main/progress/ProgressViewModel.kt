@@ -1,5 +1,7 @@
 package com.myAllVideoBrowser.ui.main.progress
 
+import com.myAllVideoBrowser.util.AppLogger
+
 import androidx.annotation.VisibleForTesting
 import androidx.databinding.ObservableField
 import androidx.lifecycle.viewModelScope
@@ -200,7 +202,7 @@ class ProgressViewModel @Inject constructor(
     internal fun downloadProgressStartListen() {
         viewModelScope.launch(executor) {
             progressObservable().doOnError {
-                it.printStackTrace()
+                AppLogger.e("Caught exception", it)
             }.blockingForEach { progressInfoList ->
                 progressInfos.set(progressInfoList.sortedBy { it.id })
             }
@@ -213,7 +215,7 @@ class ProgressViewModel @Inject constructor(
                 val filtered = it.filter { info -> info.downloadStatus != VideoTaskState.SUCCESS }
                 Observable.just(filtered).toFlowable(BackpressureStrategy.LATEST).take(1)
             }.toObservable().doOnError { error ->
-                error.printStackTrace()
+                AppLogger.e("Caught exception", error)
             }
         }
 

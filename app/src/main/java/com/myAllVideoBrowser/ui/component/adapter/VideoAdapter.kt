@@ -2,12 +2,10 @@ package com.myAllVideoBrowser.ui.component.adapter
 
 import android.content.Context
 import android.graphics.Color
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -65,15 +63,8 @@ class VideoAdapter(
         }
 
         private fun getScreenResolution(context: Context): Pair<Int, Int> {
-            val displayMetrics = DisplayMetrics()
-            val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
-            windowManager.defaultDisplay.getMetrics(displayMetrics)
-
-            val widthPixels = displayMetrics.widthPixels
-            val heightPixels = displayMetrics.heightPixels
-
-            return Pair(widthPixels, heightPixels)
+            val displayMetrics = context.resources.displayMetrics
+            return Pair(displayMetrics.widthPixels, displayMetrics.heightPixels)
         }
     }
 

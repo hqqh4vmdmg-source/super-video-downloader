@@ -226,7 +226,7 @@ class SharedPrefHelper @Inject constructor(
                 val proxies = gson.fromJson(proxyString, Array<Proxy>::class.java)
                 return proxies
             } catch (e: Throwable) {
-                e.printStackTrace()
+                AppLogger.e("Caught exception", e)
             }
         }
         return arrayOf(Proxy.noProxy())

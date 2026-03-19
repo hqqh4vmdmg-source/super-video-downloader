@@ -7,8 +7,6 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.Window
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -16,6 +14,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.Observable
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.myAllVideoBrowser.DLApplication
 import com.myAllVideoBrowser.R
@@ -30,6 +29,8 @@ import com.myAllVideoBrowser.util.downloaders.youtubedl_downloader.YoutubeDlDown
 import com.myAllVideoBrowser.util.fragment.FragmentFactory
 import com.myAllVideoBrowser.util.proxy_utils.proxy_manager.ProxyManager
 import com.myAllVideoBrowser.util.scheduler.BaseSchedulers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 //@OpenForTesting
@@ -133,7 +134,6 @@ class MainActivity : BaseActivity() {
         onNewIntent(intent)
     }
 
-    @SuppressLint("MissingSuperCall")
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent?.getBooleanExtra(
@@ -156,9 +156,10 @@ class MainActivity : BaseActivity() {
                     intent.getStringExtra(YoutubeDlDownloaderWorker.DOWNLOAD_FILENAME_KEY)
                         .toString()
 
-                Handler(Looper.getMainLooper()).postDelayed({
+                lifecycleScope.launch {
+                    delay(1000)
                     mainViewModel.openDownloadedVideoEvent.value = downloadFileName
-                }, 1000)
+                }
             }
         } else {
             if (intent?.hasExtra(YoutubeDlDownloaderWorker.IS_FINISHED_DOWNLOAD_ACTION_KEY) == true) {
@@ -197,9 +198,10 @@ class MainActivity : BaseActivity() {
         override fun onPageSelected(postion: Int) {
             if (postion == 0) {
                 // Если без этого, дровер отркрываетс когда не надо
-                Handler(Looper.getMainLooper()).postDelayed({
+                lifecycleScope.launch {
+                    delay(1000)
                     mainViewModel.isBrowserCurrent.set(true)
-                }, 1000)
+                }
             } else {
                 mainViewModel.isBrowserCurrent.set(false)
             }

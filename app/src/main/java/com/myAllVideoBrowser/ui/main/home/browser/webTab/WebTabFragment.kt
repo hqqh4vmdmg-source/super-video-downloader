@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -650,7 +648,7 @@ class WebTabFragment : BaseWebTabFragment() {
             val client = getWebViewClientMethod.invoke(webView) as? CustomWebViewClient
             client
         } catch (e: Exception) {
-            e.printStackTrace()
+            AppLogger.e("Caught exception", e)
             null
         }
     }
@@ -732,13 +730,14 @@ class WebTabFragment : BaseWebTabFragment() {
         val context = context
 
         if (context != null) {
-            Handler(Looper.getMainLooper()).postDelayed({
+            lifecycleScope.launch(Dispatchers.Main) {
+                delay(1)
                 videoToast?.cancel()
                 videoToast = Toast.makeText(
                     context, context.getString(R.string.video_found), Toast.LENGTH_SHORT
                 )
                 videoToast?.show()
-            }, 1)
+            }
         }
     }
 

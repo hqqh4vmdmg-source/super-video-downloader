@@ -315,7 +315,7 @@ class CustomFileDownloader(
     }
 
     private fun onChunkFailure(e: Throwable, index: Chunk) {
-        AppLogger.e("Chunk $index Download Failed ${e.printStackTrace()}")
+        AppLogger.e("Chunk $index Download Failed ${AppLogger.e("Caught exception", e)}")
         listener?.onChunkFailure(e, index)
     }
 

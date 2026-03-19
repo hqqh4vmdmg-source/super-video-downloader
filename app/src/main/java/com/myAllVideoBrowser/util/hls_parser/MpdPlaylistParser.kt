@@ -202,7 +202,7 @@ object MpdPlaylistParser {
                     }
                 } catch (e: Exception) {
                     AppLogger.e("MPD Parser (Live): Failed to calculate live edge segment ${e.message}")
-                    e.printStackTrace()
+                    AppLogger.e("Caught exception", e)
                 }
             } else {
                 // Case 2: VOD (Static) stream logic

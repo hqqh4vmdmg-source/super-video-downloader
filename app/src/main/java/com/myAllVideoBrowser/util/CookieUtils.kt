@@ -1,5 +1,4 @@
 package com.myAllVideoBrowser.util
-
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase

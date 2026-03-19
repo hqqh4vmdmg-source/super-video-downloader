@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.kotlin.allopen)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.coveralls)
-    kotlin("kapt")
     id("jacoco")
 }
 
@@ -235,7 +234,6 @@ dependencies {
     implementation(libs.concurrentFuturesKtx)
 
     // Lifecycle Components
-    implementation(libs.lifecycleExtensions)
     implementation(libs.lifecycleCommonJava8)
     implementation(libs.lifecycleLivedata)
     implementation(libs.lifecycleViewmodel)
@@ -284,6 +282,7 @@ dependencies {
 
     // Image Loading
     implementation(libs.glideRuntime)
+    ksp(libs.glideKsp)
 
     // Utilities
     implementation(libs.kotlinxSerializationJson)

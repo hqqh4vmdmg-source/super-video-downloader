@@ -1,5 +1,4 @@
 package com.myAllVideoBrowser.util
-
 import com.myAllVideoBrowser.data.local.model.Suggestion
 import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Flowable

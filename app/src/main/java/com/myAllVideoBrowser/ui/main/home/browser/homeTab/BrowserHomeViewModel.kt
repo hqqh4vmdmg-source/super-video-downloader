@@ -1,5 +1,7 @@
 package com.myAllVideoBrowser.ui.main.home.browser.homeTab
 
+import com.myAllVideoBrowser.util.AppLogger
+
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.viewModelScope
@@ -58,7 +60,7 @@ class BrowserHomeViewModel @Inject constructor(
                     }
                 }
             } catch (e: Throwable) {
-                e.printStackTrace()
+                AppLogger.e("Caught exception", e)
             }
         }
     }

@@ -1,9 +1,8 @@
 package com.myAllVideoBrowser.ui.main.home.browser.detectedVideos
 
-import android.os.Handler
-import android.os.Looper
 import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
+import androidx.lifecycle.viewModelScope
 import com.myAllVideoBrowser.R
 import com.myAllVideoBrowser.data.local.room.entity.VideoInfo
 import com.myAllVideoBrowser.data.repository.VideoRepository
@@ -14,6 +13,9 @@ import com.myAllVideoBrowser.util.AppLogger
 import com.myAllVideoBrowser.util.proxy_utils.OkHttpProxyClient
 import com.myAllVideoBrowser.util.scheduler.BaseSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import okhttp3.Request
 import javax.inject.Inject
 
@@ -122,7 +124,7 @@ class GlobalVideoDetectionModel @Inject constructor(
                         )
                     }
                 } catch (e: Throwable) {
-                    e.printStackTrace()
+                    AppLogger.e("Caught exception", e)
                     null
                 }
                 if (info != null) {
@@ -206,9 +208,10 @@ class GlobalVideoDetectionModel @Inject constructor(
         }
 
         downloadButtonState.set(DownloadButtonStateLoading())
-        Handler(Looper.getMainLooper()).postDelayed({
+        viewModelScope.launch(Dispatchers.Main) {
+            delay(400)
             downloadButtonState.set(DownloadButtonStateCanDownload(newInfo))
-        }, 400)
+        }
     }
 
     override fun onStartPage(url: String, userAgentString: String) {

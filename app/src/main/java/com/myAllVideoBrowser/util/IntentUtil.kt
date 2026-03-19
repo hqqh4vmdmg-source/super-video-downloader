@@ -1,5 +1,4 @@
 package com.myAllVideoBrowser.util
-
 //import com.allVideoDownloaderXmaster.OpenForTesting
 
 import android.content.ClipData

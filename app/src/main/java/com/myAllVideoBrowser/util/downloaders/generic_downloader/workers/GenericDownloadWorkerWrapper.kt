@@ -3,8 +3,6 @@ package com.myAllVideoBrowser.util.downloaders.generic_downloader.workers
 import android.content.Context
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
@@ -17,6 +15,10 @@ import com.myAllVideoBrowser.util.downloaders.generic_downloader.models.VideoTas
 import com.myAllVideoBrowser.util.proxy_utils.CustomProxyController
 import com.myAllVideoBrowser.util.proxy_utils.OkHttpProxyClient
 import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 open class GenericDownloadWorkerWrapper(
@@ -47,9 +49,10 @@ open class GenericDownloadWorkerWrapper(
     private val finalNotificationDelay = 2000L
 
     fun showNotificationFinal(id: Int, notification: NotificationCompat.Builder) {
-        Handler(Looper.getMainLooper()).postDelayed({
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(finalNotificationDelay)
             notificationsHelper.showNotification(Pair(id, notification))
-        }, finalNotificationDelay)
+        }
     }
 
     fun showLongRunningNotificationAsync(id: Int, notification: NotificationCompat.Builder) {

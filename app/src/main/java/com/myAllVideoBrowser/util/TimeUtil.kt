@@ -1,5 +1,4 @@
 package com.myAllVideoBrowser.util
-
 object TimeUtil {
 
     fun convertMilliSecondsToTimer(milliSeconds: Long): String {

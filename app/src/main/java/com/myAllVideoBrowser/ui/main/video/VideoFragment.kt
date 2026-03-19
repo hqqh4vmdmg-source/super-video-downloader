@@ -1,5 +1,7 @@
 package com.myAllVideoBrowser.ui.main.video
 
+import com.myAllVideoBrowser.util.AppLogger
+
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -206,7 +208,7 @@ class VideoFragment : BaseFragment() {
                             return@setOnMenuItemClickListener true
                         }
                     } catch (e: Throwable) {
-                        e.printStackTrace()
+                        AppLogger.e("Caught exception", e)
                     }
                     Toast.makeText(
                         requireContext(),

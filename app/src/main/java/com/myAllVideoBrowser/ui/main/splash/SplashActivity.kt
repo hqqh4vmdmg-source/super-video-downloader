@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModelProvider
 import android.content.Intent
 import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-//import com.allVideoDownloaderXmaster.OpenForTesting
+import androidx.lifecycle.lifecycleScope
 import com.myAllVideoBrowser.R
 import com.myAllVideoBrowser.databinding.ActivitySplashBinding
 import com.myAllVideoBrowser.ui.main.base.BaseActivity
 import com.myAllVideoBrowser.ui.main.home.MainActivity
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 //@OpenForTesting
@@ -33,9 +33,10 @@ class SplashActivity : BaseActivity() {
         dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash)
         dataBinding.viewModel = splashViewModel
 
-        Handler(Looper.getMainLooper()).postDelayed({
+        lifecycleScope.launch {
+            delay(3000)
             startActivity(Intent(this@SplashActivity, MainActivity::class.java))
             finish()
-        }, 3000)
+        }
     }
 }
