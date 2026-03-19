@@ -115,14 +115,14 @@ class MainActivity : BaseActivity() {
 
         if (intent.action == Intent.ACTION_VIEW) {
             val videoUrl = intent.dataString
-            if (videoUrl != null) {
+            if (videoUrl != null && (videoUrl.startsWith("http://") || videoUrl.startsWith("https://"))) {
                 mainViewModel.openedUrl.set(videoUrl)
             }
         }
 
         if (intent.action == Intent.ACTION_SEND) {
             val sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
-            if (sharedText != null) {
+            if (sharedText != null && (sharedText.startsWith("http://") || sharedText.startsWith("https://"))) {
                 mainViewModel.openedText.set(sharedText)
             }
         }

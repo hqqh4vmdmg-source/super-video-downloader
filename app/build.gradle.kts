@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.kotlin.allopen)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.coveralls)
-    kotlin("kapt")
     id("jacoco")
 }
 
@@ -30,10 +29,6 @@ kotlin {
 
 allOpen {
     annotation("com.myAllVideoBrowser.OpenForTesting")
-}
-
-jacoco {
-    version = "0.8.1"
 }
 
 // =========================================================================
@@ -166,7 +161,7 @@ android {
     // Test Options
     testOptions {
         unitTests.all {
-            it.exclude("**/*")
+            it.jvmArgs("-noverify")
         }
         unitTests {
             isIncludeAndroidResources = true
