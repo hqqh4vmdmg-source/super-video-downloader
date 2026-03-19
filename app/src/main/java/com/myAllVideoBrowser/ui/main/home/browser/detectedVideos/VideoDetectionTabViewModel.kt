@@ -267,7 +267,7 @@ open class VideoDetectionTabViewModel @Inject constructor(
                         )
                     }
                 } catch (e: Throwable) {
-                    e.printStackTrace()
+                    AppLogger.e("Caught exception", e)
                     null
                 }
                 if (info != null) {
@@ -480,7 +480,7 @@ open class VideoDetectionTabViewModel @Inject constructor(
                 return builder
             }
         } catch (e: Throwable) {
-            e.printStackTrace()
+            AppLogger.e("Caught exception", e)
         }
 
         return null
@@ -556,7 +556,7 @@ open class VideoDetectionTabViewModel @Inject constructor(
                 }
             }
         }.onFailure { e ->
-            e.printStackTrace()
+            AppLogger.e("Caught exception", e)
         }
     }
 
@@ -647,7 +647,7 @@ open class VideoDetectionTabViewModel @Inject constructor(
             )
             video.videoInfo?.let { pushNewVideoInfoToAll(it) }
         } catch (e: Throwable) {
-            e.printStackTrace()
+            AppLogger.e("Caught exception", e)
         }
     }
 }

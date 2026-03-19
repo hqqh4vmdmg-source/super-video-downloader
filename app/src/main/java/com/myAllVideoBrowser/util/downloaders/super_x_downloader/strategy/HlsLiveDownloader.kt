@@ -128,7 +128,7 @@ class HlsLiveDownloader(
             } catch (e: Exception) {
                 downloadException = e
                 AppLogger.w("HLS (Live): Exception caught during download loop: ${e.message}. Attempting to save partial file.")
-                e.printStackTrace()
+                AppLogger.e("Caught exception", e)
             } finally {
                 AppLogger.d("HLS (Live): Entering 'finally' block to attempt merge.")
 

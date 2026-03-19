@@ -1,5 +1,4 @@
 package com.myAllVideoBrowser.util
-
 import android.app.UiModeManager
 import android.content.Context
 import android.content.res.Configuration

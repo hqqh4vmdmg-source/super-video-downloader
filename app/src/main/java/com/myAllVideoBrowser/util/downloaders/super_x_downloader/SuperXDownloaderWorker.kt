@@ -203,7 +203,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
 
                     else -> {
                         AppLogger.e("HLS (Live): Download failed for task $taskId: ${e.message}")
-                        e.printStackTrace()
+                        AppLogger.e("Caught exception", e)
                         finishWork(task.also {
                             it.taskState = VideoTaskState.ERROR
                             it.errorMessage = "HLS Live download failed: ${e.message}"
@@ -346,7 +346,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
 
                     else -> {
                         AppLogger.e("MPD: Download failed for task $taskId: ${e.message}")
-                        e.printStackTrace()
+                        AppLogger.e("Caught exception", e)
                         finishWork(task.also {
                             it.taskState = VideoTaskState.ERROR
                             it.errorMessage = "MPD download failed: ${e.message}"
@@ -433,7 +433,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
 
                     else -> {
                         AppLogger.e("MPD (Live): Download failed for task $taskId: ${e.message}")
-                        e.printStackTrace()
+                        AppLogger.e("Caught exception", e)
                         finishWork(task.also {
                             it.taskState = VideoTaskState.ERROR
                             it.errorMessage = "MPD Live download failed: ${e.message}"
@@ -585,7 +585,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
                     // Handle other errors.
                     else -> {
                         AppLogger.e("HLS: Download failed for task $taskId: ${e.message}")
-                        e.printStackTrace()
+                        AppLogger.e("Caught exception", e)
                         finishWork(task.also {
                             it.taskState = VideoTaskState.ERROR
                             it.errorMessage = "HLS download failed: ${e.message}"
@@ -906,7 +906,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
         try {
             getContinuation().resume(Result.failure())
         } catch (e: Throwable) {
-            e.printStackTrace()
+            AppLogger.e("Caught exception", e)
         }
     }
 }

@@ -250,7 +250,7 @@ class FileUtil @Inject constructor() {
                 deleteDownloadedVideoContent(context, uri)
             }
         } catch (e: Throwable) {
-            e.printStackTrace()
+            AppLogger.e("Caught exception", e)
 
             Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
         }
@@ -309,7 +309,7 @@ class FileUtil @Inject constructor() {
                 randomAccessFile.close()
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            AppLogger.e("Caught exception", e)
             AppLogger.d(e.message.toString())
             return false
         }
@@ -581,7 +581,7 @@ class FileUtil @Inject constructor() {
                     randomAccessFile.close()
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                AppLogger.e("Caught exception", e)
                 AppLogger.d("Source move error $sourceFile $e")
                 false
             }
@@ -618,7 +618,7 @@ class FileUtil @Inject constructor() {
             }
             context.applicationContext.sendBroadcast(mediaScanIntent)
         } catch (error: Exception) {
-            error.printStackTrace()
+            AppLogger.e("Caught exception", error)
         }
         try {
             val mimeType =

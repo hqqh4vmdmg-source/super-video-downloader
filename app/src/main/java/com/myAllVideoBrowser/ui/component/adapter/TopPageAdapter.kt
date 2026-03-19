@@ -14,6 +14,7 @@ import com.myAllVideoBrowser.data.local.room.entity.PageInfo
 import com.myAllVideoBrowser.databinding.ItemTopPageBinding
 import com.myAllVideoBrowser.ui.main.home.browser.BrowserViewModel
 import com.myAllVideoBrowser.util.ContextUtils
+import androidx.core.content.ContextCompat
 
 class TopPageAdapter(
     context: Context,
@@ -38,8 +39,8 @@ class TopPageAdapter(
                     ContextUtils.getApplicationContext(), R.drawable.ic_browser
                 )
                 drawable?.setColorFilter(
-                    ContextUtils.getApplicationContext().resources.getColor(
-                        R.color.color_gray_2
+                    ContextCompat.getColor(
+                        ContextUtils.getApplicationContext(), R.color.color_gray_2
                     ), PorterDuff.Mode.MULTIPLY
                 )
                 this?.imgIcon?.setImageDrawable(drawable)

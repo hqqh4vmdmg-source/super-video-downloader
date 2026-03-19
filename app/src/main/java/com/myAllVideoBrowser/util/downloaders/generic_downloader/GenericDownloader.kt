@@ -30,7 +30,7 @@ abstract class GenericDownloader {
             } catch (e: Exception) {
                 // Handle exceptions, e.g., if the get() is interrupted
                 AppLogger.e("isWorkScheduled: Error checking work status for $uniqueWorkName")
-                e.printStackTrace()
+                AppLogger.e("Caught exception", e)
                 return false // Assume not running if we can't check
             }
         }
@@ -218,7 +218,7 @@ abstract class GenericDownloader {
         try {
             op.result.get()
         } catch (e: Throwable) {
-            e.printStackTrace()
+            AppLogger.e("Caught exception", e)
         } finally {
             WorkManager.getInstance(context).enqueueUniqueWork(
                 info.id, ExistingWorkPolicy.REPLACE, taskData

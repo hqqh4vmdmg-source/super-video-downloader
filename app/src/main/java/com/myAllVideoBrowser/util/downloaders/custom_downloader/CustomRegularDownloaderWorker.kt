@@ -100,7 +100,7 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
             getContinuation().resume(result)
         } catch (e: Throwable) {
             AppLogger.e("FINISHING UNEXPECTED ERROR $item ${e.message}")
-            e.printStackTrace()
+            AppLogger.e("Caught exception", e)
             if (!getDone()) {
                 setDone()
                 try {
@@ -244,7 +244,7 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
                 AppLogger.d("Target file exists $targetFl  marking success ${item.mId}")
                 finishWork(item.also { it.taskState = VideoTaskState.SUCCESS })
             } else {
-                AppLogger.e("Error during post-processing ${e.printStackTrace()}")
+                AppLogger.e("Error during post-processing ${AppLogger.e("Caught exception", e)}")
                 finishWork(item.also {
                     it.taskState = VideoTaskState.ERROR
                     it.errorMessage = e.message
@@ -306,7 +306,7 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
             override fun onFailure(e: Throwable) {
 
                 AppLogger.e("${e.message} Download Failed for $outputFileName")
-                e.printStackTrace()
+                AppLogger.e("Caught exception", e)
 
                 val taskState = when (e.message) {
                     CustomFileDownloader.STOPPED_AND_SAVE_ACTION -> VideoTaskState.SUCCESS
@@ -540,7 +540,7 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
         try {
             getContinuation().resume(Result.failure())
         } catch (e: Throwable) {
-            e.printStackTrace()
+            AppLogger.e("Caught exception", e)
         }
     }
 }

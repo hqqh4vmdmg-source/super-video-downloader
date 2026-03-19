@@ -1,5 +1,7 @@
 package com.myAllVideoBrowser.ui.main.home.browser.webTab
 
+import com.myAllVideoBrowser.util.AppLogger
+
 import android.webkit.WebView
 import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
@@ -105,7 +107,7 @@ class WebTabViewModel @Inject constructor(
                     }
                 }
             } catch (e: Throwable) {
-                e.printStackTrace()
+                AppLogger.e("Caught exception", e)
             }
         }
     }

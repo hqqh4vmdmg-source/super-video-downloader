@@ -1,5 +1,4 @@
 package com.myAllVideoBrowser.util
-
 import android.util.Base64
 import java.nio.ByteBuffer
 import java.nio.ByteOrder

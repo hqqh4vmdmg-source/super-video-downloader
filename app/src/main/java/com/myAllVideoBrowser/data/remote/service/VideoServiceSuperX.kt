@@ -283,7 +283,7 @@ class VideoServiceSuperX(
         return try {
             Duration.parse(duration).toMillis()
         } catch (e: Exception) {
-            AppLogger.e("Failed to parse ISO 8601 duration string: $duration \n${e.printStackTrace()}")
+            AppLogger.e("Failed to parse ISO 8601 duration string: $duration", e)
             0L
         }
     }
@@ -312,7 +312,7 @@ class VideoServiceSuperX(
             val mediaPlaylist = HlsPlaylistParser.parse(content, firstVariantUrl)
             mediaPlaylist as? HlsPlaylistParser.MediaPlaylist
         } catch (e: Exception) {
-            AppLogger.e("Failed to fetch child media playlist: $firstVariantUrl ${e.printStackTrace()}")
+            AppLogger.e("Failed to fetch child media playlist: $firstVariantUrl", e)
             null
         }
     }

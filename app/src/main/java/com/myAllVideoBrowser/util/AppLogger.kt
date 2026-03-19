@@ -1,5 +1,4 @@
 package com.myAllVideoBrowser.util
-
 import android.util.Log
 import com.myAllVideoBrowser.BuildConfig
 import com.myAllVideoBrowser.DLApplication
@@ -31,6 +30,12 @@ class AppLogger {
         fun e(message: String) {
             if (BuildConfig.DEBUG) {
                 Log.e(TAG, message)
+            }
+        }
+
+        fun e(message: String, throwable: Throwable) {
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, message, throwable)
             }
         }
     }

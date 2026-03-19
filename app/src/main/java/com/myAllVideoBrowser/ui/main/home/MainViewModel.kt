@@ -1,5 +1,7 @@
 package com.myAllVideoBrowser.ui.main.home
 
+import com.myAllVideoBrowser.util.AppLogger
+
 import android.graphics.Bitmap
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -83,7 +85,7 @@ class MainViewModel @Inject constructor(
             val pages = try {
                 topPagesRepository.getTopPages()
             } catch (e: Throwable) {
-                e.printStackTrace()
+                AppLogger.e("Caught exception", e)
                 null
             }
 
@@ -103,7 +105,7 @@ class MainViewModel @Inject constructor(
                     }
                 }
             } catch (e: Throwable) {
-                e.printStackTrace()
+                AppLogger.e("Caught exception", e)
             }
         }
     }

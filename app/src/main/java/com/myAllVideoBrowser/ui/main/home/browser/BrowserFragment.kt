@@ -7,8 +7,6 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.os.PowerManager
 import android.view.*
 import android.webkit.ServiceWorkerClient
@@ -51,6 +49,7 @@ import com.myAllVideoBrowser.util.proxy_utils.CustomProxyController
 import com.myAllVideoBrowser.util.proxy_utils.OkHttpProxyClient
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -480,9 +479,10 @@ class BrowserFragment : BaseFragment(), BrowserServicesProvider {
             backPressedOnce = true
             Toast.makeText(requireContext(), "Press Back Again to exit", Toast.LENGTH_SHORT).show()
 
-            Handler(Looper.getMainLooper()).postDelayed({
+            lifecycleScope.launch {
+                delay(2000)
                 backPressedOnce = false
-            }, 2000)
+            }
         }
     }
 

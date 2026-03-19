@@ -1,5 +1,4 @@
 package com.myAllVideoBrowser.util
-
 import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.ApplicationInfo

@@ -1,5 +1,7 @@
 package com.myAllVideoBrowser.ui.main.history
 
+import com.myAllVideoBrowser.util.AppLogger
+
 import androidx.databinding.ObservableField
 import androidx.lifecycle.viewModelScope
 import com.myAllVideoBrowser.data.local.room.entity.HistoryItem
@@ -53,7 +55,7 @@ class HistoryViewModel @Inject constructor(
             try {
                 historyRepository.saveHistory(historyItem)
             } catch (e: Throwable) {
-                e.printStackTrace()
+                AppLogger.e("Caught exception", e)
             }
         }
     }
@@ -65,7 +67,7 @@ class HistoryViewModel @Inject constructor(
                 historyItems.set(newItems)
                 historyRepository.deleteHistory(historyItem)
             } catch (e: Throwable) {
-                e.printStackTrace()
+                AppLogger.e("Caught exception", e)
             }
         }
     }
