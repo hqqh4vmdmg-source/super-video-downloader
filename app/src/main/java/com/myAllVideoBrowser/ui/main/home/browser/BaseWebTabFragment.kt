@@ -101,14 +101,14 @@ abstract class BaseWebTabFragment : BaseFragment() {
 
     fun buildWebTabMenu(browserMenu: View, isHomeTab: Boolean) {
         if (popupMenu == null) {
-            popupMenu =
-                buildPopupMenu(browserMenu)
-            val bookmarkMenuItem = popupMenu!!.menu[2]
-            val shareMenuItem = popupMenu!!.menu[3]
-            val desktopMenuItem = popupMenu!!.menu[4]
-            val proxyItem = popupMenu!!.menu[7]
+            val menu = buildPopupMenu(browserMenu)
+            popupMenu = menu
+            val bookmarkMenuItem = menu.menu[2]
+            val shareMenuItem = menu.menu[3]
+            val desktopMenuItem = menu.menu[4]
+            val proxyItem = menu.menu[7]
             val isProxyOn = mainActivity.proxiesViewModel.isProxyOn
-            val isDarkModeItem = popupMenu!!.menu[8]
+            val isDarkModeItem = menu.menu[8]
             val isDark = mainActivity.settingsViewModel.isDarkMode.get()
             isDarkModeItem.isChecked = isDark
             isDarkModeItem.isEnabled = !mainActivity.settingsViewModel.isAutoDarkMode.get()
@@ -116,7 +116,7 @@ abstract class BaseWebTabFragment : BaseFragment() {
             desktopMenuItem.isChecked = mainActivity.settingsViewModel.isDesktopMode.get() == true
             proxyItem.isChecked = isProxyOn.get() == true
 
-            popupMenu!!.setForceShowIcon(true)
+            menu.setForceShowIcon(true)
 
             mainActivity.settingsViewModel.isDarkMode.addOnPropertyChangedCallback(darkModeCallback)
 

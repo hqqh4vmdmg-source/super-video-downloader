@@ -223,7 +223,7 @@ class CustomFileDownloader(
             return
         }
 
-        val contentLength = res.body.contentLength()
+        val contentLength = res.body?.contentLength() ?: -1L
         if (contentLength == -1L) {
             AppLogger.w("Content length is unknown for single-threaded download.")
             // Continue download even if content length is unknown, progress updates might be limited
@@ -231,7 +231,7 @@ class CustomFileDownloader(
             totalBytesAll.set(contentLength)
         }
 
-        val inputStream = res.body.byteStream()
+        val inputStream = res.body?.byteStream() ?: throw IOException("Response body is null")
         val buffer = ByteArray(Helper.DOWNLOAD_BUFFER_SIZE)
         var bytesCopied = 0L
         var bytesRead = 0
@@ -352,15 +352,15 @@ class CustomFileDownloader(
         } else getOkRequestRange(range.first + bytesCopied, range.last)
         val res = client.newCall(req).execute()
 
-        if (res.body.contentLength() == -1L) {
+        if (res.body?.contentLength() ?: -1L == -1L) {
             throw Error("Content Length Not Found")
         }
 
-        val inputStream = res.body.byteStream()
+        val inputStream = res.body?.byteStream() ?: throw IOException("Response body is null")
         val buffer = ByteArray(Helper.DOWNLOAD_BUFFER_SIZE)
 
         copiedBytesChunks[chunkIndex] = bytesCopied
-        totalBytesChunks[chunkIndex] = res.body.contentLength()
+        totalBytesChunks[chunkIndex] = res.body?.contentLength() ?: -1L
 
         var bytesRead = 0
 
@@ -420,8 +420,8 @@ class CustomFileDownloader(
         val req = getOkRequest()
         val response = client.newCall(req).execute()
 
-        val contentLength = response.body.contentLength()
-        response.body.close()
+        val contentLength = response.body?.contentLength() ?: -1L
+        response.body?.close()
 
         return contentLength
     }

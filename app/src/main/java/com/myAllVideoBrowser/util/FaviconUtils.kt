@@ -39,7 +39,11 @@ class FaviconUtils {
                 val response = okHttpClient.newCall(request).execute()
 
                 if (response.isSuccessful) {
-                    response.body.byteStream().use { stream ->
+                    val bodyStream = response.body?.byteStream() ?: run {
+                        response.close()
+                        return null
+                    }
+                    bodyStream.use { stream ->
                         return BitmapFactory.decodeStream(stream)
                     }
                 }

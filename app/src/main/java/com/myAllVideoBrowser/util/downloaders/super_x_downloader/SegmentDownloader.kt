@@ -66,7 +66,8 @@ class SegmentDownloader(
                 }
 
                 var bytesCopied = 0L
-                response.body.byteStream().use { input ->
+                val responseBodyStream = response.body?.byteStream() ?: throw IOException("Response body is null for segment $segmentIdentifier")
+                responseBodyStream.use { input ->
                     outputFile.outputStream().use { output ->
                         bytesCopied = input.copyTo(output)
                     }

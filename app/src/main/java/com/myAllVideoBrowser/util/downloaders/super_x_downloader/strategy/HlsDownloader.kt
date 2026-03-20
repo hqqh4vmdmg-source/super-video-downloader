@@ -67,7 +67,7 @@ class HlsDownloader(
 
             // --- Download Initialization Segments (for fMP4) ---
             if (isVideoFmp4) {
-                val initSegment = (videoSegments.first() as HlsPlaylistParser.UrlMediaSegment).initializationSegment!!
+                val initSegment = (videoSegments?.first() as? HlsPlaylistParser.UrlMediaSegment)?.initializationSegment ?: return@run
                 val initFile = downloadDir.resolve("init_video.mp4")
                 if (!initFile.exists() || initFile.length() == 0L) {
                     AppLogger.d("HLS (fMP4): Downloading video init segment from ${initSegment.url}")
@@ -76,7 +76,7 @@ class HlsDownloader(
                 }
             }
             if (isAudioFmp4) {
-                val initSegment = (audioSegments.first() as HlsPlaylistParser.UrlMediaSegment).initializationSegment!!
+                val initSegment = (audioSegments?.first() as? HlsPlaylistParser.UrlMediaSegment)?.initializationSegment ?: return@run
                 val initFile = downloadDir.resolve("init_audio.mp4")
                 if (!initFile.exists() || initFile.length() == 0L) {
                     AppLogger.d("HLS (fMP4): Downloading audio init segment from ${initSegment.url}")
@@ -117,14 +117,14 @@ class HlsDownloader(
             val initialVideoSize = alreadyDownloadedVideo.sumOf {
                 downloadDir.resolve(
                     "segment_${
-                        "%05d".format(videoSegments!!.indexOf(it))
+                        "%05d".format((videoSegments ?: emptyList()).indexOf(it))
                     }.$videoExt"
                 ).length()
             }
             val initialAudioSize = alreadyDownloadedAudio.sumOf {
                 downloadDir.resolve(
                     "audio_segment_${
-                        "%05d".format(audioSegments!!.indexOf(it))
+                        "%05d".format((audioSegments ?: emptyList()).indexOf(it))
                     }.$audioExt"
                 ).length()
             }

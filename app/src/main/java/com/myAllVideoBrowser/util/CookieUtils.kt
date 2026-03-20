@@ -237,7 +237,7 @@ abstract class Browser {
         get() {
             val cookies = HashSet<Cookie>()
             for (cookieStore in cookieStores) {
-                cookies.addAll(processCookies(cookieStore, null)!!)
+                cookies.addAll(processCookies(cookieStore, null).orEmpty())
             }
             return cookies
         }
@@ -248,7 +248,7 @@ abstract class Browser {
     fun getCookiesForDomain(domain: String?): Set<Cookie> {
         val cookies = HashSet<Cookie>()
         for (cookieStore in cookieStores) {
-            cookies.addAll(processCookies(cookieStore, domain)!!)
+            cookies.addAll(processCookies(cookieStore, domain).orEmpty())
         }
         return cookies
     }

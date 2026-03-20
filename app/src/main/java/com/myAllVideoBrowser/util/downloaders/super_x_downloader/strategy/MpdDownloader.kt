@@ -135,7 +135,7 @@ class MpdDownloader(
         val initialSize = (alreadyDownloadedVideo.sumOf {
             downloadDir.resolve(
                 "segment_${
-                    "%05d".format(videoSegments!!.indexOf(it))
+                    "%05d".format((videoSegments ?: emptyList()).indexOf(it))
                 }.m4s"
             ).length()
         } +
@@ -143,7 +143,7 @@ class MpdDownloader(
                     downloadDir.resolve(
                         "audio_segment_${
                             "%05d".format(
-                                audioSegments!!.indexOf(it)
+                                (audioSegments ?: emptyList()).indexOf(it)
                             )
                         }.m4s"
                     ).length()

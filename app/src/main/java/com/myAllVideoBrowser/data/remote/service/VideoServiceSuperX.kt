@@ -52,7 +52,7 @@ class VideoServiceSuperX(
 
         // 1. Fetch the manifest content
         val response = client.getProxyOkHttpClient().newCall(url).execute()
-        val content = response.body.string()
+        val content = response.body?.string() ?: ""
         AppLogger.d("Manifest body: $content")
 
         if (!response.isSuccessful || content.isEmpty()) {
@@ -303,7 +303,7 @@ class VideoServiceSuperX(
         return try {
             val request = Request.Builder().url(firstVariantUrl).headers(headers.toHeaders()).build()
             val response = client.getProxyOkHttpClient().newCall(request).execute()
-            val content = response.body.string()
+            val content = response.body?.string() ?: ""
 
             if (!response.isSuccessful || content.isEmpty()) {
                 return null
