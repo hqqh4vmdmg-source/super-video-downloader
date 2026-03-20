@@ -106,11 +106,11 @@ class BrowserFragment : BaseFragment(), BrowserServicesProvider {
 
     companion object {
         fun newInstance() = BrowserFragment()
-        var DESKTOP_USER_AGENT =
+        val DESKTOP_USER_AGENT =
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
 
         // TODO different agents for different androids
-        var MOBILE_USER_AGENT =
+        val MOBILE_USER_AGENT =
             "Mozilla/5.0 (Linux; Android 12; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36"
     }
 

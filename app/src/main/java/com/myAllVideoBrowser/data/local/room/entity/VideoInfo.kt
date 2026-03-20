@@ -1,5 +1,6 @@
 package com.myAllVideoBrowser.data.local.room.entity
 
+import com.myAllVideoBrowser.util.AppLogger
 import androidx.room.*
 import com.google.gson.Gson
 import com.google.gson.annotations.Expose
@@ -180,22 +181,40 @@ class DownloadUrlsConverter {
         val resultList = mutableListOf<Request>()
 
         for (input in inputList.split(">^^^<").filter { it.isNotEmpty() }) {
-            val jsonMap = Json.parseToJsonElement(input).jsonObject.toMutableMap<String, Any>()
+            try {
+                val jsonMap = Json.parseToJsonElement(input).jsonObject.toMutableMap<String, Any>()
 
-            val body = (jsonMap[BODY] ?: "").toString()
+                val body = (jsonMap[BODY] ?: "").toString()
 
-            // TODO FIX serialize error on some headers
-            val headers =
-                Json.parseToJsonElement(jsonMap[HEADERS].toString()).jsonObject.toMutableMap<String, Any>()
+                // Parse headers: the headers value is a nested JSON object string
+                val headersElement = jsonMap[HEADERS]
+                val headersJson = when {
+                    headersElement == null -> "{}"
+                    headersElement.toString().startsWith("\"") -> {
+                        // It's a JSON-escaped string; strip outer quotes and unescape
+                        headersElement.toString().removeSurrounding("\"")
+                            .replace("\\\"", "\"")
+                    }
+                    else -> headersElement.toString()
+                }
+                val headers = try {
+                    Json.parseToJsonElement(headersJson).jsonObject
+                        .toMutableMap<String, Any>()
+                } catch (_: Throwable) {
+                    mutableMapOf()
+                }
 
-            resultList.add(
-                Request.Builder().url(jsonMap[URL_KEY].toString())
-                    .headers(headers.map { it.key to it.value.toString() }.toMap().toHeaders())
-                    .method(
-                        jsonMap[METHOD].toString(),
-                        body.toRequestBody(null)
-                    ).build()
-            )
+                resultList.add(
+                    Request.Builder().url(jsonMap[URL_KEY].toString())
+                        .headers(headers.map { it.key to it.value.toString() }.toMap().toHeaders())
+                        .method(
+                            jsonMap[METHOD].toString(),
+                            body.toRequestBody(null)
+                        ).build()
+                )
+            } catch (e: Throwable) {
+                AppLogger.e("VideoInfo.toSource: Failed to deserialize request entry", e)
+            }
         }
 
         return resultList
