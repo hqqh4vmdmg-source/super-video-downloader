@@ -9,10 +9,8 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-//import com.allVideoDownloaderXmaster.OpenForTesting
 import javax.inject.Inject
 
-//@OpenForTesting
 class AppUtil @Inject constructor() {
 
     fun getSystemDefaultThemeIsDark(context: Context): Boolean {

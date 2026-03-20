@@ -7,14 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.myAllVideoBrowser.R
 import com.myAllVideoBrowser.data.local.room.entity.PageInfo
 import com.myAllVideoBrowser.databinding.ItemTopPageBinding
-import com.myAllVideoBrowser.ui.main.home.browser.BrowserViewModel
 import com.myAllVideoBrowser.util.ContextUtils
-import androidx.core.content.ContextCompat
 
 class TopPageAdapter(
     context: Context,
@@ -22,40 +21,42 @@ class TopPageAdapter(
     private val itemListener: TopPagesListener
 ) : ArrayAdapter<TopPageAdapter.TopPageViewHolder>(context, R.layout.item_top_page) {
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
-        val binding = if (view == null) {
+        val binding: ItemTopPageBinding = if (view == null) {
             val inflater = LayoutInflater.from(parent.context)
             ItemTopPageBinding.inflate(inflater, parent, false)
         } else {
-            DataBindingUtil.getBinding(view)
-        }
-
-        with(binding) {
-            this?.pageInfo = pageInfos[position]
-            this?.listener = itemListener
-            if (this?.pageInfo?.faviconBitmap() != null) {
-                this.imgIcon.setImageBitmap(pageInfo!!.faviconBitmap())
-            } else {
-                val drawable = AppCompatResources.getDrawable(
-                    ContextUtils.getApplicationContext(), R.drawable.ic_browser
-                )
-                drawable?.setColorFilter(
-                    ContextCompat.getColor(
-                        ContextUtils.getApplicationContext(), R.color.color_gray_2
-                    ), PorterDuff.Mode.MULTIPLY
-                )
-                this?.imgIcon?.setImageDrawable(drawable)
+            DataBindingUtil.getBinding(view) ?: run {
+                val inflater = LayoutInflater.from(parent.context)
+                ItemTopPageBinding.inflate(inflater, parent, false)
             }
-            this?.executePendingBindings()
         }
 
-        return binding!!.root
+        val info = pageInfos[position]
+        binding.pageInfo = info
+        binding.listener = itemListener
+        val favicon = info.faviconBitmap()
+        if (favicon != null) {
+            binding.imgIcon.setImageBitmap(favicon)
+        } else {
+            val drawable = AppCompatResources.getDrawable(
+                ContextUtils.getApplicationContext(), R.drawable.ic_browser
+            )
+            drawable?.setColorFilter(
+                ContextCompat.getColor(
+                    ContextUtils.getApplicationContext(), R.color.color_gray_2
+                ), PorterDuff.Mode.MULTIPLY
+            )
+            binding.imgIcon.setImageDrawable(drawable)
+        }
+        binding.executePendingBindings()
+
+        return binding.root
     }
 
-    // TODO bullshit
     override fun getItemId(position: Int) = try {
         pageInfos[position].hashCode().toLong()
-    } catch (e: Exception) {
-        0
+    } catch (_: IndexOutOfBoundsException) {
+        0L
     }
 
     override fun getCount(): Int {

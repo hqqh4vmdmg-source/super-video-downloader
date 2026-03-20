@@ -33,7 +33,6 @@ class BookmarksFragment : BaseFragment() {
     private var hasChanged = false
 
     companion object {
-        @JvmStatic
         fun newInstance() = BookmarksFragment()
     }
 

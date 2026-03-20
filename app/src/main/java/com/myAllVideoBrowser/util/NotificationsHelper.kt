@@ -193,7 +193,7 @@ class NotificationsHelper(private val context: Context) {
         return NotificationCompat.Action(
             android.R.drawable.stat_sys_download_done,
             context.resources.getString(R.string.progress_menu_pause),
-            createActionIntent(intent, taskId.hashCode())!!
+            createActionIntent(intent, taskId.hashCode())
         )
     }
 
@@ -205,11 +205,11 @@ class NotificationsHelper(private val context: Context) {
         return NotificationCompat.Action(
             android.R.drawable.stat_sys_download_done,
             context.resources.getString(R.string.progress_menu_resume),
-            createActionIntent(intent, taskId.hashCode())!!
+            createActionIntent(intent, taskId.hashCode())
         )
     }
 
-    private fun createActionIntent(actionIntent: Intent, requestCode: Int): PendingIntent? {
+    private fun createActionIntent(actionIntent: Intent, requestCode: Int): PendingIntent {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.getBroadcast(
                 context, requestCode, actionIntent,

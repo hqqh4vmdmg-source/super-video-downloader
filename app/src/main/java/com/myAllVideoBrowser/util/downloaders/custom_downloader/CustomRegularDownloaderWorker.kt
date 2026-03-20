@@ -114,13 +114,13 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
 
     @Synchronized
     private fun handleSuccessfulDownload(item: VideoTaskItem, srcPath: File) {
-        if (outputFileName == null) {
+        val localOutputFileName = outputFileName ?: run {
             AppLogger.d("Output file name is NULL")
             return
         }
 
         AppLogger.d("handleSuccessfulDownload started for item: ${item.mId}")
-        val target = fixFileName(File(fileUtil.folderDir, File(outputFileName!!).name).path)
+        val target = fixFileName(File(fileUtil.folderDir, File(localOutputFileName).name).path)
 
         var isPreprocessed = false
 
@@ -263,7 +263,10 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
 
     private fun startDownload(taskItem: VideoTaskItem, headers: Map<String, String>) {
         AppLogger.d("Start download regular: $taskItem headers: $headers")
-        val taskId = inputData.getString(GenericDownloader.Constants.TASK_ID_KEY)!!
+        val taskId = inputData.getString(GenericDownloader.Constants.TASK_ID_KEY) ?: run {
+            AppLogger.e("startDownload: TASK_ID_KEY is missing from input data")
+            return
+        }
         val url = taskItem.url
         showProgress(taskItem.also { it.mId = taskId }, progressCached)
 
@@ -276,13 +279,17 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
     private fun updateProgressInfoAndStartDownload(
         taskItem: VideoTaskItem, taskId: String, url: String, headers: Map<String, String>
     ) {
+        val localOutputFile = outputFileName ?: run {
+            AppLogger.e("updateProgressInfoAndStartDownload: outputFileName is null")
+            return
+        }
         saveProgress(taskId, Progress(0, 0), VideoTaskState.PENDING)
         val threadCount = sharedPrefHelper.getRegularDownloaderThreadCount()
         val okHttpClient = proxyOkHttpClient.getProxyOkHttpClient()
         val isForceStreamDownload = sharedPrefHelper.getIsForceStreamDownload()
         CustomFileDownloader(
             URL(url),
-            File(outputFileName!!),
+            File(localOutputFile),
             threadCount,
             headers,
             okHttpClient,
@@ -300,7 +307,7 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
                     it.taskState = VideoTaskState.SUCCESS
                     it.mId = taskId
                     it.filePath = outputFileName
-                }, File(outputFileName!!))
+                }, File(outputFileName ?: return))
             }
 
             override fun onFailure(e: Throwable) {
@@ -325,7 +332,7 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
                         it.filePath = outputFileName
                     }
                     AppLogger.d("HANDLING TASK SUCCESS IN FAILURE $item")
-                    handleSuccessfulDownload(item, File(outputFileName!!))
+                    handleSuccessfulDownload(item, File(outputFileName ?: return))
                 } else if (taskState == VideoTaskState.PAUSE) {
                     val item = taskItem.also {
                         it.taskState = taskState

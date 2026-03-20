@@ -14,7 +14,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-//@OpenForTesting
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseActivity() {
 

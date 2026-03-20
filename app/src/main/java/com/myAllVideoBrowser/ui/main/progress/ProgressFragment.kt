@@ -25,7 +25,6 @@ import com.myAllVideoBrowser.util.AppLogger
 import javax.inject.Inject
 import androidx.core.view.get
 
-//@OpenForTesting
 class ProgressFragment : BaseFragment() {
 
     companion object {
