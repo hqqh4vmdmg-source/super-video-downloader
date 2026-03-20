@@ -20,6 +20,7 @@ import dagger.android.DaggerApplication
 import io.reactivex.rxjava3.plugins.RxJavaPlugins
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -29,6 +30,9 @@ open class DLApplication : DaggerApplication() {
         const val DEBUG_TAG: String = "YOUTUBE_DL_DEBUG_TAG"
         var isProxyServiceStarted = false
     }
+
+    // Application-level scope that lives for the entire app lifetime
+    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private lateinit var androidInjector: AndroidInjector<out DaggerApplication>
 
@@ -68,7 +72,7 @@ open class DLApplication : DaggerApplication() {
             AppLogger.e("RxJavaError unhandled $error")
         }
 
-        CoroutineScope(Dispatchers.Default).launch {
+        applicationScope.launch {
             if (!file.exists()) {
                 file.mkdirs()
             }

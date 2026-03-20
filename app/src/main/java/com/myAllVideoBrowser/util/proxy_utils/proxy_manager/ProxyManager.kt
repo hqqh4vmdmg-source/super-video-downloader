@@ -1,7 +1,6 @@
 package com.myAllVideoBrowser.util.proxy_utils.proxy_manager
 
-import android.util.Log
-import com.myAllVideoBrowser.DLApplication.Companion.DEBUG_TAG
+import com.myAllVideoBrowser.util.AppLogger
 import com.myAllVideoBrowser.v2ray.V2Ray
 import java.io.Serializable
 
@@ -22,7 +21,7 @@ data class ProxyHop(
  * Full support for proxy chaining.
  */
 object ProxyManager {
-    private const val TAG = "$DEBUG_TAG ProxyManager"
+    private const val TAG = "ProxyManager"
 
     /**
      * Starts a local proxy that can chain through a series of other proxies.
@@ -36,7 +35,7 @@ object ProxyManager {
         dnsUrl: String? = null
     ): Boolean {
         if (isProxyRunning()) {
-            Log.w(TAG, "Proxy is already running. Stopping first.")
+            AppLogger.w("$TAG: Proxy is already running. Stopping first.")
             stopLocalProxy()
         }
 
@@ -130,20 +129,19 @@ object ProxyManager {
         val redactedConfig = xrayJsonConfig
             .replace(Regex(""""pass":\s*".*?""""), """"pass": "[REDACTED]"""")
 
-
-        Log.d(TAG, "Starting Libv2ray with generated chain config: $redactedConfig")
+        AppLogger.d("$TAG: Starting Libv2ray with generated chain config: $redactedConfig")
 
         try {
             val result = V2Ray.XrayRun(xrayJsonConfig)
             if (result == 0L) {
-                Log.i(TAG, "V2Ray proxy chain started successfully on port $localPort")
+                AppLogger.i("$TAG: V2Ray proxy chain started successfully on port $localPort")
                 return true
             } else {
-                Log.e(TAG, "V2Ray.XrayRun returned a non-zero error code: $result")
+                AppLogger.e("$TAG: V2Ray.XrayRun returned a non-zero error code: $result")
                 return false
             }
         } catch (e: Throwable) {
-            Log.e(TAG, "Failed to start V2Ray proxy chain", e)
+            AppLogger.e("$TAG: Failed to start V2Ray proxy chain", e)
             return false
         }
     }
@@ -152,9 +150,9 @@ object ProxyManager {
         if (!isProxyRunning()) return
         try {
             V2Ray.XrayStop()
-            Log.i(TAG, "V2Ray proxy stop command issued.")
+            AppLogger.i("$TAG: V2Ray proxy stop command issued.")
         } catch (e: Throwable) {
-            Log.e(TAG, "Error stopping V2Ray proxy", e)
+            AppLogger.e("$TAG: Error stopping V2Ray proxy", e)
         }
     }
 
@@ -162,7 +160,7 @@ object ProxyManager {
         return try {
             V2Ray.XrayIsRunning() != 0L
         } catch (e: Throwable) {
-            Log.w(TAG, "Could not check V2Ray status, assuming not running.", e)
+            AppLogger.w("$TAG: Could not check V2Ray status, assuming not running.")
             false
         }
     }

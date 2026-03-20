@@ -244,7 +244,7 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
                 AppLogger.d("Target file exists $targetFl  marking success ${item.mId}")
                 finishWork(item.also { it.taskState = VideoTaskState.SUCCESS })
             } else {
-                AppLogger.e("Error during post-processing ${AppLogger.e("Caught exception", e)}")
+                AppLogger.e("Error during post-processing", e)
                 finishWork(item.also {
                     it.taskState = VideoTaskState.ERROR
                     it.errorMessage = e.message

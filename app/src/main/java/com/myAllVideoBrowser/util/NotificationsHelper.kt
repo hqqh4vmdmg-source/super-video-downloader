@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.myAllVideoBrowser.R
 import com.myAllVideoBrowser.ui.main.home.MainActivity
 import com.myAllVideoBrowser.util.downloaders.NotificationReceiver
@@ -22,7 +23,9 @@ class NotificationsHelper(private val context: Context) {
     }
 
     private val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        checkNotNull(ContextCompat.getSystemService(context, NotificationManager::class.java)) {
+            "NotificationManager system service is unavailable"
+        }
 
     init {
         createChannel(context)
@@ -125,9 +128,10 @@ class NotificationsHelper(private val context: Context) {
         intent.putExtra(YoutubeDlDownloaderWorker.IS_FINISHED_DOWNLOAD_ACTION_ERROR_KEY, isError)
 
 
-        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.getActivity(
-                context, if (isFinished) 0 else 2, intent, PendingIntent.FLAG_MUTABLE
+                context, if (isFinished) 0 else 2, intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
         } else {
             PendingIntent.getActivity(
@@ -157,9 +161,10 @@ class NotificationsHelper(private val context: Context) {
         intent.putExtra(YoutubeDlDownloaderWorker.IS_FINISHED_DOWNLOAD_ACTION_KEY, true)
             .putExtra(YoutubeDlDownloaderWorker.DOWNLOAD_FILENAME_KEY, filenameFixed)
 
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.getActivity(
-                context, 777, intent, PendingIntent.FLAG_MUTABLE
+                context, 777, intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
         } else {
             PendingIntent.getActivity(
@@ -205,9 +210,10 @@ class NotificationsHelper(private val context: Context) {
     }
 
     private fun createActionIntent(actionIntent: Intent, requestCode: Int): PendingIntent? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.getBroadcast(
-                context, requestCode, actionIntent, PendingIntent.FLAG_MUTABLE
+                context, requestCode, actionIntent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
         } else {
             PendingIntent.getBroadcast(
