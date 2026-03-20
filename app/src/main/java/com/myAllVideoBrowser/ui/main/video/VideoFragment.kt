@@ -41,7 +41,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.File
 import javax.inject.Inject
 
-//@OpenForTesting
 class VideoFragment : BaseFragment() {
 
     companion object {

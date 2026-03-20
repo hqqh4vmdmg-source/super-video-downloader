@@ -13,7 +13,7 @@ class WebTab(
     private val headers: Map<String, String> = emptyMap(),
     private var webview: WebView? = null,
     private var resultMsg: Message? = null,
-    var id: String = UUID.randomUUID().toString()
+    val id: String = UUID.randomUUID().toString()
 ) {
 
     companion object {

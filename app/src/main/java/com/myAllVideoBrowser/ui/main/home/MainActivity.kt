@@ -33,7 +33,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-//@OpenForTesting
 class MainActivity : BaseActivity() {
 
     @Inject

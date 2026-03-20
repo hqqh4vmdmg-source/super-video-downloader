@@ -1,5 +1,4 @@
 package com.myAllVideoBrowser.util
-//import com.allVideoDownloaderXmaster.OpenForTesting
 
 import android.content.ClipData
 import android.content.Context
@@ -15,7 +14,6 @@ import com.myAllVideoBrowser.R
 import java.io.File
 import javax.inject.Inject
 
-//@OpenForTesting
 class IntentUtil @Inject constructor(private val fileUtil: FileUtil) {
 
     @Deprecated("This old method is deprecated")

@@ -13,32 +13,25 @@ interface SuggestionListener {
     fun onItemClicked(suggestion: Suggestion)
 }
 class SuggestionAdapter(
-    context: Context?,
+    context: Context,
     private var suggestions: List<Suggestion>,
     private val suggestionListener: SuggestionListener
-) : ArrayAdapter<Suggestion>(context!!, 0) {
+) : ArrayAdapter<Suggestion>(context, 0) {
 
     override fun getCount() = suggestions.size
 
     override fun getItem(position: Int): Suggestion {
-        val sug = try {
+        return try {
             suggestions[position]
-        } catch (e: Throwable) {
-            Suggestion()
-        } catch (e: NullPointerException) {
+        } catch (_: IndexOutOfBoundsException) {
             Suggestion()
         }
-
-        return sug
     }
 
-    // TODO bullshit
     override fun getItemId(position: Int) = try {
         suggestions[position].hashCode().toLong()
-    } catch (e: Throwable) {
-        0
-    } catch (e: NullPointerException) {
-        0
+    } catch (_: IndexOutOfBoundsException) {
+        0L
     }
 
     override fun getView(position: Int, view: View?, viewGroup: ViewGroup): View {
@@ -46,7 +39,10 @@ class SuggestionAdapter(
             val inflater = LayoutInflater.from(viewGroup.context)
             ItemSuggestionBinding.inflate(inflater, viewGroup, false)
         } else {
-            DataBindingUtil.getBinding(view)!!
+            DataBindingUtil.getBinding(view) ?: run {
+                val inflater = LayoutInflater.from(viewGroup.context)
+                ItemSuggestionBinding.inflate(inflater, viewGroup, false)
+            }
         }
 
         with(binding) {

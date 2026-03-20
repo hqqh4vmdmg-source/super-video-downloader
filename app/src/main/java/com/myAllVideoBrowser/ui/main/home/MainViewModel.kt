@@ -7,7 +7,6 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.viewModelScope
 import com.myAllVideoBrowser.data.local.room.entity.PageInfo
-//import com.allVideoDownloaderXmaster.OpenForTesting
 import com.myAllVideoBrowser.data.local.room.entity.VideoInfo
 import com.myAllVideoBrowser.data.repository.TopPagesRepository
 import com.myAllVideoBrowser.ui.main.base.BaseViewModel
@@ -20,7 +19,6 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
-//@OpenForTesting
 class MainViewModel @Inject constructor(
     private val topPagesRepository: TopPagesRepository,
 ) : BaseViewModel() {

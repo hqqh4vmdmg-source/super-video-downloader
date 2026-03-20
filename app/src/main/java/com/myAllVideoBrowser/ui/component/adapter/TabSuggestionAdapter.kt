@@ -14,29 +14,25 @@ interface SuggestionTabListener {
 }
 
 class TabSuggestionAdapter(
-    context: Context?,
+    context: Context,
     private var suggestions: List<HistoryItem>,
     private val suggestionsListener: SuggestionTabListener?
-) : ArrayAdapter<HistoryItem>(context!!, 0) {
+) : ArrayAdapter<HistoryItem>(context, 0) {
 
     override fun getCount() = suggestions.size
 
-    //  TODO bullshit
     override fun getItem(position: Int): HistoryItem {
-        val sug = try {
+        return try {
             suggestions[position]
-        } catch (e: Throwable) {
+        } catch (_: IndexOutOfBoundsException) {
             HistoryItem(url = "")
         }
-
-        return sug
     }
 
-    // TODO bullshit
     override fun getItemId(position: Int) = try {
         suggestions[position].hashCode().toLong()
-    } catch (e: Exception) {
-        0
+    } catch (_: IndexOutOfBoundsException) {
+        0L
     }
 
     override fun getView(position: Int, view: View?, viewGroup: ViewGroup): View {
@@ -44,7 +40,10 @@ class TabSuggestionAdapter(
             val inflater = LayoutInflater.from(viewGroup.context)
             ItemTabSuggestionBinding.inflate(inflater, viewGroup, false)
         } else {
-            DataBindingUtil.getBinding(view)!!
+            DataBindingUtil.getBinding(view) ?: run {
+                val inflater = LayoutInflater.from(viewGroup.context)
+                ItemTabSuggestionBinding.inflate(inflater, viewGroup, false)
+            }
         }
 
         with(binding) {

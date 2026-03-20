@@ -18,7 +18,6 @@ class HelpFragment : BaseFragment() {
     lateinit var mainActivity: MainActivity
 
     companion object {
-        @JvmStatic
         fun newInstance() = HelpFragment()
     }
 
