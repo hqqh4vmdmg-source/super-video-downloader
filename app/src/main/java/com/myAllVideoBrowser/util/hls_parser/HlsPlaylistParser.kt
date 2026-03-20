@@ -436,7 +436,7 @@ object HlsPlaylistParser {
                         ?.let { "${it}x${exoVariant.format.height}" },
                     "FRAME-RATE" to exoVariant.format.frameRate.takeIf { it > 0 }?.toString(),
                     "CODECS" to exoVariant.format.codecs
-                ).filterValues { it != null }.mapValues { it.value!! },
+                ).filterValues { it != null }.mapValues { it.value.orEmpty() },
                 audioGroupId = exoVariant.audioGroupId,
                 videoGroupId = exoVariant.videoGroupId,
                 subtitlesGroupId = exoVariant.subtitleGroupId
@@ -494,14 +494,14 @@ object HlsPlaylistParser {
                 if (exoSegment.fullSegmentEncryptionKeyUri != null) {
                     val method = schemeToMethodMap[resolveUrl(
                         exoMedia.baseUri,
-                        exoSegment.fullSegmentEncryptionKeyUri!!
+                        exoSegment.fullSegmentEncryptionKeyUri ?: ""
                     )] ?: "AES-128"
 
                     HlsEncryptionKey(
                         method = method,
                         uri = resolveUrl(
                             exoMedia.baseUri,
-                            exoSegment.fullSegmentEncryptionKeyUri!!
+                            exoSegment.fullSegmentEncryptionKeyUri ?: ""
                         ),
                         iv = exoSegment.encryptionIV
                     )

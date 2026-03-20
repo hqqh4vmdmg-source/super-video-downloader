@@ -232,7 +232,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
         fun fetchAndParse(url: String): HlsPlaylistParser.HlsPlaylist {
             val request = Request.Builder().url(url).headers(headers.toHeaders()).build()
             val response = client.newCall(request).execute()
-            val content = response.body.string()
+            val content = response.body?.string() ?: ""
             if (!response.isSuccessful || content.isEmpty()) {
                 throw IOException("Failed to download playlist at $url. HTTP ${response.code}")
             }
@@ -461,7 +461,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
         val client = proxyOkHttpClient.getProxyOkHttpClient()
         val request = Request.Builder().url(manifestUrl).headers(headers.toHeaders()).build()
         val response = client.newCall(request).execute()
-        val content = response.body.string()
+        val content = response.body?.string() ?: ""
         if (!response.isSuccessful || content.isEmpty()) {
             throw IOException("Failed to download MPD manifest at $manifestUrl. HTTP ${response.code}")
         }
@@ -614,7 +614,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
         fun fetchAndParse(url: String): HlsPlaylistParser.HlsPlaylist {
             val request = Request.Builder().url(url).headers(headers.toHeaders()).build()
             val response = client.newCall(request).execute()
-            val content = response.body.string()
+            val content = response.body?.string() ?: ""
             if (!response.isSuccessful || content.isEmpty()) {
                 throw IOException("Failed to download playlist at $url. HTTP ${response.code}")
             }

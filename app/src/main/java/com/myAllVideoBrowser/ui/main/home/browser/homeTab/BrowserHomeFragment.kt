@@ -75,7 +75,9 @@ class BrowserHomeFragment : BaseWebTabFragment() {
     ): View {
         mainViewModel = mainActivity.mainViewModel
         homeViewModel = ViewModelProvider(this, viewModelFactory)[BrowserHomeViewModel::class.java]
-        openPageIProvider = mainActivity.mainViewModel.browserServicesProvider!!
+        openPageIProvider = requireNotNull(mainActivity.mainViewModel.browserServicesProvider) {
+            "browserServicesProvider must be set before BrowserHomeFragment is used"
+        }
 
         topPageAdapter = TopPageAdapter(requireContext(), emptyList(), itemListener)
         suggestionAdapter = SuggestionAdapter(requireContext(), emptyList(), suggestionListener)

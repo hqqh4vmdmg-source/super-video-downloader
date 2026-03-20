@@ -119,11 +119,14 @@ class WebTabFragment : BaseWebTabFragment() {
     ): View {
         val thisTabIndex = requireArguments().getInt(TAB_INDEX_KEY)
 
-        tabManagerProvider = mainActivity.mainViewModel.browserServicesProvider!!
-        pageTabProvider = mainActivity.mainViewModel.browserServicesProvider!!
-        historyProvider = mainActivity.mainViewModel.browserServicesProvider!!
-        workerEventProvider = mainActivity.mainViewModel.browserServicesProvider!!
-        currentTabIndexProvider = mainActivity.mainViewModel.browserServicesProvider!!
+        val servicesProvider = requireNotNull(mainActivity.mainViewModel.browserServicesProvider) {
+            "browserServicesProvider must be set before WebTabFragment is used"
+        }
+        tabManagerProvider = servicesProvider
+        pageTabProvider = servicesProvider
+        historyProvider = servicesProvider
+        workerEventProvider = servicesProvider
+        currentTabIndexProvider = servicesProvider
 
         tabViewModel = ViewModelProvider(this, viewModelFactory)[WebTabViewModel::class]
         videoDetectionTabViewModel =

@@ -115,11 +115,14 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
         }
     }
 
-    @SuppressLint("CheckResult")
-    private fun startDownload(
+        private fun startDownload(
         task: VideoTaskItem, isContinue: Boolean = false
     ) {
-        val taskId = inputData.getString(GenericDownloader.Constants.TASK_ID_KEY)!!
+        val taskId = inputData.getString(GenericDownloader.Constants.TASK_ID_KEY) ?: run {
+            AppLogger.e("YoutubeDlDownloaderWorker: TASK_ID_KEY missing from input data")
+            finishWork(task.also { it.errorCode = 1 })
+            return
+        }
 
         val vFormat = deserializeVideoFormat(taskId)
 
@@ -309,7 +312,7 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
                 )
 
                 if (this@YoutubeDlDownloaderWorker.cookieFile != null) {
-                    this@YoutubeDlDownloaderWorker.cookieFile!!.delete()
+                    this@YoutubeDlDownloaderWorker.cookieFile?.delete()
                 }
 
                 if (moved) {
