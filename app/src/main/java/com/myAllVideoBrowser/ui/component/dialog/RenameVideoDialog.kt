@@ -10,10 +10,6 @@ import android.widget.LinearLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.myAllVideoBrowser.R
 import com.myAllVideoBrowser.util.AppUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 fun showRenameVideoDialog(
     context: Context,
@@ -37,10 +33,8 @@ fun showRenameVideoDialog(
         orientation = LinearLayout.VERTICAL
         setPadding(80, 40, 80, 20)
         addView(etName)
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(400)
-            appUtil.showSoftKeyboard(etName)
-        }
+        // Use View.postDelayed so the runnable is automatically cancelled if the view is detached
+        etName.postDelayed({ appUtil.showSoftKeyboard(etName) }, 400)
     }
 
     appUtil.showSoftKeyboard(etName)

@@ -17,6 +17,8 @@ import com.myAllVideoBrowser.util.proxy_utils.OkHttpProxyClient
 import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -44,12 +46,15 @@ open class GenericDownloadWorkerWrapper(
 
     private var disposable: Disposable? = null
 
+    private val notificationJob = SupervisorJob()
+    private val notificationScope = CoroutineScope(Dispatchers.IO + notificationJob)
+
     // Delay of showing final notification after setForegroundAsync(),
     // without it final notification not shown
     private val finalNotificationDelay = 2000L
 
     fun showNotificationFinal(id: Int, notification: NotificationCompat.Builder) {
-        CoroutineScope(Dispatchers.Main).launch {
+        notificationScope.launch {
             delay(finalNotificationDelay)
             notificationsHelper.showNotification(Pair(id, notification))
         }
@@ -98,5 +103,6 @@ open class GenericDownloadWorkerWrapper(
     override fun finishWork(item: VideoTaskItem?) {
         setDone()
         disposable?.dispose()
+        notificationScope.cancel()
     }
 }

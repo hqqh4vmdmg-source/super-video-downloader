@@ -116,10 +116,8 @@ class VideoFragment : BaseFragment() {
             renameErrorEvent.observe(viewLifecycleOwner) { errorCode ->
                 val errorMessage =
                     if (errorCode == FILE_EXIST_ERROR_CODE) R.string.video_rename_exist else R.string.video_rename_invalid
-                activity?.runOnUiThread {
-                    Toast.makeText(context, context?.getString(errorMessage), Toast.LENGTH_SHORT)
-                        .show()
-                }
+                Toast.makeText(context, context?.getString(errorMessage), Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }

@@ -1,6 +1,6 @@
 package com.myAllVideoBrowser.v2ray
 
-import android.util.Log
+import com.myAllVideoBrowser.util.AppLogger
 
 /**
  * This object is the JNI wrapper for the Go library `libgojni.so`.
@@ -15,11 +15,11 @@ object V2Ray {
     init {
         try {
             System.loadLibrary("gojni")
-            Log.i(TAG, "Successfully loaded 'libgojni.so' native library.")
+            AppLogger.i("$TAG: Successfully loaded 'libgojni.so' native library.")
         } catch (e: UnsatisfiedLinkError) {
             // This error means the .so file was not found in the APK.
             // This is a critical failure.
-            Log.e(TAG, "CRITICAL: Failed to load native library 'libgojni.so'.", e)
+            AppLogger.e("$TAG: CRITICAL: Failed to load native library 'libgojni.so'.", e)
         }
     }
 
