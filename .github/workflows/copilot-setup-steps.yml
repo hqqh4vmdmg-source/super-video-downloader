@@ -17,36 +17,36 @@ on:
 jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 59
 
     env:
       JAVA_VERSION: "21"
       GO_VERSION: "1.25.7"
       ANDROID_API_LEVEL: "36"
-      ANDROID_BUILD_TOOLS: "36.0.0"
+      ANDROID_BUILD_TOOLS: "36.0.2"
       GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dkotlin.daemon.jvm.options=-Xmx2g"
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: ${{ env.JAVA_VERSION }}
+          java-version: '21'
           cache: gradle
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
-          go-version: ${{ env.GO_VERSION }}
+          go-version: '1.25'
           cache: false
 
       - name: Set up Android NDK
         uses: nttld/setup-ndk@v1
         with:
-          ndk-version: r27d
+          ndk-version: '29.0.14206865'
 
       - name: Accept Android SDK licenses
         run: yes | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --licenses || true
@@ -82,9 +82,3 @@ jobs:
 
       - name: Vendor Go dependencies
         run: ./gradlew :app:vendorGoDependencies --stacktrace
-
-      - name: Assemble debug APK
-        run: ./gradlew :app:assembleDebug --stacktrace
-
-      - name: Run full build
-        run: ./gradlew :app:build --stacktrace
