@@ -22,6 +22,7 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ProgressViewModel @Inject constructor(
@@ -53,7 +54,7 @@ class ProgressViewModel @Inject constructor(
         executorService2.shutdown()
     }
 
-    // wtf??? fix what?
+
     fun stopAndSaveDownload(id: Long) {
         val inf = progressInfos.get()?.find { it.downloadId == id }
 

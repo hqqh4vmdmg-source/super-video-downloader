@@ -48,7 +48,7 @@ abstract class GenericDownloader {
                 }
             }
 
-            return instance!!
+            return instance ?: error("GenericDownloader instance could not be initialized")
         }
     }
 
