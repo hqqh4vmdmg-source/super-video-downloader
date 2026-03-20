@@ -1,7 +1,11 @@
 package com.myAllVideoBrowser.ui.component.adapter
 
 import android.content.Context
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,11 +45,15 @@ class TopPageAdapter(
             val drawable = AppCompatResources.getDrawable(
                 ContextUtils.getApplicationContext(), R.drawable.ic_browser
             )
-            drawable?.setColorFilter(
-                ContextCompat.getColor(
-                    ContextUtils.getApplicationContext(), R.color.color_gray_2
-                ), PorterDuff.Mode.MULTIPLY
+            val iconColor = ContextCompat.getColor(
+                ContextUtils.getApplicationContext(), R.color.color_gray_2
             )
+            drawable?.colorFilter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                BlendModeColorFilter(iconColor, BlendMode.MULTIPLY)
+            } else {
+                @Suppress("DEPRECATION")
+                PorterDuffColorFilter(iconColor, PorterDuff.Mode.MULTIPLY)
+            }
             binding.imgIcon.setImageDrawable(drawable)
         }
         binding.executePendingBindings()

@@ -15,15 +15,33 @@ class AppLogger {
             }
         }
 
+        fun d(message: String, throwable: Throwable) {
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, message, throwable)
+            }
+        }
+
         fun i(message: String) {
             if (BuildConfig.DEBUG) {
                 Log.i(TAG, message)
             }
         }
 
+        fun i(message: String, throwable: Throwable) {
+            if (BuildConfig.DEBUG) {
+                Log.i(TAG, message, throwable)
+            }
+        }
+
         fun w(message: String) {
             if (BuildConfig.DEBUG) {
                 Log.w(TAG, message)
+            }
+        }
+
+        fun w(message: String, throwable: Throwable) {
+            if (BuildConfig.DEBUG) {
+                Log.w(TAG, message, throwable)
             }
         }
 

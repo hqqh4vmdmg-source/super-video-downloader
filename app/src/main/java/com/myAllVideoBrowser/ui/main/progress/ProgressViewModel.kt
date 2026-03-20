@@ -20,8 +20,8 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ProgressViewModel @Inject constructor(
@@ -32,8 +32,10 @@ class ProgressViewModel @Inject constructor(
     internal val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     var progressInfos: ObservableField<List<ProgressInfo>> = ObservableField(emptyList())
-    private val executor = Executors.newFixedThreadPool(3).asCoroutineDispatcher()
-    private val executor2 = Executors.newFixedThreadPool(1).asCoroutineDispatcher()
+    private val executorService: ExecutorService = Executors.newFixedThreadPool(3)
+    private val executorService2: ExecutorService = Executors.newFixedThreadPool(1)
+    private val executor = executorService.asCoroutineDispatcher()
+    private val executor2 = executorService2.asCoroutineDispatcher()
 
     override fun start() {
         downloadProgressStartListen()
@@ -43,8 +45,15 @@ class ProgressViewModel @Inject constructor(
         compositeDisposable.clear()
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        executor.close()
+        executor2.close()
+        executorService.shutdown()
+        executorService2.shutdown()
+    }
+
     // wtf??? fix what?
-    // TODO: strange, should fix
     fun stopAndSaveDownload(id: Long) {
         val inf = progressInfos.get()?.find { it.downloadId == id }
 
