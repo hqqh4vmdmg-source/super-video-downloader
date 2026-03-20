@@ -32,7 +32,7 @@ allOpen {
 }
 
 jacoco {
-    version = "0.8.1"
+    version = libs.versions.jacoco.get()
 }
 
 // =========================================================================

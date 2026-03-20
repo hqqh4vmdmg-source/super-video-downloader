@@ -20,6 +20,8 @@ import dagger.android.AndroidInjection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,7 +31,8 @@ class ProxyService : Service() {
     lateinit var sharedPrefHelper: SharedPrefHelper
 
     private var proxyJob: Job? = null
-    private val serviceScope = CoroutineScope(Dispatchers.IO)
+    private val serviceSupervisorJob = SupervisorJob()
+    private val serviceScope = CoroutineScope(Dispatchers.IO + serviceSupervisorJob)
 
     companion object {
         @Volatile
@@ -191,6 +194,8 @@ class ProxyService : Service() {
         ProxyManager.stopLocalProxy()
         AppLogger.i("Local Proxy Stooped.")
         proxyJob?.cancel()
+        serviceScope.cancel()
+        serviceSupervisorJob.cancel()
         super.onDestroy()
         isRunning = false
         AppLogger.i("ProxyService destroyed.")

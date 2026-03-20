@@ -81,7 +81,7 @@ androidxTestEspresso = "3.7.0"
 androidxTestEspressoIntents = "3.7.0"
 
 # Code coverage and quality
-jacoco = "0.8.1"
+jacoco = "0.8.12"
 coveralls = "2.12.2"
 desugarJdk = "2.1.5"
 
