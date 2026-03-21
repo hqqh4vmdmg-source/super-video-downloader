@@ -81,7 +81,9 @@ jobs:
           ./gradlew --version
 
       - name: Vendor Go dependencies
-        run: ./gradlew :app:vendorGoDependencies --stacktrace      - name: Generate local.properties
+        run: ./gradlew :app:vendorGoDependencies --stacktrace      
+        
+      - name: Generate local.properties
         run: |
           {
             echo "sdk.dir=${ANDROID_SDK_ROOT}"
