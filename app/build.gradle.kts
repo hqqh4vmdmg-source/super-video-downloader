@@ -147,7 +147,7 @@ android {
             enableAndroidTestCoverage = false
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
-                getDefaultProguardFile("proguard-android.txt"),
+                getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
@@ -219,8 +219,6 @@ dependencies {
     implementation(libs.webkit)
     implementation(libs.coreKtx)
     implementation(libs.coreSplashscreen)
-    implementation(libs.legacySupportV4)
-
     // Kotlin
     implementation(libs.kotlin.stdlib)
 
