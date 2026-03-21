@@ -15,45 +15,26 @@ import com.myAllVideoBrowser.util.downloaders.generic_downloader.models.VideoTas
 import com.myAllVideoBrowser.util.downloaders.custom_downloader.CustomRegularDownloader
 import com.myAllVideoBrowser.util.downloaders.super_x_downloader.SuperXDownloader
 import com.myAllVideoBrowser.util.downloaders.youtubedl_downloader.YoutubeDlDownloader
-import io.reactivex.rxjava3.core.BackpressureStrategy
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ProgressViewModel @Inject constructor(
     private val fileUtil: FileUtil,
     private val progressRepository: ProgressRepository,
 ) : BaseViewModel() {
-    @VisibleForTesting
-    internal val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     var progressInfos: ObservableField<List<ProgressInfo>> = ObservableField(emptyList())
-    private val executorService: ExecutorService = Executors.newFixedThreadPool(3)
-    private val executorService2: ExecutorService = Executors.newFixedThreadPool(1)
-    private val executor = executorService.asCoroutineDispatcher()
-    private val executor2 = executorService2.asCoroutineDispatcher()
 
     override fun start() {
         downloadProgressStartListen()
     }
 
     override fun stop() {
-        compositeDisposable.clear()
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        executor.close()
-        executor2.close()
-        executorService.shutdown()
-        executorService2.shutdown()
-    }
-
 
     fun stopAndSaveDownload(id: Long) {
         val inf = progressInfos.get()?.find { it.downloadId == id }
@@ -190,7 +171,7 @@ class ProgressViewModel @Inject constructor(
         progressInfo: ProgressInfo,
         onSuccess: (ProgressInfo) -> Unit = {}
     ) {
-        viewModelScope.launch(executor2) {
+        viewModelScope.launch(Dispatchers.IO) {
             progressRepository.saveProgressInfo(progressInfo)
             onSuccess(progressInfo)
         }
@@ -200,7 +181,7 @@ class ProgressViewModel @Inject constructor(
         progressInfo: ProgressInfo,
         onSuccess: (ProgressInfo) -> Unit = {}
     ) {
-        viewModelScope.launch(executor2) {
+        viewModelScope.launch(Dispatchers.IO) {
             progressRepository.deleteProgressInfo(progressInfo)
             onSuccess(progressInfo)
         }
@@ -208,25 +189,14 @@ class ProgressViewModel @Inject constructor(
 
     @VisibleForTesting
     internal fun downloadProgressStartListen() {
-        viewModelScope.launch(executor) {
-            progressObservable().doOnError {
-                AppLogger.e("Caught exception", it)
-            }.blockingForEach { progressInfoList ->
-                progressInfos.set(progressInfoList.sortedBy { it.id })
-            }
+        viewModelScope.launch {
+            progressRepository.getProgressInfos()
+                .map { list -> list.filter { it.downloadStatus != VideoTaskState.SUCCESS } }
+                .flowOn(Dispatchers.IO)
+                .catch { e -> AppLogger.e("Caught exception", e) }
+                .collect { active ->
+                    progressInfos.set(active.sortedBy { it.id })
+                }
         }
-    }
-
-    private fun progressObservable(): Observable<List<ProgressInfo>> {
-        val youtubeDlDownloads = Observable.interval(1000, TimeUnit.MILLISECONDS).flatMap {
-            progressRepository.getProgressInfos().take(1).flatMap {
-                val filtered = it.filter { info -> info.downloadStatus != VideoTaskState.SUCCESS }
-                Observable.just(filtered).toFlowable(BackpressureStrategy.LATEST).take(1)
-            }.toObservable().doOnError { error ->
-                AppLogger.e("Caught exception", error)
-            }
-        }
-
-        return youtubeDlDownloads
     }
 }

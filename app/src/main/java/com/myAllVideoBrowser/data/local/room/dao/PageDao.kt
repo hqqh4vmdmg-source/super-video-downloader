@@ -2,23 +2,23 @@ package com.myAllVideoBrowser.data.local.room.dao
 
 import androidx.room.*
 import com.myAllVideoBrowser.data.local.room.entity.PageInfo
-import io.reactivex.rxjava3.core.Observable
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PageDao {
 
     @Query("SELECT * FROM PageInfo ORDER BY `order` ASC")
-    fun getPageInfos(): Observable<List<PageInfo>>
+    fun getPageInfos(): Flow<List<PageInfo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertProgressInfo(progressInfo: PageInfo)
+    suspend fun insertProgressInfo(progressInfo: PageInfo)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAllProgressInfo(progressInfos: List<PageInfo>)
+    suspend fun insertAllProgressInfo(progressInfos: List<PageInfo>)
 
     @Delete
-    fun deleteProgressInfo(progressInfo: PageInfo)
+    suspend fun deleteProgressInfo(progressInfo: PageInfo)
 
     @Query("DELETE FROM PageInfo")
-    fun deleteAll()
+    suspend fun deleteAll()
 }

@@ -16,14 +16,14 @@ class TopPagesRemoteDataSource @Inject constructor(
         return emptyList()
     }
 
-    override fun saveTopPage(pageInfo: PageInfo) {
+    override suspend fun saveTopPage(pageInfo: PageInfo) {
     }
 
-    override fun replaceBookmarksWith(pageInfos: List<PageInfo>) {
+    override suspend fun replaceBookmarksWith(pageInfos: List<PageInfo>) {
 
     }
 
-    override fun deletePageInfo(pageInfo: PageInfo) {
+    override suspend fun deletePageInfo(pageInfo: PageInfo) {
     }
 
     override suspend fun updateLocalStorageFavicons() : Flow<PageInfo> {

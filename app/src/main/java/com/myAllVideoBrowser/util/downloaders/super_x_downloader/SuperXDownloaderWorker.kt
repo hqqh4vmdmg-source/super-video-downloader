@@ -22,7 +22,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.Request
 import java.io.File
@@ -43,11 +45,6 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
 
     private val workerJob = SupervisorJob()
     private val downloadScope = CoroutineScope(Dispatchers.IO + workerJob)
-
-    override fun onStopped() {
-        super.onStopped()
-        downloadScope.cancel()
-    }
 
     override fun handleAction(
         action: String, task: VideoTaskItem, headers: Map<String, String>, isFileRemove: Boolean
@@ -701,10 +698,12 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
 
     override fun finishWork(item: VideoTaskItem?) {
         if (getDone()) {
+            downloadScope.cancel()
             getContinuation().resume(Result.success())
             return
         }
         setDone()
+        downloadScope.cancel()
 
         val taskId = item?.mId ?: run {
             AppLogger.e("SuperX: Cannot finish work, taskId is NULL")
@@ -840,22 +839,25 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
         if (getDone() && downloadStatus == VideoTaskState.DOWNLOADING) {
             return
         }
-        val dbTask = progressRepository.getProgressInfos().blockingFirst(emptyList())
-            .find { it.id == taskId || it.downloadId == taskId.toLongOrNull() } ?: return
-        if (dbTask.downloadStatus == VideoTaskState.SUCCESS) {
-            return
-        }
-        if (downloadStatus == VideoTaskState.CANCELED || dbTask.downloadStatus == VideoTaskState.CANCELED) {
-            progressRepository.deleteProgressInfo(dbTask)
-            return
-        }
-        dbTask.downloadStatus = downloadStatus
-        dbTask.infoLine = infoLine
-        dbTask.isLive = isLive
-        dbTask.progressTotal = progress.totalBytes
-        dbTask.progressDownloaded = progress.currentBytes
+        runBlocking {
+            val dbTask = progressRepository.getProgressInfos().first()
+                .find { it.id == taskId || it.downloadId == taskId.toLongOrNull() }
+                ?: return@runBlocking
+            if (dbTask.downloadStatus == VideoTaskState.SUCCESS) {
+                return@runBlocking
+            }
+            if (downloadStatus == VideoTaskState.CANCELED || dbTask.downloadStatus == VideoTaskState.CANCELED) {
+                progressRepository.deleteProgressInfo(dbTask)
+                return@runBlocking
+            }
+            dbTask.downloadStatus = downloadStatus
+            dbTask.infoLine = infoLine
+            dbTask.isLive = isLive
+            dbTask.progressTotal = progress.totalBytes
+            dbTask.progressDownloaded = progress.currentBytes
 
-        progressRepository.saveProgressInfo(dbTask)
+            progressRepository.saveProgressInfo(dbTask)
+        }
     }
 
     private fun decodeCookieHeader(headers: Map<String, String>): Map<String, String> {

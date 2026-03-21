@@ -17,6 +17,8 @@ import java.io.File
 import java.net.URL
 import java.util.Date
 import kotlin.coroutines.resume
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 // TODO: REFACTORING
 class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerParameters) :
@@ -489,45 +491,47 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
             return
         }
 
-        val progressList = progressRepository.getProgressInfos().blockingFirst()
-        val dbTask = progressList.find { it.id == taskId }
-        if (dbTask?.downloadStatus == VideoTaskState.SUCCESS) {
-            return
-        }
-
-        val isBytesNoTouch = progress.totalBytes == 0L
-        val isNoTouchCurrent = progress.currentBytes == 0L
-
-        if (!isBytesNoTouch && (downloadStatus != VideoTaskState.ERROR)) {
-            dbTask?.infoLine = infoLine
-            dbTask?.progressTotal = progress.totalBytes
-        }
-
-        if (downloadStatus != VideoTaskState.SUCCESS) {
-            if (!isNoTouchCurrent) {
-                dbTask?.progressDownloaded = progress.currentBytes
+        runBlocking {
+            val progressList = progressRepository.getProgressInfos().first()
+            val dbTask = progressList.find { it.id == taskId }
+            if (dbTask?.downloadStatus == VideoTaskState.SUCCESS) {
+                return@runBlocking
             }
-        } else {
-            if (!isBytesNoTouch) {
-                dbTask?.progressDownloaded = dbTask?.progressTotal ?: -1
+
+            val isBytesNoTouch = progress.totalBytes == 0L
+            val isNoTouchCurrent = progress.currentBytes == 0L
+
+            if (!isBytesNoTouch && (downloadStatus != VideoTaskState.ERROR)) {
+                dbTask?.infoLine = infoLine
+                dbTask?.progressTotal = progress.totalBytes
             }
-        }
 
-        dbTask?.downloadStatus = downloadStatus
-
-        val isLive =
-            dbTask?.progressTotal == dbTask?.progressDownloaded && downloadStatus == VideoTaskState.DOWNLOADING
-        if (dbTask?.isLive != true && isLive) {
-            dbTask?.isLive = true
-        }
-
-        if (dbTask != null) {
-            if (getDone() && downloadStatus == VideoTaskState.DOWNLOADING) {
-                AppLogger.d(
-                    "saveProgress task returned cause DONE!!! $progress"
-                )
+            if (downloadStatus != VideoTaskState.SUCCESS) {
+                if (!isNoTouchCurrent) {
+                    dbTask?.progressDownloaded = progress.currentBytes
+                }
             } else {
-                progressRepository.saveProgressInfo(dbTask)
+                if (!isBytesNoTouch) {
+                    dbTask?.progressDownloaded = dbTask?.progressTotal ?: -1
+                }
+            }
+
+            dbTask?.downloadStatus = downloadStatus
+
+            val isLive =
+                dbTask?.progressTotal == dbTask?.progressDownloaded && downloadStatus == VideoTaskState.DOWNLOADING
+            if (dbTask?.isLive != true && isLive) {
+                dbTask?.isLive = true
+            }
+
+            if (dbTask != null) {
+                if (getDone() && downloadStatus == VideoTaskState.DOWNLOADING) {
+                    AppLogger.d(
+                        "saveProgress task returned cause DONE!!! $progress"
+                    )
+                } else {
+                    progressRepository.saveProgressInfo(dbTask)
+                }
             }
         }
     }

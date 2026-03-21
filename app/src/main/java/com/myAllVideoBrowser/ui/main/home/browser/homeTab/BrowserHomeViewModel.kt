@@ -9,36 +9,26 @@ import com.myAllVideoBrowser.data.local.model.Suggestion
 import com.myAllVideoBrowser.ui.main.base.BaseViewModel
 import com.myAllVideoBrowser.util.SuggestionsUtils
 import com.myAllVideoBrowser.util.proxy_utils.OkHttpProxyClient
-import com.myAllVideoBrowser.util.scheduler.BaseSchedulers
-import io.reactivex.rxjava3.core.BackpressureStrategy
-import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class BrowserHomeViewModel @Inject constructor(
     private val okHttpClient: OkHttpProxyClient,
-    private val baseSchedulers: BaseSchedulers,
 ) :
     BaseViewModel() {
     val isSearchInputFocused = ObservableBoolean(false)
     val searchTextInput = ObservableField("")
     val listSuggestions: ObservableField<MutableList<Suggestion>> = ObservableField(mutableListOf())
 
-    lateinit var homePublishSubject: PublishSubject<String>
-
     private var suggestionJob: Job? = null
 
     override fun start() {
-        homePublishSubject = PublishSubject.create()
     }
 
     override fun stop() {
-
     }
 
     fun changeSearchFocus(isFocus: Boolean) {
@@ -46,38 +36,22 @@ class BrowserHomeViewModel @Inject constructor(
     }
 
     fun showSuggestions() {
-        if (suggestionJob != null && suggestionJob?.isActive == true) {
-            suggestionJob?.cancel()
-        }
+        suggestionJob?.cancel()
         suggestionJob = viewModelScope.launch(Dispatchers.IO) {
+            delay(300)
             try {
-                withContext(this.coroutineContext) {
-                    val list = getListSuggestions().blockingFirst()
-                    if (list.size > 50) {
-                        listSuggestions.set(list.subList(0, 50).toMutableList())
-                    } else {
-                        listSuggestions.set(list.toMutableList())
-                    }
+                val list = SuggestionsUtils.getSuggestions(
+                    okHttpClient.getProxyOkHttpClient(), searchTextInput.get() ?: ""
+                )
+                if (list.size > 50) {
+                    listSuggestions.set(list.subList(0, 50).toMutableList())
+                } else {
+                    listSuggestions.set(list.toMutableList())
                 }
             } catch (e: Throwable) {
+                listSuggestions.set(mutableListOf())
                 AppLogger.e("Caught exception", e)
             }
         }
-    }
-
-    private fun getListSuggestions(): Flowable<List<Suggestion>> {
-        return Flowable.combineLatest(
-            homePublishSubject.debounce(300, TimeUnit.MILLISECONDS)
-                .toFlowable(BackpressureStrategy.LATEST), SuggestionsUtils.getSuggestions(
-                okHttpClient.getProxyOkHttpClient(), searchTextInput.get() ?: ""
-            )
-        ) { _, suggestions ->
-            val listSuggestions = mutableListOf<Suggestion>()
-            listSuggestions.addAll(suggestions)
-            listSuggestions.toList()
-        }.onErrorReturn {
-            emptyList()
-        }.take(1).observeOn(baseSchedulers.single)
-            .subscribeOn(baseSchedulers.computation)
     }
 }

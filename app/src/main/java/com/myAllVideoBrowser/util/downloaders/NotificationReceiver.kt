@@ -13,6 +13,7 @@ import dagger.android.DaggerBroadcastReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,7 +28,7 @@ class NotificationReceiver : DaggerBroadcastReceiver() {
 
         val taskId = intent.extras?.getString(TASK_ID)
         receiverScope.launch {
-            val progressInfo = progressRepository.getProgressInfos().blockingFirst()
+            val progressInfo = progressRepository.getProgressInfos().first()
                 .firstOrNull { it.id == taskId }
 
             AppLogger.d("-----------------------------------   $taskId  $progressInfo")
@@ -56,7 +57,7 @@ class NotificationReceiver : DaggerBroadcastReceiver() {
         }
     }
 
-    private fun handleCancel(context: Context, task: ProgressInfo) {
+    private suspend fun handleCancel(context: Context, task: ProgressInfo) {
         AppLogger.d("HANDLE CANCEL $task")
         when (val downloaderType = getTaskType(task.videoInfo)) {
             DOWNLOADER_YOUTUBE_DL -> {
