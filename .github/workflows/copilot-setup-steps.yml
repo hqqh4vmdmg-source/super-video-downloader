@@ -17,20 +17,20 @@ on:
 jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 59
 
     env:
       JAVA_VERSION: "21"
-      GO_VERSION: "1.25.7"
+      GO_VERSION: "1.25"
       ANDROID_API_LEVEL: "36"
-      ANDROID_BUILD_TOOLS: "36.0.0"
+      ANDROID_BUILD_TOOLS: "36.0.2"
       GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dkotlin.daemon.jvm.options=-Xmx2g"
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Set up JDK
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -38,7 +38,7 @@ jobs:
           cache: gradle
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
           cache: false
@@ -46,7 +46,7 @@ jobs:
       - name: Set up Android NDK
         uses: nttld/setup-ndk@v1
         with:
-          ndk-version: r27d
+          ndk-version: r29
 
       - name: Accept Android SDK licenses
         run: yes | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --licenses || true
@@ -81,40 +81,11 @@ jobs:
           ./gradlew --version
 
       - name: Vendor Go dependencies
-        run: ./gradlew :app:vendorGoDependencies --stacktrace
-
-      - name: Assemble debug APK
-        run: ./gradlew :app:assembleDebug --stacktrace
-
-      - name: Run full build
-        run: ./gradlew :app:build --stacktrace          distribution: temurin
-          java-version: ${{ env.JAVA_VERSION }}
-          cache: gradle
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ env.GO_VERSION }}
-          cache: true
-
-      - name: Accept Android SDK licenses
-        run: yes | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --licenses || true
-
-      - name: Install Android SDK packages
-        run: |
-          "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --install             "platform-tools"             "platforms;android-${ANDROID_API_LEVEL}"             "build-tools;${ANDROID_BUILD_TOOLS}"             "ndk;${ANDROID_NDK_VERSION}"
-
-      - name: Expose Android and Go paths
-        run: |
-          echo "ANDROID_NDK_HOME=${ANDROID_SDK_ROOT}/ndk/${ANDROID_NDK_VERSION}" >> "$GITHUB_ENV"
-          echo "ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk/${ANDROID_NDK_VERSION}" >> "$GITHUB_ENV"
-          echo "GO_EXECUTABLE=$(command -v go)" >> "$GITHUB_ENV"
-
-      - name: Generate local.properties
+        run: ./gradlew :app:vendorGoDependencies --stacktrace      - name: Generate local.properties
         run: |
           {
             echo "sdk.dir=${ANDROID_SDK_ROOT}"
-            echo "ndk.dir=${ANDROID_SDK_ROOT}/ndk/${ANDROID_NDK_VERSION}"
+            echo "ndk.dir=${ANDROID_NDK_HOME}"
           } > local.properties
 
       - name: Make Gradle wrapper executable
@@ -129,9 +100,3 @@ jobs:
 
       - name: Vendor Go dependencies
         run: ./gradlew :app:vendorGoDependencies --stacktrace
-
-      - name: Assemble debug APK
-        run: ./gradlew :app:assembleDebug --stacktrace
-
-      - name: Run full build
-        run: ./gradlew :app:build --stacktrace
