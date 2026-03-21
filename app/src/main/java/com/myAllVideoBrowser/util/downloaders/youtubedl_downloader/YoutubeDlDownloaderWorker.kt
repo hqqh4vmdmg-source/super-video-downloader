@@ -1,6 +1,5 @@
 package com.myAllVideoBrowser.util.downloaders.youtubedl_downloader
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.util.Base64
@@ -224,7 +223,6 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
         }
     }
 
-    @SuppressLint("CheckResult")
     private fun startDownloadProcess(
         url: String,
         request: YoutubeDLRequest,
@@ -284,62 +282,65 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
                     }
                 }
             }
-        }.doOnError {
-            handleError(taskId, url, progressCached, it, task.title)
-        }.onErrorComplete().subscribe { dlResponse ->
-            // Seems like youtube-dlp has a bug and sometimes skip removing already merged fragments
-            val list = tmpFile.listFiles()
-            val finalFile = if (!list.isNullOrEmpty()) {
-                tmpFile.walkTopDown()
-                    .filter {
-                        it.isFile && it.extension.equals(
-                            "mp4",
-                            ignoreCase = true
-                        ) || it.isFile && it.extension.equals("mp3", ignoreCase = true)
-                    }
-                    .firstOrNull()
-            } else {
-                null
-            }
-            if (dlResponse.exitCode == 0 && finalFile != null) {
-                val destinationFile = fileUtil.folderDir.resolve(finalFile.name).let {
-                    fixFileName(it.absolutePath)
-                }.let {
-                    File(it)
-                }
-                val moved = fileUtil.moveMedia(
-                    this@YoutubeDlDownloaderWorker.applicationContext,
-                    Uri.fromFile(finalFile),
-                    Uri.fromFile(destinationFile)
-                )
-
-                if (this@YoutubeDlDownloaderWorker.cookieFile != null) {
-                    this@YoutubeDlDownloaderWorker.cookieFile?.delete()
-                }
-
-                if (moved) {
-                    tmpFile.deleteRecursively()
-                }
-                finishWork(VideoTaskItem(url).also { f ->
-                    f.fileName = finalFile.name
-                    f.errorCode = if (moved) 0 else 1
-                    f.percent = 100F
-                    f.taskState = if (moved) VideoTaskState.SUCCESS else VideoTaskState.ERROR
-                })
-            } else {
-                val fixedList = tmpFile.listFiles()?.filter { !it.name.contains("part") }
-                this@YoutubeDlDownloaderWorker.cookieFile?.delete()
-                fixedList?.firstOrNull().let {
-                    finishWork(VideoTaskItem(url).also { f ->
-                        if (it != null) {
-                            f.fileName = it.name
+        }.subscribe(
+            { dlResponse ->
+                // Seems like youtube-dlp has a bug and sometimes skip removing already merged fragments
+                val list = tmpFile.listFiles()
+                val finalFile = if (!list.isNullOrEmpty()) {
+                    tmpFile.walkTopDown()
+                        .filter {
+                            it.isFile && it.extension.equals(
+                                "mp4",
+                                ignoreCase = true
+                            ) || it.isFile && it.extension.equals("mp3", ignoreCase = true)
                         }
-                        f.errorCode = 1
-                        f.taskState = VideoTaskState.ERROR
-                    })
+                        .firstOrNull()
+                } else {
+                    null
                 }
+                if (dlResponse.exitCode == 0 && finalFile != null) {
+                    val destinationFile = fileUtil.folderDir.resolve(finalFile.name).let {
+                        fixFileName(it.absolutePath)
+                    }.let {
+                        File(it)
+                    }
+                    val moved = fileUtil.moveMedia(
+                        this@YoutubeDlDownloaderWorker.applicationContext,
+                        Uri.fromFile(finalFile),
+                        Uri.fromFile(destinationFile)
+                    )
+
+                    if (this@YoutubeDlDownloaderWorker.cookieFile != null) {
+                        this@YoutubeDlDownloaderWorker.cookieFile?.delete()
+                    }
+
+                    if (moved) {
+                        tmpFile.deleteRecursively()
+                    }
+                    finishWork(VideoTaskItem(url).also { f ->
+                        f.fileName = finalFile.name
+                        f.errorCode = if (moved) 0 else 1
+                        f.percent = 100F
+                        f.taskState = if (moved) VideoTaskState.SUCCESS else VideoTaskState.ERROR
+                    })
+                } else {
+                    val fixedList = tmpFile.listFiles()?.filter { !it.name.contains("part") }
+                    this@YoutubeDlDownloaderWorker.cookieFile?.delete()
+                    fixedList?.firstOrNull().let {
+                        finishWork(VideoTaskItem(url).also { f ->
+                            if (it != null) {
+                                f.fileName = it.name
+                            }
+                            f.errorCode = 1
+                            f.taskState = VideoTaskState.ERROR
+                        })
+                    }
+                }
+            },
+            { throwable ->
+                handleError(taskId, url, progressCached, throwable, task.title)
             }
-        }
+        )
     }
 
     private fun configureYoutubedlRequest(
@@ -401,52 +402,56 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
         }
     }
 
-    @SuppressLint("CheckResult")
     private fun monitorDownloadProcess(taskId: String, task: VideoTaskItem) {
         monitorProcessDisposable =
             Observable.interval(0, 1, TimeUnit.SECONDS).subscribeOn(Schedulers.io())
                 .map { FileUtil.calculateFolderSize(tmpFile) }.onErrorReturn { -1 }
-                .subscribe { folderSize ->
-                    if (folderSize > 0 && folderSize != lastTmpDirSize) {
-                        val downloadedTmpFolderSize =
-                            FileUtil.getFileSizeReadable(folderSize.toDouble())
-                        lastTmpDirSize = folderSize
+                .subscribe(
+                    { folderSize ->
+                        if (folderSize > 0 && folderSize != lastTmpDirSize) {
+                            val downloadedTmpFolderSize =
+                                FileUtil.getFileSizeReadable(folderSize.toDouble())
+                            lastTmpDirSize = folderSize
 
-                        if (progressCached > 0) {
-                            isDownloadOk = true
-                            monitorProcessDisposable?.dispose()
-                            return@subscribe
-                        }
+                            if (progressCached > 0) {
+                                isDownloadOk = true
+                                monitorProcessDisposable?.dispose()
+                                return@subscribe
+                            }
 
-                        if (isDownloadJustStarted && !isDownloadOk) {
-                            ++isLiveCounter
-                            if (isLiveCounter > 2) {
-                                isLiveCounter = 3
+                            if (isDownloadJustStarted && !isDownloadOk) {
+                                ++isLiveCounter
+                                if (isLiveCounter > 2) {
+                                    isLiveCounter = 3
 
-                                val downloaded = lastTmpDirSize
-                                saveProgress(
-                                    taskId, LineInfo(
-                                        "LIVE",
-                                        downloaded.toDouble(),
-                                        downloaded.toDouble(),
-                                        sourceLine = "Downloading live stream...downloaded: $downloadedTmpFolderSize, press stop and save, to stop downloading and save downloaded at any time...!"
-                                    ), task.also { item ->
-                                        item.taskState = VideoTaskState.DOWNLOADING
-                                        item.lineInfo = downloadedTmpFolderSize
-                                        item.downloadSize = downloaded
-                                        item.totalSize = downloaded
-                                    })
-                                showProgress(
-                                    taskId,
-                                    task.title,
-                                    99,
-                                    "Downloading Live Stream... $downloadedTmpFolderSize",
-                                    tmpFile
-                                )
+                                    val downloaded = lastTmpDirSize
+                                    saveProgress(
+                                        taskId, LineInfo(
+                                            "LIVE",
+                                            downloaded.toDouble(),
+                                            downloaded.toDouble(),
+                                            sourceLine = "Downloading live stream...downloaded: $downloadedTmpFolderSize, press stop and save, to stop downloading and save downloaded at any time...!"
+                                        ), task.also { item ->
+                                            item.taskState = VideoTaskState.DOWNLOADING
+                                            item.lineInfo = downloadedTmpFolderSize
+                                            item.downloadSize = downloaded
+                                            item.totalSize = downloaded
+                                        })
+                                    showProgress(
+                                        taskId,
+                                        task.title,
+                                        99,
+                                        "Downloading Live Stream... $downloadedTmpFolderSize",
+                                        tmpFile
+                                    )
+                                }
                             }
                         }
+                    },
+                    { throwable ->
+                        AppLogger.e("Failed to monitor youtube-dl progress for taskId=$taskId", throwable)
                     }
-                }
+                )
     }
 
     private fun handleError(
@@ -570,8 +575,6 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
         showLongRunningNotificationAsync(data.first, data.second)
     }
 
-
-    @SuppressLint("CheckResult")
     override fun finishWork(item: VideoTaskItem?) {
         if (getDone()) {
             try {
