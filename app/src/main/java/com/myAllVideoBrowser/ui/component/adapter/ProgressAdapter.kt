@@ -3,6 +3,8 @@ package com.myAllVideoBrowser.ui.component.adapter
 import android.content.Context
 import android.graphics.Color
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -16,22 +18,28 @@ import com.myAllVideoBrowser.data.local.room.entity.ProgressInfo
 import com.myAllVideoBrowser.databinding.ItemProgressBinding
 
 class ProgressAdapter(
-    private var progressInfos: List<ProgressInfo>,
-    private var videoListener: ProgressListener
-) : RecyclerView.Adapter<ProgressAdapter.ProgressViewHolder>() {
+    private val videoListener: ProgressListener
+) : ListAdapter<ProgressInfo, ProgressAdapter.ProgressViewHolder>(DIFF_CALLBACK) {
+
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ProgressInfo>() {
+            override fun areItemsTheSame(oldItem: ProgressInfo, newItem: ProgressInfo) =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: ProgressInfo, newItem: ProgressInfo) =
+                oldItem == newItem
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProgressViewHolder {
         val binding = DataBindingUtil.inflate<ItemProgressBinding>(
             LayoutInflater.from(parent.context), R.layout.item_progress, parent, false
         )
-
         return ProgressViewHolder(binding)
     }
 
-    override fun getItemCount() = progressInfos.size
-
     override fun onBindViewHolder(holder: ProgressViewHolder, position: Int) =
-        holder.bind(progressInfos[position], videoListener)
+        holder.bind(getItem(position), videoListener)
 
     class ProgressViewHolder(val binding: ItemProgressBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -40,17 +48,14 @@ class ProgressAdapter(
             val thumbnail = progressInfo.videoInfo.thumbnail
             val placeholder = R.drawable.ic_video_24dp
             val size = getScreenResolution(itemView.context)
-            val color =
-                MaterialColors.getColor(
-                    itemView.context,
-                    com.google.android.material.R.attr.colorSurfaceVariant,
-                    Color.YELLOW
-                )
+            val color = MaterialColors.getColor(
+                itemView.context,
+                com.google.android.material.R.attr.colorSurfaceVariant,
+                Color.YELLOW
+            )
 
-            with(binding)
-            {
+            with(binding) {
                 this.cardProgress.setCardBackgroundColor(color)
-
                 this.progressInfo = progressInfo
                 this.progressListener = progressListener
                 this.downloadId = progressInfo.downloadId
@@ -74,8 +79,7 @@ class ProgressAdapter(
     }
 
     fun setData(progressInfos: List<ProgressInfo>) {
-        this.progressInfos = progressInfos
-        notifyDataSetChanged()
+        submitList(progressInfos)
     }
 }
 

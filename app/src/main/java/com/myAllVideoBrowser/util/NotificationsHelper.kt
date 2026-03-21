@@ -1,11 +1,13 @@
 package com.myAllVideoBrowser.util
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.content.pm.PackageManager
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.myAllVideoBrowser.R
 import com.myAllVideoBrowser.ui.main.home.MainActivity
@@ -25,10 +27,7 @@ class NotificationsHelper(private val context: Context) {
         private const val CANCEL_ICON_RES = R.drawable.ic_cancel_24dp
     }
 
-    private val notificationManager =
-        checkNotNull(ContextCompat.getSystemService(context, NotificationManager::class.java)) {
-            "NotificationManager system service is unavailable"
-        }
+    private val notificationManager = NotificationManagerCompat.from(context)
 
     init {
         createChannel(context)
@@ -111,8 +110,13 @@ class NotificationsHelper(private val context: Context) {
         return Pair(task.mId.hashCode(), builder)
     }
 
+    @SuppressLint("MissingPermission")
     fun showNotification(builderPair: Pair<Int, NotificationCompat.Builder>) {
-        notificationManager.notify(builderPair.first, builderPair.second.build())
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationManager.notify(builderPair.first, builderPair.second.build())
+        }
     }
 
     fun hideNotification(id: Int) {
@@ -214,20 +218,16 @@ class NotificationsHelper(private val context: Context) {
     }
 
     private fun createChannel(appContext: Context) {
-        // Make a channel if necessary
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Create the NotificationChannel, but only on API 26+ because
-            // the NotificationChannel class is new and not in the support library
-            val name = appContext.applicationInfo.loadLabel(appContext.packageManager)
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance)
-            channel.setSound(null, null)
-
-            val channelName =
-                context.getString(com.myAllVideoBrowser.R.string.app_download_channel_id)
-            channel.description = channelName
-            // Add the channel
-            notificationManager.createNotificationChannel(channel)
-        }
+        val name = appContext.applicationInfo.loadLabel(appContext.packageManager)
+        val channelDescription = context.getString(R.string.app_download_channel_id)
+        val channel = NotificationChannelCompat.Builder(
+            NOTIFICATION_CHANNEL_ID,
+            NotificationManagerCompat.IMPORTANCE_HIGH
+        )
+            .setName(name)
+            .setDescription(channelDescription)
+            .setSound(null, null)
+            .build()
+        notificationManager.createNotificationChannel(channel)
     }
 }

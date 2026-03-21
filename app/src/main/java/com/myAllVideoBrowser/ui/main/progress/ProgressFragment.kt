@@ -50,7 +50,7 @@ class ProgressFragment : BaseFragment() {
     ): View {
         mainViewModel = mainActivity.mainViewModel
         progressViewModel = ViewModelProvider(this, viewModelFactory)[ProgressViewModel::class.java]
-        progressAdapter = ProgressAdapter(emptyList(), progressListener)
+        progressAdapter = ProgressAdapter(progressListener)
 
         val isDark = mainActivity.settingsViewModel.isDarkMode.get()
         val color = if (isDark) {

@@ -1,14 +1,15 @@
 package com.myAllVideoBrowser.util.proxy_utils
 
 import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.IntentCompat
 import com.myAllVideoBrowser.R
 import com.myAllVideoBrowser.data.local.model.Proxy
 import com.myAllVideoBrowser.ui.main.proxies.ProxiesViewModel
@@ -168,17 +169,11 @@ class ProxyService : Service() {
     }
 
     private fun Intent.getProxyHopsExtra(): List<ProxyHop> {
-        val serializedHops = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            getSerializableExtra(EXTRA_PROXY_HOPS, ArrayList::class.java)
-        } else {
-            getSerializableExtraCompat(EXTRA_PROXY_HOPS)
-        }
-
+        val serializedHops = IntentCompat.getSerializableExtra(
+            this, EXTRA_PROXY_HOPS, ArrayList::class.java
+        )
         return (serializedHops as? ArrayList<*>)?.filterIsInstance<ProxyHop>().orEmpty()
     }
-
-    @Suppress("DEPRECATION")
-    private fun Intent.getSerializableExtraCompat(name: String) = getSerializableExtra(name)
 
     /**
      * Helper function to start the foreground service with the correct type based on Android version.
@@ -214,18 +209,14 @@ class ProxyService : Service() {
     }
 
     private fun createNotification(): Notification {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val serviceChannel = NotificationChannel(
-                CHANNEL_ID,
-                getString(R.string.proxy_service_channel_name),
-                NotificationManager.IMPORTANCE_LOW
-            ).apply {
-                description = "Channel for the background proxy service."
-            }
-
-            val manager = getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(serviceChannel)
-        }
+        val channel = NotificationChannelCompat.Builder(
+            CHANNEL_ID,
+            NotificationManagerCompat.IMPORTANCE_LOW
+        )
+            .setName(getString(R.string.proxy_service_channel_name))
+            .setDescription("Channel for the background proxy service.")
+            .build()
+        NotificationManagerCompat.from(this).createNotificationChannel(channel)
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Proxy Service")

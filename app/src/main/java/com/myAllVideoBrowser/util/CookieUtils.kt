@@ -51,7 +51,7 @@ object CookieUtils {
         additionalUrl: String? = null
     ): File {
         // TODO: May be should remove this If
-        if (Build.VERSION.SDK_INT > 32) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S_V2) {
             val cookieFile =
                 File(chromeDefaultPathApi29More)
             if (cookieFile.exists() && !cookieFile.isFile) {
@@ -122,7 +122,7 @@ object CookieUtils {
     }
 
     private fun readCookiesForUrlFromDb(url: String): String {
-        val cookiesDbFile = if (Build.VERSION.SDK_INT > 28) {
+        val cookiesDbFile = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             File("${chromeDefaultPathApi29More}/Cookies")
         } else {
             File("${chromeDefaultPathApi28Less}/Cookies")
@@ -294,7 +294,7 @@ class ChromeBrowser : Browser() {
          */
         get() {
             val cookieStores = HashSet<File>()
-            val cookiesDbFile = if (Build.VERSION.SDK_INT > 28) {
+            val cookiesDbFile = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 File("${CookieUtils.chromeDefaultPathApi29More}/Cookies")
             } else {
                 File("${CookieUtils.chromeDefaultPathApi28Less}/Cookies")

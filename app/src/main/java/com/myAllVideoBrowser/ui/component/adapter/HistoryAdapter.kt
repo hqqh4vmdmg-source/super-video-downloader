@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.marlonlom.utilities.timeago.TimeAgo
 import com.github.marlonlom.utilities.timeago.TimeAgoMessages
@@ -25,28 +27,34 @@ interface HistoryListener {
 }
 
 class HistoryAdapter(
-    private var historyItems: List<HistoryItem>,
-    private var historyListener: HistoryListener
-) : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
+    private val historyListener: HistoryListener
+) : ListAdapter<HistoryItem, HistoryAdapter.HistoryViewHolder>(DIFF_CALLBACK) {
+
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<HistoryItem>() {
+            override fun areItemsTheSame(oldItem: HistoryItem, newItem: HistoryItem) =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: HistoryItem, newItem: HistoryItem) =
+                oldItem == newItem
+        }
+    }
 
     class HistoryViewHolder(val binding: ItemHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(historyItem: HistoryItem, historyListener: HistoryListener) {
-            with(binding)
-            {
+            with(binding) {
                 this.historyItem = historyItem
                 this.historyListener = historyListener
                 this.historyId = historyItem.id
                 this.tvTime.text = convertTimeToTimeAgo(historyItem.datetime)
 
                 if (historyItem.faviconBitmap() == null) {
-                    val bm =
-                        AppCompatResources.getDrawable(
-                            ContextUtils.getApplicationContext(),
-                            R.drawable.ic_browser
-                        )
-
+                    val bm = AppCompatResources.getDrawable(
+                        ContextUtils.getApplicationContext(),
+                        R.drawable.ic_browser
+                    )
                     this.favicon.setImageDrawable(bm)
                 }
 
@@ -58,7 +66,6 @@ class HistoryAdapter(
             val locale: Locale = Locale.getAvailableLocales().first()
             val messages: TimeAgoMessages =
                 TimeAgoMessages.Builder().withLocale(locale).build()
-
             return TimeAgo.using(time, messages)
         }
     }
@@ -68,17 +75,13 @@ class HistoryAdapter(
             LayoutInflater.from(parent.context),
             R.layout.item_history, parent, false
         )
-
         return HistoryViewHolder(binding)
     }
 
-    override fun getItemCount() = historyItems.size
-
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) =
-        holder.bind(historyItems[position], historyListener)
+        holder.bind(getItem(position), historyListener)
 
     fun setData(historyItems: List<HistoryItem>) {
-        this.historyItems = historyItems
-        notifyDataSetChanged()
+        submitList(historyItems)
     }
 }

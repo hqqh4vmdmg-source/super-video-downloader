@@ -55,8 +55,8 @@ class HistoryFragment : BaseFragment() {
         historyModel =
             ViewModelProvider(this, viewModelFactory)[HistoryViewModel::class.java]
 
-        historyAdapter = HistoryAdapter(emptyList(), historyListener)
-        searchHistoryAdapter = HistorySearchAdapter(emptyList(), searchHistoryListener)
+        historyAdapter = HistoryAdapter(historyListener)
+        searchHistoryAdapter = HistorySearchAdapter(searchHistoryListener)
         val color = getThemeBackgroundColor()
 
         dataBinding = FragmentHistoryBinding.inflate(inflater, container, false).apply {

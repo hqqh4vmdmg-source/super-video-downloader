@@ -304,7 +304,7 @@ class BrowserFragment : BaseFragment(), BrowserServicesProvider {
 
         tabsAdapter = TabsFragmentStateAdapter(emptyList())
 
-        drawerAdapter = WebTabsAdapter(emptyList(), tabsListener)
+        drawerAdapter = WebTabsAdapter(tabsListener)
 
         val webTabsManagerLayout =
             WrapContentLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

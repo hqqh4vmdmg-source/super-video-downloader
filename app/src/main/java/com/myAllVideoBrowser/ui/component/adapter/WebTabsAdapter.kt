@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.myAllVideoBrowser.R
 import com.myAllVideoBrowser.databinding.ItemWebTabButtonBinding
@@ -16,16 +18,24 @@ interface WebTabsListener {
 }
 
 class WebTabsAdapter(
-    private var webTabs: List<WebTab>,
-    private var webTabsListener: WebTabsListener
-) : RecyclerView.Adapter<WebTabsAdapter.WebTabsViewHolder>() {
+    private val webTabsListener: WebTabsListener
+) : ListAdapter<WebTab, WebTabsAdapter.WebTabsViewHolder>(DIFF_CALLBACK) {
+
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<WebTab>() {
+            override fun areItemsTheSame(oldItem: WebTab, newItem: WebTab) =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: WebTab, newItem: WebTab) =
+                oldItem == newItem
+        }
+    }
 
     class WebTabsViewHolder(val binding: ItemWebTabButtonBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(webTab: WebTab, webTabsListener: WebTabsListener) {
-            with(binding)
-            {
+            with(binding) {
                 val context = this.root.context
 
                 this.webTab = webTab
@@ -37,30 +47,20 @@ class WebTabsAdapter(
                     View.VISIBLE
                 }
                 if (webTab.getFavicon() == null && !webTab.isHome()) {
-                    val bm =
-                        AppCompatResources.getDrawable(
-                            context,
-                            R.drawable.public_24px
-                        )
-
+                    val bm = AppCompatResources.getDrawable(context, R.drawable.public_24px)
                     this.faviconTab.setImageDrawable(bm)
                 }
 
                 if (webTab.isHome()) {
-                    val bm =
-                        AppCompatResources.getDrawable(
-                            context,
-                            R.drawable.home_48px
-                        )
-
+                    val bm = AppCompatResources.getDrawable(context, R.drawable.home_48px)
                     this.faviconTab.setImageDrawable(bm)
                 }
 
                 if (!webTab.isHome()) {
-                    if (webTab.getTitle().isEmpty()) {
-                        this.tabTitle.text = webTab.getUrl()
+                    this.tabTitle.text = if (webTab.getTitle().isEmpty()) {
+                        webTab.getUrl()
                     } else {
-                        this.tabTitle.text = webTab.getTitle()
+                        webTab.getTitle()
                     }
                 }
 
@@ -74,17 +74,13 @@ class WebTabsAdapter(
             LayoutInflater.from(parent.context),
             R.layout.item_web_tab_button, parent, false
         )
-
         return WebTabsViewHolder(binding)
     }
 
-    override fun getItemCount() = webTabs.size
-
     override fun onBindViewHolder(holder: WebTabsViewHolder, position: Int) =
-        holder.bind(webTabs[position], webTabsListener)
+        holder.bind(getItem(position), webTabsListener)
 
     fun setData(webTabs: List<WebTab>) {
-        this.webTabs = webTabs
-        notifyDataSetChanged()
+        submitList(webTabs)
     }
 }

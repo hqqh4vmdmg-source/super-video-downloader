@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
@@ -21,35 +23,40 @@ import com.myAllVideoBrowser.databinding.ItemVideoBinding
 import com.myAllVideoBrowser.util.FileUtil
 
 class VideoAdapter(
-    private var localVideos: List<LocalVideo>,
     private val videoListener: VideoListener,
     private val fileUtil: FileUtil
-) : RecyclerView.Adapter<VideoAdapter.VideoViewHolder>() {
+) : ListAdapter<LocalVideo, VideoAdapter.VideoViewHolder>(DIFF_CALLBACK) {
+
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<LocalVideo>() {
+            override fun areItemsTheSame(oldItem: LocalVideo, newItem: LocalVideo) =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: LocalVideo, newItem: LocalVideo) =
+                oldItem == newItem
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
         val binding = DataBindingUtil.inflate<ItemVideoBinding>(
             LayoutInflater.from(parent.context), R.layout.item_video, parent, false
         )
-
         return VideoViewHolder(binding, fileUtil)
     }
 
-    override fun getItemCount() = localVideos.size
-
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) =
-        holder.bind(localVideos[position], videoListener)
+        holder.bind(getItem(position), videoListener)
 
     class VideoViewHolder(var binding: ItemVideoBinding, var fileUtil: FileUtil) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(localVideo: LocalVideo, videoListener: VideoListener) {
             val size = getScreenResolution(itemView.context)
-            val color =
-                MaterialColors.getColor(
-                    itemView.context,
-                    com.google.android.material.R.attr.colorSurfaceVariant,
-                    Color.YELLOW
-                )
+            val color = MaterialColors.getColor(
+                itemView.context,
+                com.google.android.material.R.attr.colorSurfaceVariant,
+                Color.YELLOW
+            )
 
             with(binding) {
                 this.localVideo = localVideo
@@ -73,8 +80,7 @@ class VideoAdapter(
     }
 
     fun setData(localVideos: List<LocalVideo>) {
-        this.localVideos = localVideos
-        notifyDataSetChanged()
+        submitList(localVideos)
     }
 }
 

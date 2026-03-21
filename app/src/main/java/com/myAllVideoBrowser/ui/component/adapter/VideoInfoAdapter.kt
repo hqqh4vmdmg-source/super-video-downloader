@@ -9,7 +9,9 @@ import android.view.inputmethod.EditorInfo
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.Observable
 import androidx.databinding.Observable.OnPropertyChangedCallback
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.myAllVideoBrowser.R
 import com.myAllVideoBrowser.data.local.room.entity.VideoInfo
@@ -19,12 +21,21 @@ import com.myAllVideoBrowser.util.AppUtil
 import com.myAllVideoBrowser.util.FileUtil
 
 class VideoInfoAdapter(
-    private var videoInfoList: List<VideoInfo>,
     private val model: VideoDetectionTabViewModel,
     private val downloadVideoListener: DownloadTabListener,
     private val appUtil: AppUtil
 ) :
-    RecyclerView.Adapter<VideoInfoAdapter.VideoInfoViewHolder>() {
+    ListAdapter<VideoInfo, VideoInfoAdapter.VideoInfoViewHolder>(DIFF_CALLBACK) {
+
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<VideoInfo>() {
+            override fun areItemsTheSame(oldItem: VideoInfo, newItem: VideoInfo) =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: VideoInfo, newItem: VideoInfo) =
+                oldItem == newItem
+        }
+    }
 
     class VideoInfoViewHolder(
         val binding: ItemVideoInfoBinding,
@@ -202,7 +213,7 @@ class VideoInfoAdapter(
     }
 
     override fun onBindViewHolder(holder: VideoInfoViewHolder, position: Int) {
-        val videoInfo = videoInfoList[position]
+        val videoInfo = getItem(position)
         holder.bind(videoInfo)
     }
 
@@ -217,10 +228,9 @@ class VideoInfoAdapter(
     }
 
 
-    override fun getItemCount(): Int = videoInfoList.size
+    override fun getItemCount(): Int = currentList.size
 
     fun setData(localVideos: List<VideoInfo>) {
-        this.videoInfoList = localVideos.reversed()
-        notifyDataSetChanged()
+        submitList(localVideos.reversed())
     }
 }

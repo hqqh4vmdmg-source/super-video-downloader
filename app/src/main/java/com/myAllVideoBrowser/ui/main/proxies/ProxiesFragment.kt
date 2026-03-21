@@ -56,7 +56,7 @@ class ProxiesFragment : BaseFragment() {
     ): View {
         proxiesViewModel = mainActivity.proxiesViewModel
 
-        proxiesAdapter = ProxiesAdapter(mutableListOf(), proxiesListener)
+        proxiesAdapter = ProxiesAdapter(proxiesListener)
 
         dataBinding = FragmentProxiesBinding.inflate(inflater, container, false).apply {
             this.viewModel = proxiesViewModel

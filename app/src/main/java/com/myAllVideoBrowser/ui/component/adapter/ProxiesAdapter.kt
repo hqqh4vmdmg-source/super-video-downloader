@@ -1,9 +1,10 @@
 package com.myAllVideoBrowser.ui.component.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.myAllVideoBrowser.R
 import com.myAllVideoBrowser.data.local.model.Proxy
@@ -15,17 +16,23 @@ interface ProxiesListener {
 }
 
 class ProxiesAdapter(
-    private var proxiesList: List<Proxy>,
     private val proxiesListener: ProxiesListener,
-) : RecyclerView.Adapter<ProxiesAdapter.ProxiesViewHolder>() {
+) : ListAdapter<Proxy, ProxiesAdapter.ProxiesViewHolder>(DIFF_CALLBACK) {
+
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Proxy>() {
+            override fun areItemsTheSame(oldItem: Proxy, newItem: Proxy) =
+                oldItem.host == newItem.host && oldItem.port == newItem.port
+
+            override fun areContentsTheSame(oldItem: Proxy, newItem: Proxy) =
+                oldItem == newItem
+        }
+    }
+
     class ProxiesViewHolder(val binding: ItemProxiesBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(
-            proxy: Proxy,
-            proxiesListener: ProxiesListener,
-        ) {
-            with(binding)
-            {
+        fun bind(proxy: Proxy, proxiesListener: ProxiesListener) {
+            with(binding) {
                 this.proxy = proxy
                 this.proxiesListener = proxiesListener
                 executePendingBindings()
@@ -34,27 +41,17 @@ class ProxiesAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProxiesViewHolder {
-
         val binding = DataBindingUtil.inflate<ItemProxiesBinding>(
             LayoutInflater.from(parent.context), R.layout.item_proxies, parent, false
         )
-
         return ProxiesViewHolder(binding)
     }
 
-    override fun getItemCount(): Int {
-        return proxiesList.size
-    }
-
     override fun onBindViewHolder(holder: ProxiesViewHolder, position: Int) {
-        holder.bind(
-            proxiesList[position],
-            proxiesListener,
-        )
+        holder.bind(getItem(position), proxiesListener)
     }
 
     fun setData(proxies: List<Proxy>) {
-        this.proxiesList = proxies.filter { it != Proxy.noProxy() }
-        notifyDataSetChanged()
+        submitList(proxies.filter { it != Proxy.noProxy() })
     }
 }
