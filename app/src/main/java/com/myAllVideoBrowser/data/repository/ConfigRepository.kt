@@ -4,15 +4,14 @@ import androidx.annotation.VisibleForTesting
 import com.myAllVideoBrowser.data.local.room.entity.SupportedPage
 import com.myAllVideoBrowser.di.qualifier.LocalData
 import com.myAllVideoBrowser.di.qualifier.RemoteData
-import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 import javax.inject.Singleton
 
 interface ConfigRepository {
 
-    fun getSupportedPages(): Flowable<List<SupportedPage>>
+    suspend fun getSupportedPages(): List<SupportedPage>
 
-    fun saveSupportedPages(supportedPages: List<SupportedPage>)
+    suspend fun saveSupportedPages(supportedPages: List<SupportedPage>)
 }
 
 @Singleton
@@ -24,40 +23,24 @@ class ConfigRepositoryImpl @Inject constructor(
     @VisibleForTesting
     internal var cachedSupportedPages = listOf<SupportedPage>()
 
-    override fun getSupportedPages(): Flowable<List<SupportedPage>> {
+    override suspend fun getSupportedPages(): List<SupportedPage> {
+        if (cachedSupportedPages.isNotEmpty()) return cachedSupportedPages
 
-        return if (cachedSupportedPages.isNotEmpty()) {
-            Flowable.just(cachedSupportedPages)
-        } else {
-            getAndCacheLocalSupportedPages()
-                .flatMap { supportedPages ->
-                    if (supportedPages.isEmpty()) {
-                        getAndSaveRemoteSupportedPages()
-                    } else {
-                        Flowable.just(supportedPages)
-                    }
-                }
+        val local = localDataSource.getSupportedPages()
+        if (local.isNotEmpty()) {
+            cachedSupportedPages = local
+            return local
         }
+
+        val remote = remoteDataSource.getSupportedPages()
+        localDataSource.saveSupportedPages(remote)
+        cachedSupportedPages = remote
+        return remote
     }
 
-    override fun saveSupportedPages(supportedPages: List<SupportedPage>) {
+    override suspend fun saveSupportedPages(supportedPages: List<SupportedPage>) {
         remoteDataSource.saveSupportedPages(supportedPages)
         localDataSource.saveSupportedPages(supportedPages)
         cachedSupportedPages = supportedPages
-    }
-
-    private fun getAndCacheLocalSupportedPages(): Flowable<List<SupportedPage>> {
-        return localDataSource.getSupportedPages()
-            .doOnNext { supportedPages ->
-                cachedSupportedPages = supportedPages
-            }
-    }
-
-    private fun getAndSaveRemoteSupportedPages(): Flowable<List<SupportedPage>> {
-        return remoteDataSource.getSupportedPages()
-            .doOnNext { supportedPages ->
-                localDataSource.saveSupportedPages(supportedPages)
-                cachedSupportedPages = supportedPages
-            }
     }
 }

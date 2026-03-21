@@ -463,8 +463,7 @@ class WebTabFragment : BaseWebTabFragment() {
         override fun afterTextChanged(s: Editable) {
             val input = s.toString()
 
-            tabViewModel.showTabSuggestions()
-            tabViewModel.tabPublishSubject.onNext(input)
+            tabViewModel.showTabSuggestions(input)
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

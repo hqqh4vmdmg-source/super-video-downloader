@@ -14,7 +14,6 @@ import com.myAllVideoBrowser.util.downloaders.generic_downloader.GenericDownload
 import com.myAllVideoBrowser.util.downloaders.generic_downloader.models.VideoTaskItem
 import com.myAllVideoBrowser.util.proxy_utils.CustomProxyController
 import com.myAllVideoBrowser.util.proxy_utils.OkHttpProxyClient
-import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -43,8 +42,6 @@ open class GenericDownloadWorkerWrapper(
 
     @Inject
     lateinit var sharedPrefHelper: SharedPrefHelper
-
-    private var disposable: Disposable? = null
 
     private val notificationJob = SupervisorJob()
     private val notificationScope = CoroutineScope(Dispatchers.IO + notificationJob)
@@ -102,7 +99,6 @@ open class GenericDownloadWorkerWrapper(
 
     override fun finishWork(item: VideoTaskItem?) {
         setDone()
-        disposable?.dispose()
         notificationScope.cancel()
     }
 }

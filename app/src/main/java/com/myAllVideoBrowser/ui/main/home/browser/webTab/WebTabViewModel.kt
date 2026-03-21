@@ -13,26 +13,20 @@ import com.myAllVideoBrowser.data.local.room.entity.HistoryItem
 import com.myAllVideoBrowser.data.repository.HistoryRepository
 import com.myAllVideoBrowser.ui.main.base.BaseViewModel
 import com.myAllVideoBrowser.util.SingleLiveEvent
-import com.myAllVideoBrowser.util.scheduler.BaseSchedulers
-import io.reactivex.rxjava3.core.BackpressureStrategy
-import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class WebTabViewModel @Inject constructor(
     private val historyRepository: HistoryRepository,
-    private val baseSchedulers: BaseSchedulers,
 ) : BaseViewModel() {
     val isTabInputFocused = ObservableBoolean(false)
     val changeTabFocusEvent = SingleLiveEvent<Boolean>()
     val thisTabIndex = ObservableInt(-1)
     val isDownloadDialogShown = ObservableBoolean(false)
-    lateinit var tabPublishSubject: PublishSubject<String>
     var listTabSuggestions: ObservableField<MutableList<HistoryItem>> = ObservableField(
         mutableListOf()
     )
@@ -63,8 +57,6 @@ class WebTabViewModel @Inject constructor(
     }
 
     override fun start() {
-        tabPublishSubject = PublishSubject.create()
-
         isShowProgress.addOnPropertyChangedCallback(showProgressCallBack)
     }
 
@@ -92,41 +84,23 @@ class WebTabViewModel @Inject constructor(
         }
     }
 
-    fun showTabSuggestions() {
-        if (tabSuggestionJob != null && tabSuggestionJob?.isActive == true) {
-            tabSuggestionJob?.cancel()
-        }
+    fun showTabSuggestions(input: String) {
+        tabSuggestionJob?.cancel()
         tabSuggestionJob = viewModelScope.launch(Dispatchers.IO) {
+            delay(300)
             try {
-                withContext(this.coroutineContext) {
-                    val list = getListTabSuggestions().blockingFirst().reversed()
-                    if (list.size > 50) {
-                        listTabSuggestions.set(list.subList(0, 50).toMutableList())
-                    } else {
-                        listTabSuggestions.set(list.toMutableList())
-                    }
+                val list = historyRepository.getAllHistory().first()
+                    .filter { it.url.contains(input) }
+                    .reversed()
+                if (list.size > 50) {
+                    listTabSuggestions.set(list.subList(0, 50).toMutableList())
+                } else {
+                    listTabSuggestions.set(list.toMutableList())
                 }
             } catch (e: Throwable) {
                 AppLogger.e("Caught exception", e)
             }
         }
-    }
-
-    private fun getListTabSuggestions(): Flowable<List<HistoryItem>> {
-        return Flowable.combineLatest(
-            tabPublishSubject.debounce(300, TimeUnit.MILLISECONDS)
-                .toFlowable(BackpressureStrategy.LATEST), historyRepository.getAllHistory().take(1)
-        ) { input, suggestions ->
-            tabUrl.set(input)
-
-            val listSuggestions = suggestions.filter { historyItem ->
-                historyItem.url.contains(
-                    input
-                )
-            }
-            listSuggestions.toList()
-        }.take(1).observeOn(baseSchedulers.single)
-            .subscribeOn(baseSchedulers.computation) // MAIN_TH
     }
 
     fun changeTabFocus(isFocus: Boolean) {

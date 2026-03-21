@@ -66,7 +66,7 @@ class HlsDownloader(
             val segmentDownloader = SegmentDownloader(httpClient, headers, controller)
 
             // --- Download Initialization Segments (for fMP4) ---
-            if (isVideoFmp4) {
+            if (isVideoFmp4) run {
                 val initSegment = (videoSegments?.first() as? HlsPlaylistParser.UrlMediaSegment)?.initializationSegment ?: return@run
                 val initFile = downloadDir.resolve("init_video.mp4")
                 if (!initFile.exists() || initFile.length() == 0L) {
@@ -75,7 +75,7 @@ class HlsDownloader(
                     hlsTotalBytesDownloaded.addAndGet(downloadedBytes)
                 }
             }
-            if (isAudioFmp4) {
+            if (isAudioFmp4) run {
                 val initSegment = (audioSegments?.first() as? HlsPlaylistParser.UrlMediaSegment)?.initializationSegment ?: return@run
                 val initFile = downloadDir.resolve("init_audio.mp4")
                 if (!initFile.exists() || initFile.length() == 0L) {

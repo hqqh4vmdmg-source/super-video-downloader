@@ -6,6 +6,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.File
+import java.io.IOException
 import java.io.RandomAccessFile
 import java.net.URL
 import java.nio.ByteBuffer

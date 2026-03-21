@@ -162,7 +162,6 @@ class BrowserHomeFragment : BaseWebTabFragment() {
             if (!(input.startsWith("http://") || input.startsWith("https://"))) {
                 homeViewModel.showSuggestions()
             }
-            homeViewModel.homePublishSubject.onNext(input)
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

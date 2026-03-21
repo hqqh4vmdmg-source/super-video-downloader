@@ -6,6 +6,7 @@ import com.myAllVideoBrowser.data.local.room.entity.PageInfo
 import com.myAllVideoBrowser.data.repository.TopPagesRepository
 import com.myAllVideoBrowser.util.SharedPrefHelper
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,7 +17,7 @@ class TopPagesLocalDataSource @Inject constructor(
 ) : TopPagesRepository {
 
     override suspend fun getTopPages(): List<PageInfo> {
-        val localBookmarks = pageDao.getPageInfos().blockingFirst(emptyList())
+        val localBookmarks = pageDao.getPageInfos().first()
         if (localBookmarks.isEmpty()) {
             val isFirstStart = sharedPrefHelper.getIsFirstStart()
             if (isFirstStart) {
@@ -30,16 +31,16 @@ class TopPagesLocalDataSource @Inject constructor(
         return localBookmarks
     }
 
-    override fun saveTopPage(pageInfo: PageInfo) {
+    override suspend fun saveTopPage(pageInfo: PageInfo) {
         pageDao.insertProgressInfo(pageInfo)
     }
 
-    override fun replaceBookmarksWith(pageInfos: List<PageInfo>) {
+    override suspend fun replaceBookmarksWith(pageInfos: List<PageInfo>) {
         pageDao.deleteAll()
         pageDao.insertAllProgressInfo(pageInfos)
     }
 
-    override fun deletePageInfo(pageInfo: PageInfo) {
+    override suspend fun deletePageInfo(pageInfo: PageInfo) {
         pageDao.deleteProgressInfo(pageInfo)
     }
 

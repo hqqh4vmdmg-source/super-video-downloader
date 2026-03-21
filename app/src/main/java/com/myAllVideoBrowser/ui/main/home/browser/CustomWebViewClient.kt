@@ -24,6 +24,7 @@ import com.myAllVideoBrowser.util.CookieUtils
 import com.myAllVideoBrowser.util.SingleLiveEvent
 import com.myAllVideoBrowser.util.VideoUtils
 import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import java.io.ByteArrayInputStream
@@ -68,7 +69,7 @@ class CustomWebViewClient(
         val userAgent = view?.settings?.userAgentString ?: tabViewModel.userAgent.get()
 
         if (url != null && lastSavedHistoryUrl != url) {
-            historyModel.viewModelScope.launch(historyModel.executorSingleHistory) {
+            historyModel.viewModelScope.launch(Dispatchers.IO) {
                 val icon = try {
                     FaviconUtils.getEncodedFaviconFromUrl(
                         okHttpProxyClient.getProxyOkHttpClient(), url

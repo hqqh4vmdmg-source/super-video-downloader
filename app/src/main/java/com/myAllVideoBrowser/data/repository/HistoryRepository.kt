@@ -2,38 +2,30 @@ package com.myAllVideoBrowser.data.repository
 
 import com.myAllVideoBrowser.data.local.room.entity.HistoryItem
 import com.myAllVideoBrowser.di.qualifier.LocalData
-import io.reactivex.rxjava3.core.Flowable
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 interface HistoryRepository {
-    fun getAllHistory() : Flowable<List<HistoryItem>>
+    fun getAllHistory(): Flow<List<HistoryItem>>
 
-    fun saveHistory(history: HistoryItem)
+    suspend fun saveHistory(history: HistoryItem)
 
-    fun deleteHistory(history: HistoryItem)
+    suspend fun deleteHistory(history: HistoryItem)
 
-    fun deleteAllHistory()
+    suspend fun deleteAllHistory()
 }
 
 @Singleton
 class HistoryRepositoryImpl @Inject constructor(
     @param:LocalData private val localDataSource: HistoryRepository
 ) : HistoryRepository {
-    override fun getAllHistory(): Flowable<List<HistoryItem>> {
-        return localDataSource.getAllHistory()
-    }
+    override fun getAllHistory(): Flow<List<HistoryItem>> = localDataSource.getAllHistory()
 
-    override fun saveHistory(history: HistoryItem) {
-        localDataSource.saveHistory(history)
-    }
+    override suspend fun saveHistory(history: HistoryItem) = localDataSource.saveHistory(history)
 
-    override fun deleteHistory(history: HistoryItem) {
+    override suspend fun deleteHistory(history: HistoryItem) =
         localDataSource.deleteHistory(history)
-    }
 
-    override fun deleteAllHistory() {
-        localDataSource.deleteAllHistory()
-    }
-
+    override suspend fun deleteAllHistory() = localDataSource.deleteAllHistory()
 }

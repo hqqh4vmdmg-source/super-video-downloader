@@ -7,11 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.myAllVideoBrowser.data.local.room.entity.HistoryItem
 import com.myAllVideoBrowser.data.repository.HistoryRepository
 import com.myAllVideoBrowser.ui.main.base.BaseViewModel
-import com.myAllVideoBrowser.util.scheduler.BaseSchedulers
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
 import javax.inject.Inject
 
 class HistoryViewModel @Inject constructor(
@@ -27,12 +26,6 @@ class HistoryViewModel @Inject constructor(
 
     val isLoadingHistory = ObservableField(true)
 
-    val executorSingleHistory = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-
-    private val historyExecutor = Executors.newFixedThreadPool(1).asCoroutineDispatcher()
-
-    private val additionalExecutor = Executors.newFixedThreadPool(1).asCoroutineDispatcher()
-
     override fun start() {
         fetchAllHistory()
     }
@@ -42,16 +35,19 @@ class HistoryViewModel @Inject constructor(
 
     private fun fetchAllHistory() {
         isLoadingHistory.set(true)
-
-        viewModelScope.launch(additionalExecutor) {
-            val history = historyRepository.getAllHistory().blockingFirst()
-            historyItems.set(history)
-            isLoadingHistory.set(false)
+        viewModelScope.launch {
+            historyRepository.getAllHistory()
+                .flowOn(Dispatchers.IO)
+                .catch { e -> AppLogger.e("Error fetching history", e) }
+                .collect { history ->
+                    historyItems.set(history)
+                    isLoadingHistory.set(false)
+                }
         }
     }
 
     fun saveHistory(historyItem: HistoryItem) {
-        viewModelScope.launch(historyExecutor) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 historyRepository.saveHistory(historyItem)
             } catch (e: Throwable) {
@@ -61,7 +57,7 @@ class HistoryViewModel @Inject constructor(
     }
 
     fun deleteHistory(historyItem: HistoryItem) {
-        viewModelScope.launch(historyExecutor) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val newItems = historyItems.get()?.filter { it.id != historyItem.id }
                 historyItems.set(newItems)
@@ -84,7 +80,7 @@ class HistoryViewModel @Inject constructor(
     }
 
     fun clearHistory() {
-        viewModelScope.launch(historyExecutor) {
+        viewModelScope.launch(Dispatchers.IO) {
             isLoadingHistory.set(true)
             historyRepository.deleteAllHistory()
             historyItems.set(emptyList())

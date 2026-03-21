@@ -27,6 +27,8 @@ import java.io.File
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParameters) :
     GenericDownloadWorkerWrapper(appContext, workerParams) {
@@ -162,7 +164,7 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
         saveProgress(
             taskId,
             line = LineInfo(taskId, 0.0, 0.0, sourceLine = "Starting..."),
-            task.also { it.taskState = VideoTaskState.DOWNLOADING }).blockingFirst(Unit)
+            task.also { it.taskState = VideoTaskState.DOWNLOADING })
 
         downloadJobDisposable?.dispose()
 
@@ -266,7 +268,7 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
 
                     saveProgress(
                         taskId, lineInfo, task
-                    ).blockingFirst(Unit)
+                    )
                     showProgress(
                         taskId, task.title, pr.toInt(), line, tmpFile
                     )
@@ -433,7 +435,7 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
                                         item.lineInfo = downloadedTmpFolderSize
                                         item.downloadSize = downloaded
                                         item.totalSize = downloaded
-                                    }).blockingFirst(Unit)
+                                    })
                                 showProgress(
                                     taskId,
                                     task.title,
@@ -611,7 +613,7 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
 
         saveProgress(
             taskId, line = LineInfo(taskId, 0.0, 0.0, sourceLine = item.errorMessage ?: ""), item
-        ).blockingFirst(Unit)
+        )
         setDone()
 
         try {
@@ -627,53 +629,52 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
 
     private fun saveProgress(
         taskId: String, line: LineInfo? = null, task: VideoTaskItem
-    ): Observable<Unit> {
+    ) {
         if (getDone() && task.taskState == VideoTaskState.DOWNLOADING) {
             AppLogger.d(
                 "saveProgress task returned cause DONE!!!"
             )
-            return Observable.empty()
+            return
         }
         val isBytesNoTouch = line?.total == null || line.total == 0.0
         val iProgressUpdate = task.downloadSize.toInt() > 0
 
-        return progressRepository.getProgressInfos().take(1).toObservable()
-            .flatMap { progressList ->
-                val dbTask = progressList.find { it.id == taskId }
+        runBlocking {
+            val progressList = progressRepository.getProgressInfos().first()
+            val dbTask = progressList.find { it.id == taskId }
 
-                if (!isBytesNoTouch) {
-                    dbTask?.progressTotal = (line?.total ?: task.totalSize).toLong()
-                }
-
-                if (task.taskState != VideoTaskState.SUCCESS) {
-                    if (!isBytesNoTouch && iProgressUpdate) {
-                        dbTask?.progressDownloaded = task.downloadSize
-                    }
-                } else {
-                    dbTask?.progressDownloaded = dbTask?.progressTotal ?: -1
-                }
-
-                dbTask?.fragmentsTotal = line?.fragTotal ?: 1
-                dbTask?.fragmentsDownloaded = line?.fragDownloaded ?: 0
-                dbTask?.downloadStatus = task.taskState
-
-                dbTask?.infoLine = line?.sourceLine ?: ""
-
-                if (line?.id == "LIVE" && dbTask?.isLive != true) {
-                    dbTask?.isLive = true
-                }
-
-                if (dbTask != null) {
-                    if (getDone() && task.taskState == VideoTaskState.DOWNLOADING) {
-                        AppLogger.d(
-                            "saveProgress task returned cause DONE!!!"
-                        )
-                    } else {
-                        progressRepository.saveProgressInfo(dbTask)
-                    }
-                }
-                Observable.empty()
+            if (!isBytesNoTouch) {
+                dbTask?.progressTotal = (line?.total ?: task.totalSize).toLong()
             }
+
+            if (task.taskState != VideoTaskState.SUCCESS) {
+                if (!isBytesNoTouch && iProgressUpdate) {
+                    dbTask?.progressDownloaded = task.downloadSize
+                }
+            } else {
+                dbTask?.progressDownloaded = dbTask?.progressTotal ?: -1
+            }
+
+            dbTask?.fragmentsTotal = line?.fragTotal ?: 1
+            dbTask?.fragmentsDownloaded = line?.fragDownloaded ?: 0
+            dbTask?.downloadStatus = task.taskState
+
+            dbTask?.infoLine = line?.sourceLine ?: ""
+
+            if (line?.id == "LIVE" && dbTask?.isLive != true) {
+                dbTask?.isLive = true
+            }
+
+            if (dbTask != null) {
+                if (getDone() && task.taskState == VideoTaskState.DOWNLOADING) {
+                    AppLogger.d(
+                        "saveProgress task returned cause DONE!!!"
+                    )
+                } else {
+                    progressRepository.saveProgressInfo(dbTask)
+                }
+            }
+        }
     }
 
     private fun deserializeVideoFormat(taskId: String): VideoFormatEntity {

@@ -15,11 +15,11 @@ import javax.inject.Singleton
 interface TopPagesRepository {
     suspend fun getTopPages(): List<PageInfo>
 
-    fun saveTopPage(pageInfo: PageInfo)
+    suspend fun saveTopPage(pageInfo: PageInfo)
 
-    fun replaceBookmarksWith(pageInfos: List<PageInfo>)
+    suspend fun replaceBookmarksWith(pageInfos: List<PageInfo>)
 
-    fun deletePageInfo(pageInfo: PageInfo)
+    suspend fun deletePageInfo(pageInfo: PageInfo)
 
     suspend fun updateLocalStorageFavicons(): Flow<PageInfo>
 }
@@ -34,15 +34,15 @@ class TopPagesRepositoryImpl @Inject constructor(
         return localDataSource.getTopPages()
     }
 
-    override fun saveTopPage(pageInfo: PageInfo) {
+    override suspend fun saveTopPage(pageInfo: PageInfo) {
         localDataSource.saveTopPage(pageInfo)
     }
 
-    override fun replaceBookmarksWith(pageInfos: List<PageInfo>) {
+    override suspend fun replaceBookmarksWith(pageInfos: List<PageInfo>) {
         localDataSource.replaceBookmarksWith(pageInfos)
     }
 
-    override fun deletePageInfo(pageInfo: PageInfo) {
+    override suspend fun deletePageInfo(pageInfo: PageInfo) {
         localDataSource.deletePageInfo(pageInfo)
     }
 

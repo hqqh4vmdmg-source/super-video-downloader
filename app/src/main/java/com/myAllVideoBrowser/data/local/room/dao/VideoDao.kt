@@ -5,14 +5,13 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.myAllVideoBrowser.data.local.room.entity.VideoInfo
-import io.reactivex.rxjava3.core.Maybe
 
 @Dao
 interface VideoDao {
 
     @Query("SELECT * FROM VideoInfo WHERE originalUrl = :url")
-    fun getVideoById(url: String): Maybe<VideoInfo>
+    suspend fun getVideoById(url: String): VideoInfo?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertVideo(videoInfo: VideoInfo)
+    suspend fun insertVideo(videoInfo: VideoInfo)
 }
