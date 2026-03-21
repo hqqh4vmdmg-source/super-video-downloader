@@ -1,1 +1,0 @@
-Android video/audio downloader app with built-in browser, download manager, player, proxy support, and Go-based V2Ray integration. Single app module in /app. Tech stack: Kotlin-first Android Views + DataBinding, MVVM + repository pattern, Room, Dagger 2, coroutines + RxJava, Media3, OkHttp/Retrofit, and Go native libraries for proxy support.

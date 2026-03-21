@@ -1,1 +1,0 @@
-Before finishing a task, run targeted Gradle verification from repository root. A proven combo is ./gradlew --no-daemon :app:testDebugUnitTest :app:lintDebug. For binding/build changes, also run ./gradlew --no-daemon :app:compileDebugJavaWithJavac. Review git diff to keep changes surgical.

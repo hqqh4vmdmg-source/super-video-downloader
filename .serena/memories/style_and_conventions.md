@@ -1,1 +1,0 @@
-Repository uses Kotlin-first Android code with MVVM and repository-style separation. UI still uses Android Views with DataBinding rather than Compose. Binding adapters live under app/src/main/java/com/myAllVideoBrowser/ui/component/binding. Data binding for Kotlin BindingAdapters requires kapt in addition to KSP-based processors used elsewhere in the module.
