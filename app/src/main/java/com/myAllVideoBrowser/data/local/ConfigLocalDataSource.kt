@@ -14,6 +14,6 @@ class ConfigLocalDataSource @Inject constructor(
     override suspend fun getSupportedPages(): List<SupportedPage> = configDao.getSupportedPages()
 
     override suspend fun saveSupportedPages(supportedPages: List<SupportedPage>) {
-        supportedPages.forEach { configDao.insertSupportedPage(it) }
+        configDao.insertAllSupportedPages(supportedPages)
     }
 }
