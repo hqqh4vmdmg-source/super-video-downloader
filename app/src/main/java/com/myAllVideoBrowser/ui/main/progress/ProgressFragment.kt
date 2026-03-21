@@ -54,7 +54,7 @@ class ProgressFragment : BaseFragment() {
 
         val isDark = mainActivity.settingsViewModel.isDarkMode.get()
         val color = if (isDark) {
-            MaterialColors.getColor(requireContext(), R.attr.editTextColor, Color.YELLOW)
+            MaterialColors.getColor(requireContext(), android.R.attr.editTextColor, Color.YELLOW)
         } else {
             null
         }

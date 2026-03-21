@@ -5,8 +5,7 @@ import org.gradle.process.ExecOperations
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    id("org.jetbrains.kotlin.kapt")
+    alias(libs.plugins.kotlin.legacy.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.allopen)
     alias(libs.plugins.kotlin.serialization)
@@ -196,12 +195,6 @@ android {
         abortOnError = false
     }
 
-    // Source Sets
-    sourceSets {
-        getByName("main") {
-            jniLibs.srcDir("src/main/jniLibs")
-        }
-    }
 }
 
 // =========================================================================

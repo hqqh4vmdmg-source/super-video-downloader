@@ -1,8 +1,8 @@
 [versions]
 # Android and Gradle
-gradlePlugin = "8.13.2"
+gradlePlugin = "9.1.0"
 kotlin = "2.2.10"
-ksp = "2.2.10-2.0.2"
+ksp = "2.3.6"
 
 # AndroidX Core
 appcompat = "1.7.1"
@@ -213,7 +213,7 @@ testing = ["junit", "mockitoCore", "mockitoAndroid", "mockitoKotlin", "espressoC
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "gradlePlugin" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-legacy-kapt = { id = "com.android.legacy-kapt", version.ref = "gradlePlugin" }
 kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

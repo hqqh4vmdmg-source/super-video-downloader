@@ -79,11 +79,10 @@ data class ProgressInfo(
         if (id != other.id) return false
         if (downloadId != other.downloadId) return false
         if (videoInfo != other.videoInfo) return false
-        if (bytesDownloaded != other.bytesDownloaded) return false
-        if (bytesTotal != other.bytesTotal) return false
         if (progressDownloaded != other.progressDownloaded) return false
-        if (progressTotal != other.progressDownloaded) return false
+        if (progressTotal != other.progressTotal) return false
         if (downloadStatus != other.downloadStatus) return false
+        if (isLive != other.isLive) return false
         if (isM3u8 != other.isM3u8) return false
         if (fragmentsDownloaded != other.fragmentsDownloaded) return false
         if (fragmentsTotal != other.fragmentsTotal) return false
@@ -97,11 +96,10 @@ data class ProgressInfo(
         var result = id.hashCode()
         result = 31 * result + downloadId.hashCode()
         result = 31 * result + videoInfo.hashCode()
-        result = 31 * result + bytesDownloaded
-        result = 31 * result + bytesTotal
         result = 31 * result + progressDownloaded.hashCode()
         result = 31 * result + progressTotal.hashCode()
         result = 31 * result + downloadStatus
+        result = 31 * result + isLive.hashCode()
         result = 31 * result + isM3u8.hashCode()
         result = 31 * result + fragmentsDownloaded
         result = 31 * result + fragmentsTotal

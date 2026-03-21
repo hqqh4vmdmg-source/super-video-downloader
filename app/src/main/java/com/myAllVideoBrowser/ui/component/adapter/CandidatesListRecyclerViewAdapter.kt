@@ -80,7 +80,7 @@ class CandidatesListRecyclerViewAdapter(
             val selected = selectedFormat.get()?.get(downloadCandidates.id)
 
             val color = MaterialColors.getColor(
-                this.root.context, R.attr.colorSurfaceVariant, Color.YELLOW
+                this.root.context, com.google.android.material.R.attr.colorSurfaceVariant, Color.YELLOW
             )
             this.cardItem.setCardBackgroundColor(color)
 

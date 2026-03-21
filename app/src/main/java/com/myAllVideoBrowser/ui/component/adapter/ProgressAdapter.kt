@@ -41,7 +41,11 @@ class ProgressAdapter(
             val placeholder = R.drawable.ic_video_24dp
             val size = getScreenResolution(itemView.context)
             val color =
-                MaterialColors.getColor(itemView.context, R.attr.colorSurfaceVariant, Color.YELLOW)
+                MaterialColors.getColor(
+                    itemView.context,
+                    com.google.android.material.R.attr.colorSurfaceVariant,
+                    Color.YELLOW
+                )
 
             with(binding)
             {
