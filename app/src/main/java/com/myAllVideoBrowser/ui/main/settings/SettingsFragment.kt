@@ -27,9 +27,6 @@ class SettingsFragment : BaseFragment() {
     }
 
     @Inject
-    lateinit var fileUtil: FileUtil
-
-    @Inject
     lateinit var intentUtil: IntentUtil
 
     @Inject
@@ -172,7 +169,7 @@ class SettingsFragment : BaseFragment() {
             systemUtil.clearCookies(context)
         }
         settingsViewModel.openVideoFolderEvent.observe(viewLifecycleOwner) {
-            intentUtil.openVideoFolder(context, fileUtil.folderDir.path)
+            intentUtil.openVideoFolder(context)
         }
     }
 

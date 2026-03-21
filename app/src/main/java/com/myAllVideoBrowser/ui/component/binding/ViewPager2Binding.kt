@@ -10,17 +10,17 @@ import com.myAllVideoBrowser.ui.main.home.browser.webTab.WebTab
 object ViewPager2Binding {
 
     @OptIn(UnstableApi::class)
-    @BindingAdapter("app:items")
+    @BindingAdapter("items")
     @JvmStatic
-    fun ViewPager2.setWebItems(currentItems: List<WebTab>?) {
-        with(adapter as BrowserFragment.TabsFragmentStateAdapter?) {
+    fun setWebItems(view: ViewPager2, currentItems: List<WebTab>?) {
+        with(view.adapter as BrowserFragment.TabsFragmentStateAdapter?) {
             this?.setRoutes(currentItems ?: emptyList())
         }
     }
 
-    @BindingAdapter("app:offScreenPageLimit")
+    @BindingAdapter("offScreenPageLimit")
     @JvmStatic
-    fun ViewPager2.setOffScreenPageLimit(pageLimit: Int) {
-        offscreenPageLimit = pageLimit
+    fun setOffScreenPageLimit(view: ViewPager2, pageLimit: Int) {
+        view.offscreenPageLimit = pageLimit
     }
 }

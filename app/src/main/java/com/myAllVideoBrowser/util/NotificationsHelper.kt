@@ -20,6 +20,9 @@ import javax.inject.Singleton
 class NotificationsHelper(private val context: Context) {
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "NOTIFICATION_CHANNEL_ID_ALL_DOWNLOADER"
+        private const val DOWNLOAD_ICON_RES = R.drawable.ic_download_24dp
+        private const val VIDEO_ICON_RES = R.drawable.ic_video_24dp
+        private const val CANCEL_ICON_RES = R.drawable.ic_cancel_24dp
     }
 
     private val notificationManager =
@@ -39,27 +42,27 @@ class NotificationsHelper(private val context: Context) {
         ).setOnlyAlertOnce(true)
 
         builder.setContentTitle(File(task.fileName).name).setContentText(task.lineInfo)
-            .setSmallIcon(android.R.drawable.stat_sys_download).setOngoing(false)
+            .setSmallIcon(DOWNLOAD_ICON_RES).setOngoing(false)
             .setProgress(100, taskPercent.toInt(), false).addAction(notificationActionOpen(false))
 
         when (task.taskState) {
             VideoTaskState.PREPARE -> {
                 builder.setSubText("prepare").setProgress(0, 0, true)
-                builder.setOngoing(false).setSmallIcon(android.R.drawable.stat_sys_download_done)
+                builder.setOngoing(false).setSmallIcon(DOWNLOAD_ICON_RES)
                 builder.addAction(createPauseBroadcastMessage(task.mId))
                 builder.addAction(createCancelBroadcastMessage(task.mId))
             }
 
             VideoTaskState.PENDING -> {
                 builder.setSubText("pending").setProgress(0, 0, true)
-                builder.setOngoing(false).setSmallIcon(android.R.drawable.stat_sys_download_done)
+                builder.setOngoing(false).setSmallIcon(DOWNLOAD_ICON_RES)
                 builder.addAction(createPauseBroadcastMessage(task.mId))
                 builder.addAction(createCancelBroadcastMessage(task.mId))
             }
 
             VideoTaskState.DOWNLOADING -> {
                 builder.setSubText("downloading...").setProgress(100, taskPercent.toInt(), false)
-                builder.setOngoing(false).setSmallIcon(android.R.drawable.stat_sys_download)
+                builder.setOngoing(false).setSmallIcon(DOWNLOAD_ICON_RES)
                 builder.addAction(createPauseBroadcastMessage(task.mId))
                 builder.addAction(createCancelBroadcastMessage(task.mId))
             }
@@ -67,7 +70,7 @@ class NotificationsHelper(private val context: Context) {
             VideoTaskState.PAUSE -> {
                 builder.setSubText("pause")
                 builder.setProgress(100, taskPercent.toInt(), false)
-                builder.setOngoing(false).setSmallIcon(android.R.drawable.stat_sys_download)
+                builder.setOngoing(false).setSmallIcon(DOWNLOAD_ICON_RES)
                 builder.addAction(createResumeBroadcastMessage(task.mId))
                 builder.addAction(createCancelBroadcastMessage(task.mId))
             }
@@ -80,7 +83,7 @@ class NotificationsHelper(private val context: Context) {
 
                 builder.setContentIntent(actionWatchIntent)
                 builder.setSubText("success!!!").setProgress(0, 0, false)
-                builder.setOngoing(false).setSmallIcon(android.R.drawable.stat_sys_download_done)
+                builder.setOngoing(false).setSmallIcon(VIDEO_ICON_RES)
                 builder.addAction(actionOpenInApp).addAction(actionWatch)
             }
 
@@ -91,7 +94,7 @@ class NotificationsHelper(private val context: Context) {
                 builder.setSubText("Error")
                 builder.setContentText("Failed " + task.errorMessage)
                     .setProgress(100, taskPercent.toInt(), false)
-                builder.setOngoing(false).setSmallIcon(android.R.drawable.stat_sys_download_done)
+                builder.setOngoing(false).setSmallIcon(CANCEL_ICON_RES)
                 builder.addAction(action)
                 builder.addAction(createResumeBroadcastMessage(task.mId))
             }
@@ -99,7 +102,7 @@ class NotificationsHelper(private val context: Context) {
             VideoTaskState.CANCELED -> {
                 builder.setSubText("Canceled")
                 builder.setProgress(0, 0, false)
-                builder.setOngoing(false).setSmallIcon(android.R.drawable.stat_sys_download)
+                builder.setOngoing(false).setSmallIcon(CANCEL_ICON_RES)
             }
 
             else -> {}
@@ -128,18 +131,14 @@ class NotificationsHelper(private val context: Context) {
         intent.putExtra(YoutubeDlDownloaderWorker.IS_FINISHED_DOWNLOAD_ACTION_ERROR_KEY, isError)
 
 
-        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.getActivity(
-                context, if (isFinished) 0 else 2, intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        } else {
-            PendingIntent.getActivity(
-                context, if (isFinished) 0 else 2, intent, PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            if (isFinished) 0 else 2,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
         return NotificationCompat.Action(
-            android.R.drawable.stat_sys_download_done,
+            VIDEO_ICON_RES,
             context.resources.getString(R.string.download_open_in_app),
             pendingIntent
         )
@@ -147,7 +146,7 @@ class NotificationsHelper(private val context: Context) {
 
     private fun notificationActionWatch(filename: String): NotificationCompat.Action {
         return NotificationCompat.Action(
-            android.R.drawable.stat_sys_download_done,
+            VIDEO_ICON_RES,
             context.resources.getString(R.string.download_watch_in_app),
             notificationIntentWatch(filename)
         )
@@ -161,16 +160,12 @@ class NotificationsHelper(private val context: Context) {
         intent.putExtra(YoutubeDlDownloaderWorker.IS_FINISHED_DOWNLOAD_ACTION_KEY, true)
             .putExtra(YoutubeDlDownloaderWorker.DOWNLOAD_FILENAME_KEY, filenameFixed)
 
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.getActivity(
-                context, 777, intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        } else {
-            PendingIntent.getActivity(
-                context, 777, intent, PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
+        return PendingIntent.getActivity(
+            context,
+            777,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 
     private fun createCancelBroadcastMessage(taskId: String): NotificationCompat.Action {
@@ -179,7 +174,7 @@ class NotificationsHelper(private val context: Context) {
         intent.action = NotificationReceiver.ACTION_CANCEL
 
         return NotificationCompat.Action(
-            android.R.drawable.stat_sys_download_done,
+            CANCEL_ICON_RES,
             context.resources.getString(R.string.progress_menu_cancel),
             createActionIntent(intent, taskId.hashCode())
         )
@@ -191,7 +186,7 @@ class NotificationsHelper(private val context: Context) {
         intent.action = NotificationReceiver.ACTION_PAUSE
 
         return NotificationCompat.Action(
-            android.R.drawable.stat_sys_download_done,
+            DOWNLOAD_ICON_RES,
             context.resources.getString(R.string.progress_menu_pause),
             createActionIntent(intent, taskId.hashCode())
         )
@@ -203,23 +198,19 @@ class NotificationsHelper(private val context: Context) {
         intent.action = NotificationReceiver.ACTION_RESUME
 
         return NotificationCompat.Action(
-            android.R.drawable.stat_sys_download_done,
+            DOWNLOAD_ICON_RES,
             context.resources.getString(R.string.progress_menu_resume),
             createActionIntent(intent, taskId.hashCode())
         )
     }
 
     private fun createActionIntent(actionIntent: Intent, requestCode: Int): PendingIntent {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.getBroadcast(
-                context, requestCode, actionIntent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        } else {
-            PendingIntent.getBroadcast(
-                context, requestCode, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
+        return PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            actionIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 
     private fun createChannel(appContext: Context) {

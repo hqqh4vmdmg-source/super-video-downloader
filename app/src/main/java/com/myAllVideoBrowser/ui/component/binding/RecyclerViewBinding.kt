@@ -14,90 +14,82 @@ import com.myAllVideoBrowser.ui.component.adapter.*
 import com.myAllVideoBrowser.ui.main.home.browser.webTab.WebTab
 
 object RecyclerViewBinding {
-    @BindingAdapter("app:items")
+    @BindingAdapter("items")
     @JvmStatic
-    fun RecyclerView.setWebTabs(tabs: List<WebTab>) {
-        with(adapter as WebTabsAdapter?) {
+    fun setWebTabs(view: RecyclerView, tabs: List<WebTab>) {
+        with(view.adapter as WebTabsAdapter?) {
             this?.let { setData(tabs) }
         }
     }
 
-    @BindingAdapter("app:items")
+    @BindingAdapter("items")
     @JvmStatic
-    fun RecyclerView.setTopPages(items: List<PageInfo>) {
-        with(adapter as TopPageAdapter?) {
+    fun setSuggestions(view: RecyclerView, items: List<Suggestion>) {
+        with(view.adapter as SuggestionAdapter?) {
             this?.let { setData(items) }
         }
     }
 
-    @BindingAdapter("app:items")
+    @BindingAdapter("items")
     @JvmStatic
-    fun RecyclerView.setSuggestions(items: List<Suggestion>) {
-        with(adapter as SuggestionAdapter?) {
+    fun setProgressInfos(view: RecyclerView, items: List<ProgressInfo>) {
+        with(view.adapter as ProgressAdapter?) {
             this?.let { setData(items) }
         }
     }
 
-    @BindingAdapter("app:items")
+    @BindingAdapter("items")
     @JvmStatic
-    fun RecyclerView.setProgressInfos(items: List<ProgressInfo>) {
-        with(adapter as ProgressAdapter?) {
+    fun setProxiesList(view: RecyclerView, items: List<Proxy>) {
+        with(view.adapter as ProxiesAdapter?) {
             this?.let { setData(items) }
         }
     }
 
-    @BindingAdapter("app:items")
+    @BindingAdapter("items")
     @JvmStatic
-    fun RecyclerView.setProxiesList(items: List<Proxy>) {
-        with(adapter as ProxiesAdapter?) {
+    fun setVideoInfos(view: RecyclerView, items: List<LocalVideo>) {
+        with(view.adapter as VideoAdapter?) {
             this?.let { setData(items) }
         }
     }
 
-    @BindingAdapter("app:items")
+    @BindingAdapter("items")
     @JvmStatic
-    fun RecyclerView.setVideoInfos(items: List<LocalVideo>) {
-        with(adapter as VideoAdapter?) {
-            this?.let { setData(items) }
-        }
-    }
+    fun historyItems(view: RecyclerView, items: List<HistoryItem>) {
 
-    @BindingAdapter("app:items")
-    @JvmStatic
-    fun RecyclerView.historyItems(items: List<HistoryItem>) {
-
-        if (adapter is HistoryAdapter?) {
-            with(adapter as HistoryAdapter?) {
+        if (view.adapter is HistoryAdapter?) {
+            with(view.adapter as HistoryAdapter?) {
                 this?.let { setData(items) }
             }
         }
-        if (adapter is HistorySearchAdapter?) {
-            with(adapter as HistorySearchAdapter?) {
+        if (view.adapter is HistorySearchAdapter?) {
+            with(view.adapter as HistorySearchAdapter?) {
                 this?.let { setData(items) }
             }
         }
     }
 
-    @BindingAdapter("app:items")
+    @BindingAdapter("items")
     @JvmStatic
-    fun RecyclerView.setDetectedVideoInfos(items: List<VideoInfo>) {
-        with(adapter as VideoInfoAdapter?) {
+    fun setDetectedVideoInfos(view: RecyclerView, items: List<VideoInfo>) {
+        with(view.adapter as VideoInfoAdapter?) {
             this?.let { setData(items) }
         }
     }
 
-    @BindingAdapter("app:items")
+    @BindingAdapter("items")
     @JvmStatic
-    fun RecyclerView.setDetectedVideoInfosSet(items: Set<VideoInfo>) {
-        with(adapter as VideoInfoAdapter?) {
+    fun setDetectedVideoInfosSet(view: RecyclerView, items: Set<VideoInfo>) {
+        with(view.adapter as VideoInfoAdapter?) {
             this?.let { setData(items.toList()) }
         }
     }
 
-    @BindingAdapter("app:items")
+    @BindingAdapter("items")
     @JvmStatic
-    fun RecyclerView.setBookmarks(items: MutableList<PageInfo>) {
-        with(adapter as BookmarksAdapter?) {
+    fun setBookmarks(view: RecyclerView, items: MutableList<PageInfo>) {
+        with(view.adapter as BookmarksAdapter?) {
             this?.let { setData(items) }
         }
     }

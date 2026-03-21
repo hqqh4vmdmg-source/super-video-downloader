@@ -9,19 +9,19 @@ import com.bumptech.glide.Glide
 
 object ImageBinding {
 
-    @BindingAdapter("app:imageUrl")
+    @BindingAdapter("imageUrl")
     @JvmStatic
-    fun ImageView.loadImage(url: String) {
-        Glide.with(context).load(url).into(this)
+    fun loadImage(view: ImageView, url: String) {
+        Glide.with(view.context).load(url).into(view)
     }
 
-    @BindingAdapter("app:bitmap")
+    @BindingAdapter("bitmap")
     @JvmStatic
-    fun ImageView.setImageBitmap(bitmap: Bitmap?) {
-        bitmap?.let { setImageBitmap(it) }
+    fun setBitmap(view: ImageView, bitmap: Bitmap?) {
+        bitmap?.let { view.setImageBitmap(it) }
     }
 
-    @BindingAdapter("android:src")
+    @BindingAdapter("src")
     @JvmStatic
     fun setImageUri(view: ImageView, imageUri: String?) {
         if (imageUri == null) {
@@ -31,19 +31,19 @@ object ImageBinding {
         }
     }
 
-    @BindingAdapter("android:src")
+    @BindingAdapter("src")
     @JvmStatic
     fun setImageUri(view: ImageView, imageUri: Uri?) {
         view.setImageURI(imageUri)
     }
 
-    @BindingAdapter("android:src")
+    @BindingAdapter("src")
     @JvmStatic
     fun setImageDrawable(view: ImageView, drawable: Drawable?) {
         view.setImageDrawable(drawable)
     }
 
-    @BindingAdapter("android:src")
+    @BindingAdapter("src")
     @JvmStatic
     fun setImageResource(imageView: ImageView, resource: Int) {
         imageView.setImageResource(resource)

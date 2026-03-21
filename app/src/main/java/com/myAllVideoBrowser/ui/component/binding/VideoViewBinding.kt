@@ -8,16 +8,16 @@ import java.io.File
 
 object VideoViewBinding {
 
-    @BindingAdapter("app:videoURI")
+    @BindingAdapter("videoURI")
     @JvmStatic
-    fun VideoView.setVideoURI(videoPath: String?) {
+    fun setVideoURI(view: VideoView, videoPath: String?) {
         videoPath?.let { path ->
             val uri = if (path.startsWith("http")) {
                 Uri.parse(path)
             } else {
-                FileProvider.getUriForFile(context, context.packageName + ".provider", File(path))
+                FileProvider.getUriForFile(view.context, view.context.packageName + ".provider", File(path))
             }
-            setVideoURI(uri)
+            view.setVideoURI(uri)
         }
     }
 }

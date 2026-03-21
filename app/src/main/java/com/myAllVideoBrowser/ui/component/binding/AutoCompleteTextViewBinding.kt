@@ -9,10 +9,10 @@ import com.myAllVideoBrowser.ui.component.adapter.TabSuggestionAdapter
 
 object AutoCompleteTextViewBinding {
 
-    @BindingAdapter("app:items")
+    @BindingAdapter("items")
     @JvmStatic
-    fun AutoCompleteTextView.setSuggestions(items: List<Suggestion>?) {
-        with(adapter as SuggestionAdapter?) {
+    fun setSuggestions(view: AutoCompleteTextView, items: List<Suggestion>?) {
+        with(view.adapter as SuggestionAdapter?) {
             if (items != null) {
                 this?.setData(items)
             } else {
@@ -21,10 +21,10 @@ object AutoCompleteTextViewBinding {
         }
     }
 
-    @BindingAdapter("app:items")
+    @BindingAdapter("items")
     @JvmStatic
-    fun AutoCompleteTextView.setTabSuggestions(items: List<HistoryItem>?) {
-        with(adapter as TabSuggestionAdapter?) {
+    fun setTabSuggestions(view: AutoCompleteTextView, items: List<HistoryItem>?) {
+        with(view.adapter as TabSuggestionAdapter?) {
             if (items != null) {
                 this?.setData(items)
             } else {

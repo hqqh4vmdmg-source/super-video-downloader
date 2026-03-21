@@ -1,33 +1,23 @@
 package com.myAllVideoBrowser.util
 
+import android.app.DownloadManager
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.net.Uri
-import android.provider.DocumentsContract
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.net.toFile
 import com.myAllVideoBrowser.R
-import java.io.File
 import javax.inject.Inject
 
 class IntentUtil @Inject constructor(private val fileUtil: FileUtil) {
 
-    @Deprecated("This old method is deprecated")
-    fun openVideoFolder(context: Context?, path: String) {
+    fun openVideoFolder(context: Context?) {
         context?.let {
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            val photoURI = FileProvider.getUriForFile(
-                context,
-                context.applicationContext.packageName + ".provider",
-                File("${context.filesDir.path}/${FileUtil.FOLDER_NAME}")
-            )
-
-            intent.setDataAndType(photoURI, DocumentsContract.Document.MIME_TYPE_DIR)
+            val intent = Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)
 
             if (intent.resolveActivity(it.packageManager) != null) {
                 it.startActivity(intent)

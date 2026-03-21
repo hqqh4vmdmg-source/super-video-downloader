@@ -1,17 +1,13 @@
 package com.myAllVideoBrowser.ui.component.adapter
 
 import android.content.Context
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.myAllVideoBrowser.R
@@ -48,13 +44,11 @@ class TopPageAdapter(
             val iconColor = ContextCompat.getColor(
                 ContextUtils.getApplicationContext(), R.color.color_gray_2
             )
-            drawable?.colorFilter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                BlendModeColorFilter(iconColor, BlendMode.MULTIPLY)
-            } else {
-                @Suppress("DEPRECATION")
-                PorterDuffColorFilter(iconColor, PorterDuff.Mode.MULTIPLY)
+            val tintedDrawable = drawable?.mutate()?.let { drawableToTint ->
+                DrawableCompat.setTint(drawableToTint, iconColor)
+                drawableToTint
             }
-            binding.imgIcon.setImageDrawable(drawable)
+            binding.imgIcon.setImageDrawable(tintedDrawable)
         }
         binding.executePendingBindings()
 

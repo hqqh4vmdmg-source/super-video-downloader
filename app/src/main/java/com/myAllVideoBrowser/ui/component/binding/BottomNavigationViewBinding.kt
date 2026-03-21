@@ -6,10 +6,10 @@ import com.myAllVideoBrowser.R
 
 object BottomNavigationViewBinding {
 
-    @BindingAdapter("app:selectedItemId")
+    @BindingAdapter("selectedItemId")
     @JvmStatic
-    fun BottomNavigationView.setSelectedItemId(position: Int) {
-        selectedItemId = when (position) {
+    fun setSelectedItemId(view: BottomNavigationView, position: Int) {
+        view.selectedItemId = when (position) {
             0 -> R.id.tab_browser
             1 -> R.id.tab_progress
             2 -> R.id.tab_video

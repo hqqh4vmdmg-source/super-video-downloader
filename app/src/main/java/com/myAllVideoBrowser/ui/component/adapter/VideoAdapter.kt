@@ -45,7 +45,11 @@ class VideoAdapter(
         fun bind(localVideo: LocalVideo, videoListener: VideoListener) {
             val size = getScreenResolution(itemView.context)
             val color =
-                MaterialColors.getColor(itemView.context, R.attr.colorSurfaceVariant, Color.YELLOW)
+                MaterialColors.getColor(
+                    itemView.context,
+                    com.google.android.material.R.attr.colorSurfaceVariant,
+                    Color.YELLOW
+                )
 
             with(binding) {
                 this.localVideo = localVideo

@@ -6,10 +6,10 @@ import com.myAllVideoBrowser.data.local.room.entity.PageInfo
 import com.myAllVideoBrowser.ui.component.adapter.*
 
 object GridViewBinding {
-    @BindingAdapter("app:items")
+    @BindingAdapter("items")
     @JvmStatic
-    fun GridView.setTopPages(items: List<PageInfo>) {
-        with(adapter as TopPageAdapter?) {
+    fun setTopPages(view: GridView, items: List<PageInfo>) {
+        with(view.adapter as TopPageAdapter?) {
             this?.let { setData(items) }
         }
     }

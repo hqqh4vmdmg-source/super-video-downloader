@@ -11,3 +11,4 @@ captures/*
 app/src/main/go/builder/vendor/
 app/src/main/jniLibs/
 app/schemas/
+.serena/

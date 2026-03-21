@@ -5,7 +5,7 @@ import org.gradle.process.ExecOperations
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.legacy.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.allopen)
     alias(libs.plugins.kotlin.serialization)
@@ -146,18 +146,15 @@ android {
             enableAndroidTestCoverage = false
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
-                getDefaultProguardFile("proguard-android.txt"),
+                getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
 
     // Data Binding & Build Features
-    dataBinding {
-        enable = true
-    }
-
     buildFeatures {
+        dataBinding = true
         viewBinding = true
         buildConfig = true
     }
@@ -198,12 +195,6 @@ android {
         abortOnError = false
     }
 
-    // Source Sets
-    sourceSets {
-        getByName("main") {
-            jniLibs.srcDir("src/main/jniLibs")
-        }
-    }
 }
 
 // =========================================================================
@@ -221,8 +212,6 @@ dependencies {
     implementation(libs.webkit)
     implementation(libs.coreKtx)
     implementation(libs.coreSplashscreen)
-    implementation(libs.legacySupportV4)
-
     // Kotlin
     implementation(libs.kotlin.stdlib)
 
