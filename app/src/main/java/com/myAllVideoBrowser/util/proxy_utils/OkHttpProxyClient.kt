@@ -32,6 +32,11 @@ class OkHttpProxyClient @Inject constructor(
             httpClientCached = if (proxy == com.myAllVideoBrowser.data.local.model.Proxy.noProxy()) {
                 base.newBuilder().build()
             } else {
+                val port = proxy.port.toIntOrNull()
+                if (port == null) {
+                    AppLogger.e("OkHttpProxyClient: proxy port '${proxy.port}' is not a valid integer — falling back to no-proxy")
+                    base.newBuilder().build()
+                } else {
                 val proxyCredentials = getProxyCredentials()
                 val proxyAuthenticator = Authenticator { _, response ->
                     response.request.newBuilder()
@@ -42,11 +47,12 @@ class OkHttpProxyClient @Inject constructor(
                     .proxy(
                         Proxy(
                             Proxy.Type.HTTP,
-                            InetSocketAddress(proxy.host, proxy.port.toIntOrNull() ?: 1)
+                            InetSocketAddress(proxy.host, port)
                         )
                     )
                     .proxyAuthenticator(proxyAuthenticator)
                     .build()
+                }
             }
         }
 

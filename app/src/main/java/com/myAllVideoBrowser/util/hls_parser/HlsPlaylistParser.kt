@@ -491,22 +491,14 @@ object HlsPlaylistParser {
 
         val segments = exoMedia.segments.map { exoSegment ->
             val encryptionKey =
-                if (exoSegment.fullSegmentEncryptionKeyUri != null) {
-                    val method = schemeToMethodMap[resolveUrl(
-                        exoMedia.baseUri,
-                        exoSegment.fullSegmentEncryptionKeyUri ?: ""
-                    )] ?: "AES-128"
-
+                exoSegment.fullSegmentEncryptionKeyUri?.let { rawKeyUri ->
+                    val keyUri = resolveUrl(exoMedia.baseUri, rawKeyUri)
+                    val method = schemeToMethodMap[keyUri] ?: "AES-128"
                     HlsEncryptionKey(
                         method = method,
-                        uri = resolveUrl(
-                            exoMedia.baseUri,
-                            exoSegment.fullSegmentEncryptionKeyUri ?: ""
-                        ),
+                        uri = keyUri,
                         iv = exoSegment.encryptionIV
                     )
-                } else {
-                    null
                 }
             UrlMediaSegment(
                 url = resolveUrl(exoMedia.baseUri, exoSegment.url),

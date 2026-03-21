@@ -160,7 +160,7 @@ object ProxyManager {
         return try {
             V2Ray.XrayIsRunning() != 0L
         } catch (e: Throwable) {
-            AppLogger.w("$TAG: Could not check V2Ray status, assuming not running.")
+            AppLogger.w("$TAG: Could not check V2Ray status, assuming not running.", e)
             false
         }
     }
