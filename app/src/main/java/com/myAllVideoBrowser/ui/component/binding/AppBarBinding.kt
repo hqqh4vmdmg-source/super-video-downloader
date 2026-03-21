@@ -5,9 +5,9 @@ import com.google.android.material.appbar.AppBarLayout
 
 object AppBarBinding {
 
-    @BindingAdapter("app:smoothExpanded")
+    @BindingAdapter("smoothExpanded")
     @JvmStatic
-    fun AppBarLayout.setExpanded(isExpanded: Boolean) {
-        setExpanded(isExpanded, true)
+    fun setExpanded(view: AppBarLayout, isExpanded: Boolean) {
+        view.setExpanded(isExpanded, true)
     }
 }

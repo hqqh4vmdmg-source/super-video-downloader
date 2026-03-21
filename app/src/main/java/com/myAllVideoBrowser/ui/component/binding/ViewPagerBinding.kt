@@ -5,9 +5,9 @@ import androidx.viewpager.widget.ViewPager
 
 object ViewPagerBinding {
 
-    @BindingAdapter("app:offScreenPageLimit")
+    @BindingAdapter("offScreenPageLimit")
     @JvmStatic
-    fun ViewPager.setOffScreenPageLimit(pageLimit: Int) {
-        offscreenPageLimit = pageLimit
+    fun setOffScreenPageLimit(view: ViewPager, pageLimit: Int) {
+        view.offscreenPageLimit = pageLimit
     }
 }

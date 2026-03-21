@@ -7,33 +7,33 @@ import android.webkit.WebViewClient
 
 object WebViewBinding {
 
-    @BindingAdapter("app:loadUrl")
+    @BindingAdapter("loadUrl")
     @JvmStatic
-    fun WebView.loadUrl(url: String?) {
-        url?.let { if (url.isNotEmpty()) loadUrl(it) }
+    fun loadUrl(view: WebView, url: String?) {
+        url?.let { if (url.isNotEmpty()) view.loadUrl(it) }
     }
 
-    @BindingAdapter("app:javaScriptEnabled")
+    @BindingAdapter("javaScriptEnabled")
     @JvmStatic
-    fun WebView.javaScriptEnabled(isEnabled: Boolean?) {
-        isEnabled?.let { settings.javaScriptEnabled = it }
+    fun javaScriptEnabled(view: WebView, isEnabled: Boolean?) {
+        isEnabled?.let { view.settings.javaScriptEnabled = it }
     }
 
-    @BindingAdapter("app:addJavascriptInterface")
+    @BindingAdapter("addJavascriptInterface")
     @JvmStatic
-    fun WebView.addJavascriptInterface(name: String?) {
-        name?.let { addJavascriptInterface(context, it) }
+    fun addJavascriptInterface(view: WebView, name: String?) {
+        name?.let { view.addJavascriptInterface(view.context, it) }
     }
 
-    @BindingAdapter("app:webViewClient")
+    @BindingAdapter("webViewClient")
     @JvmStatic
-    fun WebView.webViewClient(webViewClient: WebViewClient?) {
-        webViewClient?.let { this.webViewClient = it }
+    fun webViewClient(view: WebView, webViewClient: WebViewClient?) {
+        webViewClient?.let { view.webViewClient = it }
     }
 
-    @BindingAdapter("app:webChromeClient")
+    @BindingAdapter("webChromeClient")
     @JvmStatic
-    fun WebView.webChromeClient(webChromeClient: WebChromeClient?) {
-        webChromeClient?.let { this.webChromeClient = it }
+    fun webChromeClient(view: WebView, webChromeClient: WebChromeClient?) {
+        webChromeClient?.let { view.webChromeClient = it }
     }
 }
