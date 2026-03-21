@@ -7,6 +7,7 @@ import androidx.work.WorkerParameters
 import com.myAllVideoBrowser.util.FileUtil
 import com.myAllVideoBrowser.util.downloaders.generic_downloader.models.VideoTaskItem
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.myAllVideoBrowser.util.AppLogger
 import com.myAllVideoBrowser.util.downloaders.generic_downloader.GenericDownloader
 import com.myAllVideoBrowser.util.proxy_utils.ProxyService
@@ -119,7 +120,10 @@ abstract class GenericDownloadWorker(appContext: Context, workerParams: WorkerPa
                         )
                     )
 
-                Gson().fromJson(decodedHeaders, Map::class.java) as Map<String, String>
+                Gson().fromJson<Map<String, String>>(
+                    decodedHeaders,
+                    object : TypeToken<Map<String, String>>() {}.type
+                )
             } catch (e: Exception) {
                 emptyMap()
             }

@@ -454,7 +454,10 @@ fun createGoModule(builderDir: File) {
 }
 
 fun vendorGoDependencies(builderDir: File, executablePath: String) {
-    val goEnv = mapOf("GOPROXY" to "https://proxy.golang.org,direct")
+    val goEnv = mapOf(
+        "GOPROXY" to "https://proxy.golang.org,direct",
+        "GOTOOLCHAIN" to "auto"
+    )
 
     // Add the replace directive for our local clone
     execOps.exec {
@@ -608,6 +611,7 @@ archConfigs.forEach { arch ->
         environment("CC", compiler)
         environment("CGO_CFLAGS", "--sysroot=${sysroot}")
         environment("CGO_LDFLAGS", "--sysroot=${sysroot} -llog -Wl,-z,max-page-size=16384")
+        environment("GOTOOLCHAIN", "auto")
 
         doFirst {
             println("\n>>> Building Go library for ${arch.abi}...")

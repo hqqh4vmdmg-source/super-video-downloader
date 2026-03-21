@@ -24,6 +24,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import androidx.annotation.OptIn
+import androidx.media3.common.util.UnstableApi
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.myAllVideoBrowser.R
@@ -313,6 +315,7 @@ class WebTabFragment : BaseWebTabFragment() {
         }
     }
 
+    @OptIn(UnstableApi::class)
     private fun onVideoPreviewPropagate(
         videoInfo: VideoInfo, format: String, isForce: Boolean
     ) {
