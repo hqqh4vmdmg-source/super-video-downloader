@@ -106,7 +106,7 @@ open class DLApplication : DaggerApplication() {
                 .updateYoutubeDL(applicationContext, YoutubeDL.UpdateChannel._STABLE)
             AppLogger.d("UPDATE_STATUS MASTER: $status")
         } catch (e: Throwable) {
-            AppLogger.e("Failed to update YoutubeDL: ${e.message}")
+            AppLogger.e("Failed to update YoutubeDL: ${e.message}", e)
         }
     }
 

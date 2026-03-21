@@ -192,7 +192,7 @@ class ProxyService : Service() {
     override fun onDestroy() {
         AppLogger.i("Local Proxy Stopping....")
         ProxyManager.stopLocalProxy()
-        AppLogger.i("Local Proxy Stooped.")
+        AppLogger.i("Local Proxy Stopped.")
         proxyJob?.cancel()
         serviceScope.cancel()
         serviceSupervisorJob.cancel()

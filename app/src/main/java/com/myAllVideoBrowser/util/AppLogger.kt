@@ -34,27 +34,19 @@ class AppLogger {
         }
 
         fun w(message: String) {
-            if (BuildConfig.DEBUG) {
-                Log.w(TAG, message)
-            }
+            Log.w(TAG, message)
         }
 
         fun w(message: String, throwable: Throwable) {
-            if (BuildConfig.DEBUG) {
-                Log.w(TAG, message, throwable)
-            }
+            Log.w(TAG, message, throwable)
         }
 
         fun e(message: String) {
-            if (BuildConfig.DEBUG) {
-                Log.e(TAG, message)
-            }
+            Log.e(TAG, message)
         }
 
         fun e(message: String, throwable: Throwable) {
-            if (BuildConfig.DEBUG) {
-                Log.e(TAG, message, throwable)
-            }
+            Log.e(TAG, message, throwable)
         }
     }
 }
