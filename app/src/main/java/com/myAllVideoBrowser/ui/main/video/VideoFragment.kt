@@ -74,7 +74,7 @@ class VideoFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         videoViewModel = ViewModelProvider(this, viewModelFactory)[VideoViewModel::class.java]
-        videoAdapter = VideoAdapter(emptyList(), videoListener, fileUtil)
+        videoAdapter = VideoAdapter(videoListener, fileUtil)
 
         val isDark = mainActivity.settingsViewModel.isDarkMode.get()
         val color = if (isDark) {

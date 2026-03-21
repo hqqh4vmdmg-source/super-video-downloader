@@ -46,7 +46,6 @@ class DetectedVideosTabFragment : BaseFragment() {
         val adapter = detectedVideosTabViewModel?.let {
             candidateFormatListener?.let { it1 ->
                 VideoInfoAdapter(
-                    detectedVideosTabViewModel?.detectedVideosList?.get()?.toList() ?: emptyList(),
                     it,
                     it1,
                     appUtil,

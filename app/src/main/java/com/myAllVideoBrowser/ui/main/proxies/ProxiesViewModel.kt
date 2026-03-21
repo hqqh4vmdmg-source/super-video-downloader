@@ -1,7 +1,7 @@
 package com.myAllVideoBrowser.ui.main.proxies
 
 import android.content.Intent
-import android.os.Build
+import androidx.core.content.ContextCompat
 import androidx.databinding.ObservableField
 import androidx.lifecycle.viewModelScope
 import com.myAllVideoBrowser.data.local.model.Proxy
@@ -185,11 +185,7 @@ class ProxiesViewModel @Inject constructor(
             putExtra(ProxyService.EXTRA_DNS_URL, dnsUrl)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            ContextUtils.getApplicationContext().startForegroundService(intent)
-        } else {
-            ContextUtils.getApplicationContext().startService(intent)
-        }
+        ContextCompat.startForegroundService(ContextUtils.getApplicationContext(), intent)
     }
 
 

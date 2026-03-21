@@ -2,7 +2,7 @@ package com.myAllVideoBrowser
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import androidx.core.content.ContextCompat
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.myAllVideoBrowser.di.component.DaggerAppComponent
@@ -117,11 +117,7 @@ open class DLApplication : DaggerApplication() {
 
         val serviceIntent = Intent(this, ProxyService::class.java)
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(serviceIntent)
-            } else {
-                startService(serviceIntent)
-            }
+            ContextCompat.startForegroundService(this, serviceIntent)
             isProxyServiceStarted = true
         } catch (e: Exception) {
             AppLogger.e("Failed to start ProxyService: ${e.message}")
