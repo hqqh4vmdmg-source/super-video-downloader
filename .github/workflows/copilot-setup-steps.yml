@@ -47,15 +47,10 @@ jobs:
 
       - name: Accept Android SDK licenses
         run: yes | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --licenses || true
-
+        
       - name: Install Android SDK packages
-        run: |
-          "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --install \
-            "platform-tools" \
-            "platforms;android-${ANDROID_API_LEVEL}" \
-            "build-tools;${ANDROID_BUILD_TOOLS}" \
-            "ndk;${NDK_VERSION}"
-
+        run: yes | sdkmanager "platforms;android-36" "build-tools;36.0.0"
+        
       - name: Expose Go path and NDK root alias
         run: |
           echo "ANDROID_NDK_HOME=${ANDROID_SDK_ROOT}/ndk/${NDK_VERSION}" >> "$GITHUB_ENV"
