@@ -154,11 +154,8 @@ android {
     }
 
     // Data Binding & Build Features
-    dataBinding {
-        enable = true
-    }
-
     buildFeatures {
+        dataBinding = true
         viewBinding = true
         buildConfig = true
     }

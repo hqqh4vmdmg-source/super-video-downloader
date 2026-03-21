@@ -4,8 +4,6 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
-import android.content.Intent.ACTION_MEDIA_SCANNER_SCAN_FILE
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -104,7 +102,7 @@ class FileUtil @Inject constructor() {
                 }
 
                 IS_EXTERNAL_STORAGE_USE && IS_APP_DATA_DIR_USE -> {
-                    return File(context.getExternalFilesDir(null), FOLDER_NAME)
+                    return File(getExternalAppDownloadsDir(context), FOLDER_NAME)
 
                 }
 
@@ -372,7 +370,7 @@ class FileUtil @Inject constructor() {
 
     private fun getTmpDataDir(context: Context, isExternal: Boolean): File {
         val path = if (isExternal) {
-            "${context.getExternalFilesDir(null)}/$TMP_DATA_FOLDER_NAME"
+            "${getExternalAppDownloadsDir(context)}/$TMP_DATA_FOLDER_NAME"
         } else {
             "${context.filesDir.absolutePath}/$TMP_DATA_FOLDER_NAME"
         }
@@ -410,12 +408,16 @@ class FileUtil @Inject constructor() {
 
     private fun getPrivateDownloadsDir(context: Context, isExternal: Boolean): File {
         val path = if (isExternal) {
-            "${context.getExternalFilesDir(null)}/$FOLDER_NAME"
+            "${getExternalAppDownloadsDir(context)}/$FOLDER_NAME"
         } else {
             "${context.filesDir.absolutePath}/$FOLDER_NAME"
         }
 
         return File(path)
+    }
+
+    private fun getExternalAppDownloadsDir(context: Context): File {
+        return context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: context.filesDir
     }
 
     private fun getPublicDownloadsDirFilesObjNew(): Map<String, Pair<Long, Uri>> {
@@ -490,7 +492,7 @@ class FileUtil @Inject constructor() {
         } else {
             null
         }
-        val ext2 = Uri.fromFile(context.getExternalFilesDir(null))
+        val ext2 = getExternalAppDownloadsDir(context).toUri()
         val ext3 =
             Uri.fromFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS))
 
@@ -609,15 +611,6 @@ class FileUtil @Inject constructor() {
     }
 
     private fun scanFile(context: Context, file: File) {
-        try {
-            val fileUri = Uri.fromFile(file)
-            val mediaScanIntent = Intent(ACTION_MEDIA_SCANNER_SCAN_FILE).apply {
-                data = fileUri
-            }
-            context.applicationContext.sendBroadcast(mediaScanIntent)
-        } catch (error: Exception) {
-            AppLogger.e("Caught exception", error)
-        }
         try {
             val mimeType =
                 MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
