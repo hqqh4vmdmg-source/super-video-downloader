@@ -21,4 +21,7 @@ interface ConfigDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSupportedPage(supportedPage: SupportedPage)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllSupportedPages(supportedPages: List<SupportedPage>)
 }
