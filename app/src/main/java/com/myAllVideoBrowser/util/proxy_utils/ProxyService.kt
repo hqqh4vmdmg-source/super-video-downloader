@@ -143,12 +143,7 @@ class ProxyService : Service() {
     private fun handleStartOrUpdate(intent: Intent) {
         startForegroundWithCorrectType()
 
-        val proxyHops = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getSerializableExtra(EXTRA_PROXY_HOPS, ArrayList::class.java) as? List<ProxyHop>
-        } else {
-            @Suppress("DEPRECATION")
-            intent.getSerializableExtra(EXTRA_PROXY_HOPS) as? List<ProxyHop>
-        } ?: emptyList()
+        val proxyHops = intent.getProxyHopsExtra()
         val dnsUrl = intent.getStringExtra(EXTRA_DNS_URL)
 
         proxyJob?.cancel()
@@ -171,6 +166,19 @@ class ProxyService : Service() {
             }
         }
     }
+
+    private fun Intent.getProxyHopsExtra(): List<ProxyHop> {
+        val serializedHops = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getSerializableExtra(EXTRA_PROXY_HOPS, ArrayList::class.java)
+        } else {
+            getSerializableExtraCompat(EXTRA_PROXY_HOPS)
+        }
+
+        return (serializedHops as? ArrayList<*>)?.filterIsInstance<ProxyHop>().orEmpty()
+    }
+
+    @Suppress("DEPRECATION")
+    private fun Intent.getSerializableExtraCompat(name: String) = getSerializableExtra(name)
 
     /**
      * Helper function to start the foreground service with the correct type based on Android version.

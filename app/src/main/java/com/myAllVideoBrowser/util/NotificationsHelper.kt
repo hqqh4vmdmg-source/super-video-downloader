@@ -131,16 +131,12 @@ class NotificationsHelper(private val context: Context) {
         intent.putExtra(YoutubeDlDownloaderWorker.IS_FINISHED_DOWNLOAD_ACTION_ERROR_KEY, isError)
 
 
-        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.getActivity(
-                context, if (isFinished) 0 else 2, intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        } else {
-            PendingIntent.getActivity(
-                context, if (isFinished) 0 else 2, intent, PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            if (isFinished) 0 else 2,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
         return NotificationCompat.Action(
             VIDEO_ICON_RES,
             context.resources.getString(R.string.download_open_in_app),
@@ -164,16 +160,12 @@ class NotificationsHelper(private val context: Context) {
         intent.putExtra(YoutubeDlDownloaderWorker.IS_FINISHED_DOWNLOAD_ACTION_KEY, true)
             .putExtra(YoutubeDlDownloaderWorker.DOWNLOAD_FILENAME_KEY, filenameFixed)
 
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.getActivity(
-                context, 777, intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        } else {
-            PendingIntent.getActivity(
-                context, 777, intent, PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
+        return PendingIntent.getActivity(
+            context,
+            777,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 
     private fun createCancelBroadcastMessage(taskId: String): NotificationCompat.Action {
@@ -213,16 +205,12 @@ class NotificationsHelper(private val context: Context) {
     }
 
     private fun createActionIntent(actionIntent: Intent, requestCode: Int): PendingIntent {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.getBroadcast(
-                context, requestCode, actionIntent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        } else {
-            PendingIntent.getBroadcast(
-                context, requestCode, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
+        return PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            actionIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 
     private fun createChannel(appContext: Context) {

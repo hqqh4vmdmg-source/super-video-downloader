@@ -14,7 +14,6 @@ import com.myAllVideoBrowser.ui.main.player.VideoPlayerViewModel
 import com.myAllVideoBrowser.ui.main.progress.ProgressViewModel
 import com.myAllVideoBrowser.ui.main.proxies.ProxiesViewModel
 import com.myAllVideoBrowser.ui.main.settings.SettingsViewModel
-import com.myAllVideoBrowser.ui.main.splash.SplashViewModel
 import com.myAllVideoBrowser.ui.main.video.VideoViewModel
 import com.myAllVideoBrowser.util.ViewModelFactory
 import dagger.Binds
@@ -28,11 +27,6 @@ abstract class ViewModelModule {
     @Singleton
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(SplashViewModel::class)
-    abstract fun bindSplashViewModel(viewModel: SplashViewModel): ViewModel
 
     @Binds
     @IntoMap
