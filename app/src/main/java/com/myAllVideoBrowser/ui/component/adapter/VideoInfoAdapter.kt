@@ -103,7 +103,7 @@ class VideoInfoAdapter(
                     }
                     info.isMaster -> {
                         val isMpd = info.formats.formats.firstOrNull()?.isMpd == true
-                        if (isMpd) "MPD Master List" else "M3U8 Mater List"
+                        if (isMpd) "MPD Master List" else "M3U8 Master List"
                     }
                     info.isRegularDownload -> "Regular MP4 Download"
                     else -> ""
