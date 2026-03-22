@@ -49,7 +49,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
     override fun handleAction(
         action: String, task: VideoTaskItem, headers: Map<String, String>, isFileRemove: Boolean
     ) {
-        taskId = task.mId ?: inputData.getString(GenericDownloader.Constants.TASK_ID_KEY)!!
+        taskId = task.mId.ifEmpty { inputData.getString(GenericDownloader.Constants.TASK_ID_KEY)!! }
         val downloadDir = fileUtil.tmpDir.resolve(taskId)
 
         val controller = FileBasedDownloadController(downloadDir)
@@ -896,7 +896,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
                 progress,
                 VideoTaskState.PREPARE,
                 isLive = isLIve,
-                infoLine = task.lineInfo
+                infoLine = task.lineInfo.orEmpty()
             )
             return
         }

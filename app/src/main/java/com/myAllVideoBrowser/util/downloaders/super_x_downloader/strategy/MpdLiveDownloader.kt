@@ -66,7 +66,7 @@ class MpdLiveDownloader(
                 val downloadedSegmentUrls = mutableSetOf<String>()
 
                 AppLogger.d("MPD (Live): Starting recording loop for task ${task.mId}")
-                task.setIsLive(true)
+                task.isLive = true
 
                 while (currentCoroutineContext().isActive && !controller.isInterrupted()) {
                     val (videoRep, audioRep) = getMpdRepresentations(task.url, headers)

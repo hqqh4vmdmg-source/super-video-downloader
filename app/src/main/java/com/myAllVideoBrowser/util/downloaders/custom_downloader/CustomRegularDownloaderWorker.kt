@@ -307,8 +307,8 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
                 // DO NOT call finishWork here. Instead, trigger the next step.
                 handleSuccessfulDownload(taskItem.also {
                     it.taskState = VideoTaskState.SUCCESS
-                    it.mId = taskId
-                    it.filePath = outputFileName
+                    it.mId = taskId.orEmpty()
+                    it.filePath = outputFileName.orEmpty()
                 }, File(outputFileName ?: return))
             }
 
@@ -325,13 +325,13 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
                 }
 
                 if (e.message == CustomFileDownloader.STOPPED_AND_SAVE_ACTION) {
-                    taskItem.apply { this.setIsLive(true) }
+                    taskItem.isLive = true
                 }
                 if (taskState == VideoTaskState.SUCCESS || (taskState == VideoTaskState.ERROR && taskItem.isLive)) {
                     val item = taskItem.also {
                         it.taskState = VideoTaskState.SUCCESS
-                        it.mId = taskId
-                        it.filePath = outputFileName
+                        it.mId = taskId.orEmpty()
+                        it.filePath = outputFileName.orEmpty()
                     }
                     AppLogger.d("HANDLING TASK SUCCESS IN FAILURE $item")
                     handleSuccessfulDownload(item, File(outputFileName ?: return))
@@ -339,7 +339,7 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
                     val item = taskItem.also {
                         it.taskState = taskState
                         it.lineInfo = "PAUSED"
-                        it.mId = taskId
+                        it.mId = taskId.orEmpty()
                     }
                     AppLogger.d("HANDLING TASK PAUSE IN FAILURE $taskItem")
                     finishWork(item)
@@ -347,7 +347,7 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
                     val item = taskItem.also {
                         it.taskState = taskState
                         it.errorMessage = e.message
-                        it.mId = taskId
+                        it.mId = taskId.orEmpty()
                     }
                     AppLogger.d("HANDLING TASK EROR IN FAILURE $item")
                     finishWork(item)
@@ -359,8 +359,8 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
                 val totalBytesFixed =
                     if (downloadedBytes > totalBytes) downloadedBytes else totalBytes
                 onProgress(Progress(downloadedBytes, totalBytesFixed), taskItem.also {
-                    it.mId = taskId
-                    it.filePath = outputFileName
+                    it.mId = taskId.orEmpty()
+                    it.filePath = outputFileName.orEmpty()
                 })
             }
 
@@ -411,7 +411,7 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
 
         getContinuation().resume(Result.success())
 //        finishWork(task.also {
-//            it.mId = taskId
+//            it.mId = taskId.orEmpty()
 //            it.taskState = VideoTaskState.CANCELED
 //        })
     }
@@ -430,7 +430,7 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
 
         getContinuation().resume(Result.success())
 //        finishWork(task.also {
-//            it.mId = taskId
+//            it.mId = taskId.orEmpty()
 //            it.taskState = VideoTaskState.PAUSE
 //        })
     }
