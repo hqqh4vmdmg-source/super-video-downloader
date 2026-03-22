@@ -192,7 +192,7 @@ class CustomWebViewClient(
 
         videoAlert = null
         val pageTab = pageTabProvider.getPageTab(tabViewModel.thisTabIndex.get())
-        val headers = pageTab.headers ?: emptyMap()
+        val headers = pageTab.headers
         val favi = pageTab.favicon ?: view.favicon ?: favicon
 
         updateTabEvent.value = WebTab(
