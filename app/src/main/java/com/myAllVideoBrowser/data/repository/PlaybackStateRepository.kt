@@ -3,6 +3,7 @@ package com.myAllVideoBrowser.data.repository
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.myAllVideoBrowser.di.qualifier.ApplicationContext
@@ -63,12 +64,11 @@ class PlaybackStateRepository @Inject constructor(
     }
 
     private fun saveState(state: PlaybackState) {
-        prefs.edit().apply {
+        prefs.edit {
             putString(KEY_VIDEO_URL, state.videoUrl?.toString())
             putLong(KEY_VIDEO_POSITION, state.position)
             putBoolean(KEY_IS_PLAYING, state.isPlaying)
             putString(KEY_VIDEO_TITLE, state.title)
-            apply()
         }
     }
 
@@ -90,7 +90,7 @@ class PlaybackStateRepository @Inject constructor(
     }
 
     fun clearState() {
-        prefs.edit().clear().apply()
+        prefs.edit { clear() }
         _playbackState.value = PlaybackState()
         AppLogger.d("Playback state cleared")
     }
