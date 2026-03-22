@@ -53,22 +53,18 @@ data class Proxy(
         }
     }
 
-    fun toMap(): Map<String, String> {
-        val proxyMap = mutableMapOf<String, String>()
-
-        proxyMap["id"] = id
-        proxyMap["host"] = host
-        proxyMap["port"] = port
-        proxyMap["user"] = user
-        proxyMap["password"] = password
-        proxyMap["countryCode"] = countryCode
-        proxyMap["valid"] = valid.toString()
-        proxyMap["lastVerify"] = lastVerify
-        proxyMap["cityName"] = cityName
-        proxyMap["createdAt"] = createdAt
-
-        return proxyMap
-    }
+    fun toMap(): Map<String, String> = mapOf(
+        "id" to id,
+        "host" to host,
+        "port" to port,
+        "user" to user,
+        "password" to password,
+        "countryCode" to countryCode,
+        "valid" to valid.toString(),
+        "lastVerify" to lastVerify,
+        "cityName" to cityName,
+        "createdAt" to createdAt,
+    )
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
