@@ -55,7 +55,7 @@ class CandidatesListRecyclerViewAdapter(
     private val downloadDialogListener: CandidateFormatListener
 ) : RecyclerView.Adapter<CandidatesListRecyclerViewAdapter.CandidatesViewHolder>() {
 
-    private var formats: List<VideoFormatEntity> = arrayListOf()
+    private var formats: List<VideoFormatEntity> = emptyList()
 
     init {
         val allFormats = downloadCandidates.formats.formats

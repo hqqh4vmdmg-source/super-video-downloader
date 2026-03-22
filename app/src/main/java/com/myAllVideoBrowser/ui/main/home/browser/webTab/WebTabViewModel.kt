@@ -92,11 +92,7 @@ class WebTabViewModel @Inject constructor(
                 val list = historyRepository.getAllHistory().first()
                     .filter { it.url.contains(input) }
                     .reversed()
-                if (list.size > 50) {
-                    listTabSuggestions.set(list.subList(0, 50).toMutableList())
-                } else {
-                    listTabSuggestions.set(list.toMutableList())
-                }
+                listTabSuggestions.set(list.take(50).toMutableList())
             } catch (e: Throwable) {
                 AppLogger.e("Caught exception", e)
             }

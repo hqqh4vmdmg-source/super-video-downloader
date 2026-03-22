@@ -43,11 +43,7 @@ class BrowserHomeViewModel @Inject constructor(
                 val list = SuggestionsUtils.getSuggestions(
                     okHttpClient.getProxyOkHttpClient(), searchTextInput.get() ?: ""
                 )
-                if (list.size > 50) {
-                    listSuggestions.set(list.subList(0, 50).toMutableList())
-                } else {
-                    listSuggestions.set(list.toMutableList())
-                }
+                listSuggestions.set(list.take(50).toMutableList())
             } catch (e: Throwable) {
                 listSuggestions.set(mutableListOf())
                 AppLogger.e("Caught exception", e)

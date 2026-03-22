@@ -21,7 +21,8 @@ data class HistoryItem(
 ) {
 
     fun faviconBitmap(): Bitmap? {
-        return BitmapFactory.decodeByteArray(favicon, 0, favicon?.size ?: 0)
+        val bytes = favicon ?: return null
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     }
 
     override fun equals(other: Any?): Boolean {
