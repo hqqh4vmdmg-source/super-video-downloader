@@ -11,21 +11,13 @@ import java.io.File
  * This class has been refactored to use FFmpegKit directly, removing the youtube-dlp dependency
  * for local file processing, which provides more control and robustness.
  */
-class FfmpegProcessor private constructor() {
+object FfmpegProcessor {
 
-    companion object {
-        @Volatile
-        private var instance: FfmpegProcessor? = null
-        private const val TAG = "FfmpegProcessor"
+    private const val TAG = "FfmpegProcessor"
 
-        private val AUDIO_EXTENSIONS =
-            setOf("mp3", "m4a", "aac", "ogg", "wav", "flac", "opus")
+    private val AUDIO_EXTENSIONS =
+        setOf("mp3", "m4a", "aac", "ogg", "wav", "flac", "opus")
 
-        fun getInstance(): FfmpegProcessor =
-            instance ?: synchronized(this) {
-                instance ?: FfmpegProcessor().also { instance = it }
-            }
-    }
 
     fun processDownload(inputUri: Uri, isFlv: Boolean, onProgress: (Int) -> Unit): Uri? {
         AppLogger.d("$TAG: processDownload started for URI: $inputUri. Is FLV: $isFlv")

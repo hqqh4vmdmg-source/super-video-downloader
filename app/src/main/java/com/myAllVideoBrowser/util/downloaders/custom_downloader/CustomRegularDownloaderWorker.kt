@@ -175,7 +175,7 @@ class CustomRegularDownloaderWorker(appContext: Context, workerParams: WorkerPar
                 // Determine if it's an FLV stream
                 AppLogger.d("IS FLV: $isFlv")
                 // The FfmpegProcessor call is now correctly blocking this thread
-                processedUri = FfmpegProcessor.getInstance()
+                processedUri = FfmpegProcessor
                     .processDownload(sourcePath.toUri(), isFlv) { percents ->
                         val percentInt = percents
                         if (percentInt in 1..99) {
