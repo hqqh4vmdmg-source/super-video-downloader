@@ -86,18 +86,18 @@ class HistoryFragment : BaseFragment() {
         return dataBinding.root
     }
 
+    private fun openHistoryItem(id: String) {
+        historyModel.historyItems.get()?.find { it.id == id }?.let { item ->
+            parentFragmentManager.popBackStack()
+            BrowserViewModel.instance?.openPageEvent?.value =
+                WebTab(item.url, item.title, item.faviconBitmap())
+        }
+    }
+
     private val historyListener = object : HistoryListener {
         override fun onHistoryOpenClicked(view: View, id: String) {
             AppLogger.d("onHistoryOpenClicked: $id")
-            historyModel.historyItems.get()?.find {
-                it.id == id
-            }.let {
-                it?.let { item ->
-                    parentFragmentManager.popBackStack()
-                    BrowserViewModel.instance?.openPageEvent?.value =
-                        WebTab(item.url, item.title, item.faviconBitmap())
-                }
-            }
+            openHistoryItem(id)
         }
 
         override fun onHistoryDeleteClicked(view: View, id: String) {
@@ -114,29 +114,17 @@ class HistoryFragment : BaseFragment() {
     private val searchHistoryListener = object : HistoryListener {
         override fun onHistoryOpenClicked(view: View, id: String) {
             AppLogger.d("SEARCH: onHistoryOpenClicked  $id")
-
-            // TODO duplicate code from historyListener
-            historyModel.historyItems.get()?.find {
-                it.id == id
-            }.let {
-                it?.let { item ->
-                    parentFragmentManager.popBackStack()
-                    BrowserViewModel.instance?.openPageEvent?.value =
-                        WebTab(item.url, item.title, item.faviconBitmap())
-                }
-            }
+            openHistoryItem(id)
         }
 
         override fun onHistoryDeleteClicked(view: View, id: String) {
         }
 
         override fun onMenuClicked(view: View, id: String) {
-
         }
 
         override fun onAllHistoryDeleteClicked() {
         }
-
     }
 
     private val searchTextChangeListener = object : TextWatcher {
