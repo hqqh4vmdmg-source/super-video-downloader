@@ -107,7 +107,7 @@ class NotificationsHelper(private val context: Context) {
             else -> {}
         }
 
-        return Pair(task.mId.hashCode(), builder)
+        return task.mId.hashCode() to builder
     }
 
     @SuppressLint("MissingPermission")

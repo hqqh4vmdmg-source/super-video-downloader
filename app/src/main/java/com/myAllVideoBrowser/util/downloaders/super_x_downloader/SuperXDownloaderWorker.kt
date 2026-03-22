@@ -242,7 +242,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
         val initialPlaylist = fetchAndParse(playlistUrl)
         if (initialPlaylist !is HlsPlaylistParser.MasterPlaylist) {
             val mediaPlaylist = initialPlaylist as HlsPlaylistParser.MediaPlaylist
-            return Pair(mediaPlaylist, null)
+            return mediaPlaylist to null
         }
 
         val selectedVideoVariant =
@@ -285,7 +285,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
             else -> throw IOException("The selected format ID '$selectedFormatId' could not be found in the HLS manifest.")
         }
 
-        return Pair(videoPlaylist, audioPlaylist)
+        return videoPlaylist to audioPlaylist
     }
 
     private fun startMpdDownload(task: VideoTaskItem, headers: Map<String, String>) {
@@ -523,7 +523,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
         AppLogger.d("MPD: Final Selected Video: ${finalVideoRep?.let { "${it.width}x${it.height}" } ?: "None"}")
         AppLogger.d("MPD: Final Selected Audio: ${finalAudioRep?.codecs ?: "None"}")
 
-        return Pair(finalVideoRep, finalAudioRep)
+        return finalVideoRep to finalAudioRep
     }
 
     private fun startHlsDownload(task: VideoTaskItem, headers: Map<String, String>) {
@@ -629,7 +629,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
         val initialPlaylist = fetchAndParse(playlistUrl)
         if (initialPlaylist !is HlsPlaylistParser.MasterPlaylist) {
             val mediaPlaylist = initialPlaylist as HlsPlaylistParser.MediaPlaylist
-            return Pair(mediaPlaylist.segments, null)
+            return mediaPlaylist.segments to null
         }
 
         // 2. Find the selected video or audio variant from the Master Playlist.
@@ -693,7 +693,7 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
             throw IOException("Could not retrieve any media segments for the selected format.")
         }
 
-        return Pair(videoSegments, audioSegments)
+        return videoSegments to audioSegments
     }
 
     override fun finishWork(item: VideoTaskItem?) {

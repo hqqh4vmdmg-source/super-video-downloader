@@ -33,7 +33,7 @@ object FfmpegProcessor {
 
         var resultUri: Uri? = null
 
-        val inputExtension = inputFile.extension.lowercase(java.util.Locale.ROOT)
+        val inputExtension = inputFile.extension.lowercase()
         val isAudioOnly = AUDIO_EXTENSIONS.contains(inputExtension)
         AppLogger.d("$TAG: Detected extension: '$inputExtension'. Is audio only: $isAudioOnly")
 
