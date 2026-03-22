@@ -61,7 +61,7 @@ class HlsLiveDownloader(
                         SegmentDownloader(httpClient, headers, controller, progressCallback)
 
                     AppLogger.d("HLS (Live): Starting download loop for task ${task.mId}")
-                    task.setIsLive(true)
+                    task.isLive = true
 
                     while (!controller.isInterrupted()) {
                         AppLogger.d("HLS (Live): Fetching latest playlist for task ${task.mId}...")
@@ -161,7 +161,7 @@ class HlsLiveDownloader(
                     task.apply {
                         this.taskState = VideoTaskState.PREPARE
                         this.lineInfo = "Merging segments..."
-                        this.setIsLive(true)
+                        this.isLive = true
                     })
                 finalOutputFile = downloadDir.resolve("merged_output.mp4")
                 val mergeSession = DownloaderUtils.mergeHlsSegments(
@@ -176,7 +176,7 @@ class HlsLiveDownloader(
                             task.apply {
                                 this.lineInfo = "Merging segments... $percentage"
                                 this.taskState = VideoTaskState.PREPARE
-                                this.setIsLive(true)
+                                this.isLive = true
                             });
                     }
                 )

@@ -2,7 +2,6 @@ package com.myAllVideoBrowser.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import com.google.gson.Gson
 import com.myAllVideoBrowser.data.local.GeneratedProxyCreds
 import com.myAllVideoBrowser.data.local.model.Proxy

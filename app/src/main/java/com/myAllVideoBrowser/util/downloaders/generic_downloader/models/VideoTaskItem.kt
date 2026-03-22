@@ -30,7 +30,7 @@ class VideoTaskItem(url: String, coverUrl: String = "", title: String = "", grou
     var mPaused: Boolean = false
     var mIsLive: Boolean = false
     var mErrorMessage: String? = null
-    var mId: String? = null
+    var mId: String = ""
     var lineInfo: String? = null
     var accumulatedDuration: Long = 0L
 
@@ -62,7 +62,7 @@ class VideoTaskItem(url: String, coverUrl: String = "", title: String = "", grou
     var isPaused: Boolean get() = mPaused; set(v) { mPaused = v }
     var isLive: Boolean get() = mIsLive; set(v) { mIsLive = v }
     var errorMessage: String? get() = mErrorMessage; set(v) { mErrorMessage = v }
-    var mId_: String? get() = mId; set(v) { mId = v }
+
 
     val percentFromBytes: Float
         get() {
@@ -140,10 +140,10 @@ class VideoTaskItem(url: String, coverUrl: String = "", title: String = "", grou
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is VideoTaskItem) return false
-        return if (mId != null) mId == other.mId else mUrl == other.mUrl
+        return if (mId.isNotEmpty()) mId == other.mId else mUrl == other.mUrl
     }
 
-    override fun hashCode(): Int = mId?.hashCode() ?: mUrl.hashCode()
+    override fun hashCode(): Int = if (mId.isNotEmpty()) mId.hashCode() else mUrl.hashCode()
 
     override fun toString(): String =
         "VideoTaskItem[mId='$mId', mUrl='$mUrl', mTitle='$mTitle', " +

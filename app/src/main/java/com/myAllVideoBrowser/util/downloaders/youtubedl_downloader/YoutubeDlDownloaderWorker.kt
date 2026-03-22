@@ -273,7 +273,7 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
 
                     if (!fileUtil.isFreeSpaceAvailable()) {
                         finishWork(task.also {
-                            it.mId = taskId
+                            it.mId = taskId.orEmpty()
                             it.taskState = VideoTaskState.ERROR
                             it.errorMessage = "Not enough space"
                         })
@@ -564,7 +564,7 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
         val text = line.replace(tmpFile.toString(), "")
 
         val taskItem = VideoTaskItem("").also {
-            it.mId = taskId
+            it.mId = taskId.orEmpty()
             it.fileName = name
             it.taskState = VideoTaskState.DOWNLOADING
             it.percent = progress.toFloat()
@@ -595,7 +595,7 @@ class YoutubeDlDownloaderWorker(appContext: Context, workerParams: WorkerParamet
         if (item != null) {
             showNotificationFinal(
                 taskId.hashCode(), notificationsHelper.createNotificationBuilder(item.also {
-                    it.mId = taskId
+                    it.mId = taskId.orEmpty()
                 }).second
             )
         }
