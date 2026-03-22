@@ -14,13 +14,12 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-class UserSqlUtils {
-    var createTable = "CREATE TABLE IF NOT EXISTS AdHost (host TEXT NOT NULL, PRIMARY KEY(host))"
-}
+private const val SQL_CREATE_AD_HOST =
+    "CREATE TABLE IF NOT EXISTS AdHost (host TEXT NOT NULL, PRIMARY KEY(host))"
 
-val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(db: SupportSQLiteDatabase) {
-        db.execSQL(UserSqlUtils().createTable)
+        db.execSQL(SQL_CREATE_AD_HOST)
     }
 }
 
@@ -53,12 +52,12 @@ val MIGRATION_6_7 = object : Migration(6, 7) {
         db.execSQL("ALTER TABLE VideoInfo ADD COLUMN isLive INTEGER NOT NULL DEFAULT 0")
     }
 }
+
 val MIGRATION_7_8 = object : Migration(7, 8) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("ALTER TABLE VideoInfo ADD COLUMN isDetectedBySuperX INTEGER NOT NULL DEFAULT 0")
     }
 }
-
 
 @Module
 class DatabaseModule {

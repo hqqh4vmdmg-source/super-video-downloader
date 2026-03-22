@@ -192,8 +192,8 @@ class CustomWebViewClient(
 
         videoAlert = null
         val pageTab = pageTabProvider.getPageTab(tabViewModel.thisTabIndex.get())
-        val headers = pageTab.getHeaders() ?: emptyMap()
-        val favi = pageTab.getFavicon() ?: view.favicon ?: favicon
+        val headers = pageTab.headers ?: emptyMap()
+        val favi = pageTab.favicon ?: view.favicon ?: favicon
 
         updateTabEvent.value = WebTab(
             url,
@@ -228,13 +228,9 @@ class CustomWebViewClient(
     ): Boolean {
         val pageTab = pageTabProvider.getPageTab(tabViewModel.thisTabIndex.get())
 
-        val webView = pageTab.getWebView()
-        if (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                view == webView && detail?.didCrash() == true
-            } else {
-                view == webView
-            }
-        ) {
+        val webView = pageTab.webView
+        val processCrashed = Build.VERSION.SDK_INT < Build.VERSION_CODES.O || detail?.didCrash() == true
+        if (view == webView && processCrashed) {
             webView?.destroy()
             return true
         }

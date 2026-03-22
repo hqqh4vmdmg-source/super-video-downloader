@@ -93,11 +93,10 @@ class CustomWebChromeClient(
 
         tabViewModel.openPageEvent.value =
             WebTab(
-                webview = newWebView,
+                webView = newWebView,
                 resultMsg = resultMsg,
                 url = url,
                 title = "Loading...",
-                iconBytes = null
             )
 
         return true
@@ -106,11 +105,11 @@ class CustomWebChromeClient(
     override fun onReceivedIcon(view: WebView?, icon: Bitmap?) {
         val pageTab = pageTabProvider.getPageTab(tabViewModel.thisTabIndex.get())
 
-        val headers = pageTab.getHeaders() ?: emptyMap()
+        val headers = pageTab.headers
         val updateTab = WebTab(
-            pageTab.getUrl(),
-            pageTab.getTitle(),
-            icon ?: pageTab.getFavicon(),
+            pageTab.url,
+            pageTab.title,
+            icon ?: pageTab.favicon,
             headers,
             view,
             id = pageTab.id

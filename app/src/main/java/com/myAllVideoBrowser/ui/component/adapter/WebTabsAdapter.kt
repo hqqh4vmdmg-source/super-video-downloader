@@ -46,7 +46,7 @@ class WebTabsAdapter(
                 } else {
                     View.VISIBLE
                 }
-                if (webTab.getFavicon() == null && !webTab.isHome()) {
+                if (webTab.favicon == null && !webTab.isHome()) {
                     val bm = AppCompatResources.getDrawable(context, R.drawable.public_24px)
                     this.faviconTab.setImageDrawable(bm)
                 }
@@ -57,10 +57,10 @@ class WebTabsAdapter(
                 }
 
                 if (!webTab.isHome()) {
-                    this.tabTitle.text = if (webTab.getTitle().isEmpty()) {
-                        webTab.getUrl()
+                    this.tabTitle.text = if (webTab.title.isEmpty()) {
+                        webTab.url
                     } else {
-                        webTab.getTitle()
+                        webTab.title
                     }
                 }
 
