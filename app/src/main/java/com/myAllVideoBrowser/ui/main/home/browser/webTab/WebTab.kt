@@ -7,14 +7,15 @@ import android.webkit.WebView
 import java.util.UUID
 
 class WebTab(
-    private val url: String,
-    private val title: String?,
-    private val iconBytes: Bitmap? = null,
-    private val headers: Map<String, String> = emptyMap(),
-    private var webview: WebView? = null,
+    val url: String,
+    title: String?,
+    val favicon: Bitmap? = null,
+    val headers: Map<String, String> = emptyMap(),
+    var webView: WebView? = null,
     private var resultMsg: Message? = null,
     val id: String = UUID.randomUUID().toString()
 ) {
+    val title: String = title ?: ""
 
     companion object {
         @SuppressLint("StaticFieldLeak")
@@ -25,72 +26,38 @@ class WebTab(
         )
     }
 
-    fun getMessage(): Message? {
-        return resultMsg
-    }
+    fun getMessage(): Message? = resultMsg
 
     fun flushMessage() {
         resultMsg = null
     }
 
-    fun getWebView(): WebView? {
-        return this.webview
-    }
+    fun isHome(): Boolean = id.contains("home")
 
-    fun setWebView(webview: WebView?) {
-        this.webview = webview
-    }
-
-    fun getHeaders(): Map<String, String>? {
-        return this.headers
-    }
-
-    fun getUrl(): String {
-        return this.url
-    }
-
-    fun getTitle(): String {
-        return this.title ?: ""
-    }
-
-    fun getFavicon(): Bitmap? {
-        return iconBytes
-    }
-
-    fun isHome(): Boolean {
-        return this.id.contains("home")
-    }
-
-
-    override fun toString(): String {
-        return "WebTab(url='$url', title=$title, iconBytes=$iconBytes, headers=$headers, webview=$webview, resultMsg=$resultMsg, id='$id')"
-    }
+    override fun toString(): String =
+        "WebTab(url='$url', title=$title, favicon=$favicon, headers=$headers, webView=$webView, resultMsg=$resultMsg, id='$id')"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-
         other as WebTab
-
-        if (url != other.url) return false
-        if (title != other.title) return false
-        if (iconBytes != other.iconBytes) return false
-        if (headers != other.headers) return false
-        if (webview != other.webview) return false
-        if (resultMsg != other.resultMsg) return false
-        if (id != other.id) return false
-
-        return true
+        return url == other.url &&
+            title == other.title &&
+            favicon == other.favicon &&
+            headers == other.headers &&
+            webView == other.webView &&
+            resultMsg == other.resultMsg &&
+            id == other.id
     }
 
     override fun hashCode(): Int {
         var result = url.hashCode()
-        result = 31 * result + (title?.hashCode() ?: 0)
-        result = 31 * result + (iconBytes?.hashCode() ?: 0)
+        result = 31 * result + title.hashCode()
+        result = 31 * result + (favicon?.hashCode() ?: 0)
         result = 31 * result + headers.hashCode()
-        result = 31 * result + (webview?.hashCode() ?: 0)
+        result = 31 * result + (webView?.hashCode() ?: 0)
         result = 31 * result + (resultMsg?.hashCode() ?: 0)
-        result = 31 * result + (id?.hashCode() ?: 0)
+        result = 31 * result + id.hashCode()
         return result
     }
 }

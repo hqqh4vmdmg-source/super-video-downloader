@@ -141,9 +141,9 @@ class WebTabFragment : BaseWebTabFragment() {
         tabViewModel.thisTabIndex.set(thisTabIndex)
 
         webTab = pageTabProvider.getPageTab(thisTabIndex)
-        videoDetectionTabViewModel.initialUrl = webTab.getUrl()
+        videoDetectionTabViewModel.initialUrl = webTab.url
 
-        AppLogger.d("onCreate Webview::::::::: ${webTab.getUrl()} $savedInstanceState")
+        AppLogger.d("onCreate Webview::::::::: ${webTab.url} $savedInstanceState")
         suggestionAdapter =
             TabSuggestionAdapter(requireContext(), mutableListOf(), suggestionListener)
 
@@ -190,7 +190,7 @@ class WebTabFragment : BaseWebTabFragment() {
         addChangeRouteCallBack()
 
         tabViewModel.userAgent.set(
-            webTab.getWebView()?.settings?.userAgentString
+            webTab.webView?.settings?.userAgentString
                 ?: BrowserFragment.MOBILE_USER_AGENT
         )
 
@@ -199,21 +199,21 @@ class WebTabFragment : BaseWebTabFragment() {
             message.sendToTarget()
             webTab.flushMessage()
         } else {
-            tabViewModel.loadPage(webTab.getUrl())
+            tabViewModel.loadPage(webTab.url)
         }
 
         return dataBinding.root
     }
 
     override fun shareWebLink() {
-        val link = webTab.getWebView()?.url
+        val link = webTab.webView?.url
         if (link != null) {
             shareLink(link)
         }
     }
 
     override fun bookmarkCurrentUrl() {
-        val webview = webTab.getWebView()
+        val webview = webTab.webView
         val url = webview?.url
         val favicon = webview?.favicon
         val name = webview?.title
@@ -232,21 +232,21 @@ class WebTabFragment : BaseWebTabFragment() {
     override fun setIsDesktop(isDesktop: Boolean) {
         super.setIsDesktop(isDesktop)
         setUserAgentIsDesktop(isDesktop)
-        webTab.getWebView()?.reload()
+        webTab.webView?.reload()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
         if (!outState.isEmpty) {
-            webTab.getWebView()?.saveState(outState)
+            webTab.webView?.saveState(outState)
         }
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         if (savedInstanceState != null && !savedInstanceState.isEmpty) {
-            webTab.getWebView()?.restoreState(savedInstanceState)
+            webTab.webView?.restoreState(savedInstanceState)
         }
     }
 
@@ -262,14 +262,14 @@ class WebTabFragment : BaseWebTabFragment() {
     }
 
     override fun onPause() {
-        AppLogger.d("onPause Webview::::::::: ${webTab.getUrl()}")
+        AppLogger.d("onPause Webview::::::::: ${webTab.url}")
         super.onPause()
         onWebViewPause()
         backPressedCallback.remove()
     }
 
     override fun onResume() {
-        AppLogger.d("onResume Webview::::::::: ${webTab.getUrl()}")
+        AppLogger.d("onResume Webview::::::::: ${webTab.url}")
         super.onResume()
         onWebViewResume()
 
@@ -279,11 +279,11 @@ class WebTabFragment : BaseWebTabFragment() {
     }
 
     override fun onDestroy() {
-        AppLogger.d("onDestroy Webview::::::::: ${webTab.getUrl()}")
+        AppLogger.d("onDestroy Webview::::::::: ${webTab.url}")
         super.onDestroy()
-        webTab.getWebView()?.let { destroyWebView(it) }
+        webTab.webView?.let { destroyWebView(it) }
         tabViewModel.stop()
-        webTab.setWebView(null)
+        webTab.webView = null
         videoDetectionTabViewModel.stop()
         tabManagerProvider.getTabsListChangeEvent()
             .removeOnPropertyChangedCallback(tabsListChangeListener)
@@ -376,18 +376,18 @@ class WebTabFragment : BaseWebTabFragment() {
     }
 
     private fun recreateWebView(savedInstanceState: Bundle?) {
-        if (webTab.getMessage() == null || webTab.getWebView() == null) {
-            webTab.setWebView(WebView(requireContext()))
+        if (webTab.getMessage() == null || webTab.webView == null) {
+            webTab.webView = WebView(requireContext())
         }
 
         if (savedInstanceState != null) {
-            webTab.getWebView()?.restoreState(savedInstanceState)
+            webTab.webView?.restoreState(savedInstanceState)
         }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun configureWebView(fragmentWebTabBinding: FragmentWebTabBinding) {
-        val currentWebView = this.webTab.getWebView()
+        val currentWebView = this.webTab.webView
 
         val webViewClient = CustomWebViewClient(
             tabViewModel,
@@ -413,8 +413,8 @@ class WebTabFragment : BaseWebTabFragment() {
         currentWebView?.webChromeClient = chromeClient
         currentWebView?.webViewClient = webViewClient
 
-        val webSettings = webTab.getWebView()?.settings
-        val webView = webTab.getWebView()
+        val webSettings = webTab.webView?.settings
+        val webView = webTab.webView
 
         webView?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         webView?.isScrollbarFadingEnabled = true
@@ -457,7 +457,7 @@ class WebTabFragment : BaseWebTabFragment() {
             }
         }
         fragmentWebTabBinding.webviewContainer.addView(
-            webTab.getWebView(),
+            webTab.webView,
             LinearLayout.LayoutParams(-1, -1)
         )
     }
@@ -509,9 +509,9 @@ class WebTabFragment : BaseWebTabFragment() {
 
     private fun handleLoadPageEvent() {
         tabViewModel.loadPageEvent.observe(viewLifecycleOwner) { tab ->
-            if (tab.getUrl().startsWith("http")) {
-                webTab.getWebView()?.stopLoading()
-                webTab.getWebView()?.loadUrl(tab.getUrl())
+            if (tab.url.startsWith("http")) {
+                webTab.webView?.stopLoading()
+                webTab.webView?.loadUrl(tab.url)
             }
         }
     }
@@ -565,11 +565,11 @@ class WebTabFragment : BaseWebTabFragment() {
     }
 
     private fun onWebViewPause() {
-        webTab.getWebView()?.onPause()
+        webTab.webView?.onPause()
     }
 
     private fun onWebViewResume() {
-        webTab.getWebView()?.onResume()
+        webTab.webView?.onResume()
     }
 
     private val tabListener = object : BrowserListener {
@@ -578,7 +578,7 @@ class WebTabFragment : BaseWebTabFragment() {
         }
 
         override fun onBrowserReloadClicked() {
-            var url = webTab.getWebView()?.url
+            var url = webTab.webView?.url
             var urlWasChange = false
 
             if (url?.contains("m.facebook") == true) {
@@ -591,7 +591,7 @@ class WebTabFragment : BaseWebTabFragment() {
             }
 
             val userAgent =
-                webTab.getWebView()?.settings?.userAgentString ?: tabViewModel.userAgent.get()
+                webTab.webView?.settings?.userAgentString ?: tabViewModel.userAgent.get()
                 ?: BrowserFragment.MOBILE_USER_AGENT
             if (url != null) {
                 videoDetectionTabViewModel.viewModelScope.launch(videoDetectionTabViewModel.executorReload) {
@@ -602,7 +602,7 @@ class WebTabFragment : BaseWebTabFragment() {
                     tabViewModel.openPage(url)
                     tabViewModel.closeTab(webTab)
                 } else {
-                    tabViewModel.onPageReload(webTab.getWebView())
+                    tabViewModel.onPageReload(webTab.webView)
                 }
             }
         }
@@ -614,11 +614,11 @@ class WebTabFragment : BaseWebTabFragment() {
         }
 
         override fun onBrowserStopClicked() {
-            tabViewModel.onPageStop(webTab.getWebView())
+            tabViewModel.onPageStop(webTab.webView)
         }
 
         override fun onBrowserBackClicked() {
-            val webView = webTab.getWebView()
+            val webView = webTab.webView
             val canGoBack = webView?.canGoBack()
             if (canGoBack == true) {
                 webView.goBack()
@@ -637,7 +637,7 @@ class WebTabFragment : BaseWebTabFragment() {
         }
 
         override fun onBrowserForwardClicked() {
-            val webView = webTab.getWebView()
+            val webView = webTab.webView
             val canGoForward = webView?.canGoForward()
             if (canGoForward == true) {
                 webView.goForward()
@@ -661,7 +661,7 @@ class WebTabFragment : BaseWebTabFragment() {
     private fun showAlertVideoFound() {
         if (!tabViewModel.isDownloadDialogShown.get()) {
             tabViewModel.isDownloadDialogShown.set(true)
-            val client = getWebViewClientCompat(webTab.getWebView())
+            val client = getWebViewClientCompat(webTab.webView)
 
             client?.videoAlert =
                 MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.video_found)
@@ -694,12 +694,12 @@ class WebTabFragment : BaseWebTabFragment() {
         val isStateResumed = viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED
 
         if (isStateResumed && isBrowserRoute && isCurrentTabSelected && isVisible) {
-            webTab.getWebView()?.goBack()
+            webTab.webView?.goBack()
         }
     }
 
     private fun setUserAgentIsDesktop(isDesktop: Boolean) {
-        val settings = webTab.getWebView()?.settings
+        val settings = webTab.webView?.settings
         if (isDesktop) {
             settings?.userAgentString = BrowserFragment.DESKTOP_USER_AGENT
         } else {
@@ -750,7 +750,7 @@ class WebTabFragment : BaseWebTabFragment() {
         val webViewContainer: ViewGroup = webView.parent as ViewGroup
         webViewContainer.removeView(webView)
         webView.destroy()
-        webTab.setWebView(null)
+        webTab.webView = null
     }
 
     private fun navigateToDownloads() {

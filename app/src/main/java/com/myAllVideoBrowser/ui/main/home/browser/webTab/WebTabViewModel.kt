@@ -120,7 +120,7 @@ class WebTabViewModel @Inject constructor(
         if (input.isNotEmpty()) {
             changeTabFocus(false)
             val tab = WebTabFactory.createWebTabFromInput(input)
-            setTabTextInput(tab.getUrl())
+            setTabTextInput(tab.url)
 
             loadPageEvent.value = tab
         }
