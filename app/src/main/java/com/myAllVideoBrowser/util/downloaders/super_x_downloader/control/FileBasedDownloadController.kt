@@ -72,7 +72,5 @@ class FileBasedDownloadController(private val downloadDir: File) {
      * Checks if any stop-like action has been requested.
      * This is useful for breaking loops.
      */
-    fun isInterrupted(): Boolean {
-        return isPauseRequested() || isCancelRequested() || isStopAndSaveRequested()
-    }
+    fun isInterrupted(): Boolean = isPauseRequested() || isCancelRequested() || isStopAndSaveRequested()
 }

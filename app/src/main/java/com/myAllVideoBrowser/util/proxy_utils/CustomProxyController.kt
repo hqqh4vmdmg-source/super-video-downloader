@@ -107,9 +107,8 @@ class CustomProxyController @Inject constructor(
         lastAppliedConfig = newConfig
     }
 
-    private fun isProxyOn(): Boolean {
-        return sharedPrefHelper.getIsProxyOn() || sharedPrefHelper.getIsDohOn()
-    }
+    private fun isProxyOn(): Boolean =
+        sharedPrefHelper.getIsProxyOn() || sharedPrefHelper.getIsDohOn()
 
     private fun getLocalProxy(): Proxy {
         val creds = sharedPrefHelper.getGeneratedCreds()

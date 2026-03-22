@@ -96,16 +96,17 @@ class VideoInfoAdapter(
                 }
 
                 videoInfo = info
-                val typeText = if (info.isM3u8 || info.isMpd) {
-                    val isMpd = info.formats.formats.firstOrNull()?.isMpd == true
-                    if (isMpd) "MPD List" else "M3U8 List"
-                } else if (info.isMaster) {
-                    val isMpd = info.formats.formats.firstOrNull()?.isMpd == true
-                    if (isMpd) "MPD Master List" else "M3U8 Mater List"
-                } else if (info.isRegularDownload) {
-                    "Regular MP4 Download"
-                } else {
-                    ""
+                val typeText = when {
+                    info.isM3u8 || info.isMpd -> {
+                        val isMpd = info.formats.formats.firstOrNull()?.isMpd == true
+                        if (isMpd) "MPD List" else "M3U8 List"
+                    }
+                    info.isMaster -> {
+                        val isMpd = info.formats.formats.firstOrNull()?.isMpd == true
+                        if (isMpd) "MPD Master List" else "M3U8 Mater List"
+                    }
+                    info.isRegularDownload -> "Regular MP4 Download"
+                    else -> ""
                 }
 
                 if (info.isRegularDownload) {

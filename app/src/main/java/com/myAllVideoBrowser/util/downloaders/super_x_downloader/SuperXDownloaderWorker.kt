@@ -872,13 +872,11 @@ class SuperXDownloaderWorker(appContext: Context, workerParams: WorkerParameters
         }
     }
 
-    private fun isHlsPlaylist(): Boolean {
-        return inputData.getBoolean(GenericDownloader.Constants.IS_M3U8, false)
-    }
+    private fun isHlsPlaylist(): Boolean =
+        inputData.getBoolean(GenericDownloader.Constants.IS_M3U8, false)
 
-    private fun isMpdPlaylist(): Boolean {
-        return inputData.getBoolean(GenericDownloader.Constants.IS_MPD, false)
-    }
+    private fun isMpdPlaylist(): Boolean =
+        inputData.getBoolean(GenericDownloader.Constants.IS_MPD, false)
 
     private fun onProgress(
         progress: Progress,

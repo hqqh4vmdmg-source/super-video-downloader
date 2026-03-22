@@ -140,9 +140,7 @@ abstract class GenericDownloadWorker(appContext: Context, workerParams: WorkerPa
     }
 
     @Synchronized
-    fun getDone(): Boolean {
-        return isDone
-    }
+    fun getDone(): Boolean = isDone
 
     @Synchronized
     fun getContinuation(): Continuation<Result> {

@@ -73,13 +73,11 @@ class SettingsViewModel @Inject constructor(
             videoDetectionTreshold.set(sharedPrefHelper.getVideoDetectionTreshold())
             isLockPortrait.set(sharedPrefHelper.getIsLockPortrait())
             isDrmEnabled.set(sharedPrefHelper.getIsDrmEnabled())
-            if (sharedPrefHelper.getIsExternalUse() && !sharedPrefHelper.getIsAppDirUse()) {
-                storageType.set(StorageType.SD)
-            } else if (sharedPrefHelper.getIsAppDirUse() && sharedPrefHelper.getIsExternalUse()) {
-                storageType.set(StorageType.HIDDEN_SD)
-            } else {
-                storageType.set(StorageType.HIDDEN)
-            }
+            storageType.set(when {
+                sharedPrefHelper.getIsExternalUse() && !sharedPrefHelper.getIsAppDirUse() -> StorageType.SD
+                sharedPrefHelper.getIsAppDirUse() && sharedPrefHelper.getIsExternalUse() -> StorageType.HIDDEN_SD
+                else -> StorageType.HIDDEN
+            })
         }
     }
 
