@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:maxLines="3"
-                android:text="@{pageInfo.getTitleFiltered()}"
+                android:text="@{pageInfo.titleFiltered}"
                 android:textAlignment="center"
                 android:textSize="@dimen/text_small"
                 app:layout_constraintBottom_toBottomOf="parent"

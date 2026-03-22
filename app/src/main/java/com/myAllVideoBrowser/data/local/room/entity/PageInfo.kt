@@ -44,18 +44,15 @@ data class PageInfo(
     var order: Int = 0
 ) {
     // TODO use regex
-    fun getTitleFiltered(): String {
-        return name
+    val titleFiltered: String
+        get() = name
             .replace("www.", "")
             .replace(".com", "")
             .replaceFirstChar { it.uppercase() }
-    }
 
     fun faviconBitmap(): Bitmap? {
-        if (favicon == null) {
-            return null
-        }
-        return BitmapFactory.decodeByteArray(favicon, 0, favicon?.size ?: 0)
+        val bytes = favicon ?: return null
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     }
 
     override fun equals(other: Any?): Boolean {
