@@ -112,9 +112,13 @@ class NotificationsHelper(private val context: Context) {
 
     @SuppressLint("MissingPermission")
     fun showNotification(builderPair: Pair<Int, NotificationCompat.Builder>) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
+        val allowed = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
+        if (allowed) {
             notificationManager.notify(builderPair.first, builderPair.second.build())
         }
     }
