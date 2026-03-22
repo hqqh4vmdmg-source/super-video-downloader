@@ -34,9 +34,8 @@ object VideoUtils {
                         contentTypeStr?.contains("audio", ignoreCase = true) == true -> ContentType.AUDIO
                         contentTypeStr?.contains("application/octet-stream") == true -> {
                             response.body.charStream().use { reader ->
-                                val content = reader.read(CharArray(7), 0, 7)
-                                    .takeIf { it > 0 }
-                                    ?.let { String(CharArray(7)) } ?: ""
+                                val buf = CharArray(7)
+                                val content = if (reader.read(buf, 0, 7) > 0) String(buf) else ""
                                 when {
                                     content.startsWith("#EXTM3U") -> ContentType.M3U8
                                     content.contains("<MPD") -> ContentType.MPD
