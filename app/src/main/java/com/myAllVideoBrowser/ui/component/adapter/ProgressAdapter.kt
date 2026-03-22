@@ -74,7 +74,7 @@ class ProgressAdapter(
 
         private fun getScreenResolution(context: Context): Pair<Int, Int> {
             val displayMetrics = context.resources.displayMetrics
-            return Pair(displayMetrics.widthPixels, displayMetrics.heightPixels)
+            return displayMetrics.widthPixels to displayMetrics.heightPixels
         }
     }
 

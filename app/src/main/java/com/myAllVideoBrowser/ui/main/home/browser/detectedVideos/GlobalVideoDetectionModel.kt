@@ -25,7 +25,7 @@ class GlobalVideoDetectionModel @Inject constructor(
     okHttpProxyClient: OkHttpProxyClient,
 ) : VideoDetectionTabViewModel(videoRepository, baseSchedulers, okHttpProxyClient), IVideoDetector {
     private var lastVerifiedLink: String = ""
-    private var lastVerifiedM3u8PointUrl = Pair("", "")
+    private var lastVerifiedM3u8PointUrl = "" to ""
 
     private val butonStateCallBack = object :
         Observable.OnPropertyChangedCallback() {
@@ -77,7 +77,7 @@ class GlobalVideoDetectionModel @Inject constructor(
 
             if (isM3u8 || isMpd) {
                 if ((currentPageUrl == lastVerifiedM3u8PointUrl.first && lastVerifiedM3u8PointUrl.second != urlToVerify) || currentPageUrl != lastVerifiedM3u8PointUrl.first) {
-                    lastVerifiedM3u8PointUrl = Pair(currentPageUrl, urlToVerify)
+                    lastVerifiedM3u8PointUrl = currentPageUrl to urlToVerify
 
                     startVerifyProcess(resourceRequest, isM3u8, isMpd, hlsTitle)
                 }

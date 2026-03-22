@@ -24,17 +24,12 @@ class CustomProxyController @Inject constructor(
         updateProxyState()
     }
 
-    fun getCurrentRunningProxy(): Proxy {
-        return if (isProxyOn()) {
-            return getLocalProxy()
-        } else {
-            Proxy.noProxy()
-        }
-    }
+    fun getCurrentRunningProxy(): Proxy =
+        if (isProxyOn()) getLocalProxy() else Proxy.noProxy()
 
     fun getProxyCredentials(): Pair<String, String> {
         val currProx = getCurrentRunningProxy()
-        return Pair(currProx.user, currProx.password)
+        return currProx.user to currProx.password
     }
 
     fun updateProxyState() {
