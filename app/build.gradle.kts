@@ -100,12 +100,21 @@ android {
     }
 
     // Signing Configurations
+    val ksFile = file(System.getenv("KEYSTORE_PATH") ?: "keystore.jks")
+    val ksPassword = System.getenv("KEYSTORE_PASSWORD")
+    val ksAlias = System.getenv("KEY_ALIAS")
+    val ksKeyPassword = System.getenv("KEY_PASSWORD")
+    val hasSigningConfig = ksFile.exists() && ksFile.length() > 0 &&
+            ksPassword != null && ksAlias != null && ksKeyPassword != null
+
     signingConfigs {
-        create("release") {
-            storeFile = file(System.getenv("KEYSTORE_PATH") ?: "keystore.jks")
-            storePassword = System.getenv("KEYSTORE_PASSWORD")
-            keyAlias = System.getenv("KEY_ALIAS")
-            keyPassword = System.getenv("KEY_PASSWORD")
+        if (hasSigningConfig) {
+            create("release") {
+                storeFile = ksFile
+                storePassword = ksPassword
+                keyAlias = ksAlias
+                keyPassword = ksKeyPassword
+            }
         }
     }
 
@@ -144,7 +153,9 @@ android {
         release {
             enableUnitTestCoverage = false
             enableAndroidTestCoverage = false
-            signingConfig = signingConfigs.getByName("release")
+            if (hasSigningConfig) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -193,6 +204,7 @@ android {
     // Lint Options
     lint {
         abortOnError = false
+        disable += "MissingTranslation"
     }
 
 }

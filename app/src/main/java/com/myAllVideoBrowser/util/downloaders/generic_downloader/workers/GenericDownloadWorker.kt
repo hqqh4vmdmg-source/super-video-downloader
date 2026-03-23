@@ -53,9 +53,9 @@ abstract class GenericDownloadWorker(appContext: Context, workerParams: WorkerPa
 
     open fun getTaskFromInput(): VideoTaskItem {
         val url = inputData.getString(GenericDownloader.Constants.URL_KEY)
-        val fileName =
-            inputData.getString(GenericDownloader.Constants.FILENAME_KEY) ?: url.hashCode()
-                .toString()
+        val fileName: String =
+            inputData.getString(GenericDownloader.Constants.FILENAME_KEY)
+                ?: (url?.hashCode() ?: 0).toString()
         val title = inputData.getString(GenericDownloader.Constants.TITLE_KEY)
         val taskId = inputData.getString(GenericDownloader.Constants.TASK_ID_KEY)
 
@@ -64,7 +64,7 @@ abstract class GenericDownloadWorker(appContext: Context, workerParams: WorkerPa
             this.title = title.orEmpty()
             this.fileName = fileName
             saveDir = fileDir
-            filePath = File(saveDir).resolve(fileName).toString()
+            filePath = File(fileDir).resolve(fileName).toString()
         }
     }
 
@@ -85,8 +85,8 @@ abstract class GenericDownloadWorker(appContext: Context, workerParams: WorkerPa
                         .toString() == "true"
                 val headers = loadHeaders(task.mId)
 
-                if (action.isNullOrBlank() || task.url == null) {
-                    continuation.resumeWithException(IllegalArgumentException("ACTION or TASK is null"))
+                if (action.isNullOrBlank()) {
+                    continuation.resumeWithException(IllegalArgumentException("ACTION is null or blank"))
                     return@suspendCoroutine
                 }
 
