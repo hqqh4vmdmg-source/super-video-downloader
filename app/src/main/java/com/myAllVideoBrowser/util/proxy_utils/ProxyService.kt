@@ -1,5 +1,6 @@
 package com.myAllVideoBrowser.util.proxy_utils
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.Service
 import android.content.Intent
@@ -178,6 +179,7 @@ class ProxyService : Service() {
     /**
      * Helper function to start the foreground service with the correct type based on Android version.
      */
+    @SuppressLint("InlinedApi")
     private fun startForegroundWithCorrectType() {
         val notification = createNotification()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
