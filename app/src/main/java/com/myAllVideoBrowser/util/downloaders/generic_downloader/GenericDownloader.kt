@@ -153,9 +153,7 @@ abstract class GenericDownloader {
         if (workId == null) {
             return
         }
-        val editor = getDownloaderPreferences(context).edit()
-        editor.putString(workId, headersString)
-        editor.apply()
+        getDownloaderPreferences(context).edit { putString(workId, headersString) }
         AppLogger.d("saveHeadersStringToSharedPreferences  $workId")
     }
 
@@ -177,9 +175,7 @@ abstract class GenericDownloader {
             return
         }
 
-        val editor = getDownloaderPreferences(context).edit()
-        editor.remove(workId)
-        editor.apply()
+        getDownloaderPreferences(context).edit { remove(workId) }
         AppLogger.d("deleteHeadersStringFromSharedPreferences  $workId")
     }
 
