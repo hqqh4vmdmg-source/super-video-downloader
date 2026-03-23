@@ -1,8 +1,8 @@
 package com.myAllVideoBrowser.ui.component.binding
 
 import androidx.databinding.BindingAdapter
-import android.net.Uri
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import android.widget.VideoView
 import java.io.File
 
@@ -13,7 +13,7 @@ object VideoViewBinding {
     fun setVideoURI(view: VideoView, videoPath: String?) {
         videoPath?.let { path ->
             val uri = if (path.startsWith("http")) {
-                Uri.parse(path)
+                path.toUri()
             } else {
                 FileProvider.getUriForFile(view.context, view.context.packageName + ".provider", File(path))
             }

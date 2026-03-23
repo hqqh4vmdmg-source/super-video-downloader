@@ -1,6 +1,6 @@
 package com.myAllVideoBrowser.data.local
 
-import android.net.Uri
+import androidx.core.net.toUri
 import com.myAllVideoBrowser.data.local.room.dao.PageDao
 import com.myAllVideoBrowser.data.local.room.entity.PageInfo
 import com.myAllVideoBrowser.data.repository.TopPagesRepository
@@ -60,7 +60,7 @@ class TopPagesLocalDataSource @Inject constructor(
         defaultList.add(PageInfo(link = "https://www.twitch.tv"))
 
         return defaultList.mapIndexed { index, page ->
-            page.name = Uri.parse(page.link).host.toString()
+            page.name = page.link.toUri().host.toString()
             page.order = index
             page
         }

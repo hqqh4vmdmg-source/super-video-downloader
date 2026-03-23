@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
@@ -84,7 +85,7 @@ class VideoPlayerFragment : BaseFragment() {
         }
         arguments?.getString(VIDEO_NAME)?.let { videoPlayerViewModel.videoName.set(it) }
 
-        val iUrl = Uri.parse(arguments?.getString(VIDEO_URL))
+        val iUrl = arguments?.getString(VIDEO_URL)?.toUri()
 
         if (iUrl != null) {
             videoPlayerViewModel.videoUrl.set(iUrl)
