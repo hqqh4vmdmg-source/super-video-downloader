@@ -82,6 +82,11 @@
             android:name="com.myAllVideoBrowser.util.downloaders.NotificationReceiver"
             android:enabled="true"
             android:exported="false" />
+
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            tools:node="remove" />
     </application>
 
     <queries>
