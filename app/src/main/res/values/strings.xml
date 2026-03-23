@@ -5,6 +5,7 @@
 
     <string name="title_video">Video</string>
     <string name="title_progress">Progress</string>
+    <string name="title_browser">Browser</string>
     <string name="title_settings">Settings</string>
 
     <string name="dialog_video_title">Video found:</string>

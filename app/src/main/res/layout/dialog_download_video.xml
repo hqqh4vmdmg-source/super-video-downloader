@@ -114,6 +114,7 @@
             app:icon="@drawable/ic_download_24dp"
             app:iconTint="@color/white"
             android:textColor="@color/white"
+            tools:ignore="UnusedAttribute"
             android:textFontWeight="8"
             android:layout_marginBottom="@dimen/padding_large"
             android:onClick="@{() -> dialogListener.onDownloadVideo(videInfo, dialog, mainViewModel.selectedFormatTitle.first, mainViewModel.selectedFormatTitle.second)}"

@@ -22,9 +22,9 @@ import javax.inject.Singleton
 class NotificationsHelper(private val context: Context) {
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "NOTIFICATION_CHANNEL_ID_ALL_DOWNLOADER"
-        private const val DOWNLOAD_ICON_RES = R.drawable.ic_download_24dp
-        private const val VIDEO_ICON_RES = R.drawable.ic_video_24dp
-        private const val CANCEL_ICON_RES = R.drawable.ic_cancel_24dp
+        private val DOWNLOAD_ICON_RES = R.drawable.ic_download_24dp
+        private val VIDEO_ICON_RES = R.drawable.ic_video_24dp
+        private val CANCEL_ICON_RES = R.drawable.ic_cancel_24dp
     }
 
     private val notificationManager = NotificationManagerCompat.from(context)
