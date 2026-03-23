@@ -3,6 +3,7 @@ package com.myAllVideoBrowser.ui.component.binding
 import androidx.databinding.BindingAdapter
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import androidx.core.net.toUri
 import android.widget.ImageView
 import com.bumptech.glide.Glide
