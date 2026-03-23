@@ -3,6 +3,7 @@ package com.myAllVideoBrowser.util.downloaders.generic_downloader
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
+import androidx.core.content.edit
 import androidx.work.*
 import com.myAllVideoBrowser.data.local.room.entity.ProgressInfo
 import com.myAllVideoBrowser.data.local.room.entity.VideoInfo

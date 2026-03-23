@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -103,6 +104,7 @@
             android:onClick="@{() -> dialogListener.onDownloadVideo(videoInfo, viewModel.selectedFormats.get(videoInfo.id), viewModel.formatsTitles.get(videoInfo.id))}"
             android:text="@string/dialog_download_video"
             android:textColor="@color/white"
+            tools:ignore="UnusedAttribute"
             android:textFontWeight="8"
             app:icon="@drawable/ic_download_24dp"
             app:iconTint="@color/white"

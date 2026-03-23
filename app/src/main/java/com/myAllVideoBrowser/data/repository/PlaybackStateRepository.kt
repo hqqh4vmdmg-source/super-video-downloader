@@ -2,8 +2,8 @@ package com.myAllVideoBrowser.data.repository
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.Uri
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.myAllVideoBrowser.di.qualifier.ApplicationContext
@@ -73,7 +73,7 @@ class PlaybackStateRepository @Inject constructor(
     }
 
     private fun loadSavedState() {
-        val videoUrl = prefs.getString(KEY_VIDEO_URL, null)?.let { Uri.parse(it) }
+        val videoUrl = prefs.getString(KEY_VIDEO_URL, null)?.toUri()
         val position = prefs.getLong(KEY_VIDEO_POSITION, 0)
         val isPlaying = prefs.getBoolean(KEY_IS_PLAYING, false)
         val title = prefs.getString(KEY_VIDEO_TITLE, "") ?: ""

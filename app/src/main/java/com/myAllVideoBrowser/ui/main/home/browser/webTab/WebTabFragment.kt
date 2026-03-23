@@ -2,7 +2,7 @@ package com.myAllVideoBrowser.ui.main.home.browser.webTab
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -224,7 +224,7 @@ class WebTabFragment : BaseWebTabFragment() {
 
         mainActivity.mainViewModel.bookmark(
             url,
-            name ?: Uri.parse(url).host.toString(),
+            name ?: url.toUri().host.toString(),
             favicon
         )
     }

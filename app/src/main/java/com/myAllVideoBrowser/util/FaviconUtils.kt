@@ -2,7 +2,7 @@ package com.myAllVideoBrowser.util
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
+import androidx.core.net.toUri
 import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -22,7 +22,7 @@ object FaviconUtils {
     }
 
     private fun fetchFavicon(okHttpClient: OkHttpClient, url: String): Bitmap? {
-        val host = Uri.parse(url).host ?: return null
+        val host = url.toUri().host ?: return null
         val potentialUrls = listOf(
             "https://$host/favicon.ico",
             "https://${host.replaceFirst("www.", "")}/favicon.ico",

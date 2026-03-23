@@ -131,14 +131,9 @@
             android:verticalSpacing="4dp"
             app:items="@{mainVModel.bookmarksList}" />
 
-
-        <LinearLayout
+        <Space
             android:layout_width="match_parent"
-            android:layout_height="16dp"
-            android:layout_gravity="bottom|center"
-            android:gravity="center">
-
-        </LinearLayout>
+            android:layout_height="16dp" />
     </LinearLayout>
 
 </layout>

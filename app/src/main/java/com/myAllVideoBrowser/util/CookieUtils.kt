@@ -2,10 +2,10 @@ package com.myAllVideoBrowser.util
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.net.Uri
 import android.os.Build
 import android.webkit.CookieManager
 import android.webkit.WebResourceRequest
+import androidx.core.net.toUri
 import com.google.common.net.InternetDomainName
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import okhttp3.Headers
@@ -129,7 +129,7 @@ object CookieUtils {
         }
 
         val chrome = ChromeBrowser()
-        val cookies = chrome.getCookiesNetscapeForDomain(Uri.parse(url).host, cookiesDbFile)
+        val cookies = chrome.getCookiesNetscapeForDomain(url.toUri().host, cookiesDbFile)
 
         return cookies.trim()
     }

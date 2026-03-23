@@ -250,6 +250,7 @@
                 android:backgroundTint="@android:color/transparent"
                 android:clickable="true"
                 android:focusable="true"
+                tools:ignore="UnusedAttribute"
                 android:focusedByDefault="false"
                 android:foregroundGravity="center"
                 android:translationZ="20dp"

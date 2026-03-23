@@ -336,7 +336,7 @@ class FileUtil @Inject constructor() {
 
             context.contentResolver.update(uri, values, null, null)
 
-            return Uri.parse(uri.toString())
+            return uri.toString().toUri()
         }
     }
 
