@@ -12,9 +12,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      SPLITS_INCLUDE: "TRUE"
-
     steps:
       - uses: actions/checkout@v6
       - name: set up JDK 21
